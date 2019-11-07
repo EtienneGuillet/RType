@@ -1,0 +1,1 @@
+This folder will contains common source code between the client and the server (like networking or ecs interfaces)
