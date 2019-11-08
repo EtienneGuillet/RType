@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+        <!ENTITY RFC2119 SYSTEM
+                "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
+        ]>
+
+<?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
+<?rfc strict="yes"?>
+<?rfc toc="yes" ?>
+
+<rfc
+        category="std"
+        docName="R-Type-Protocol-UDP-00"
+        consensus="no"
+        submissionType="IETF"
+        xml:lang="en"
+>
+
+    <front>
+        <title abbrev="R-Type protocol">
+            Describing UDP Protocol for R-Type game project
+        </title>
+
+        <author fullname="Titouan PAUTIER" initials="T." surname="PAUTIER">
+            <organization abbrev="EPITECH">EPITECH</organization>
+            <address>
+                <email>titouan.pautier@epitech.eu</email>
+            </address>
+        </author>
+
+        <author fullname="Lilian ARAGO" initials="L." surname="ARAGO">
+            <organization abbrev="EPITECH">EPITECH</organization>
+            <address>
+                <email>lilian.arago@epitech.eu</email>
+            </address>
+        </author>
+
+        <author fullname="Julian FRABEL" initials="J." surname="FRABEL">
+            <organization abbrev="EPITECH">EPITECH</organization>
+            <address>
+                <email>julian.frabel@epitech.eu</email>
+            </address>
+        </author>
+
+        <author fullname="Etienne GUILLET" initials="E." surname="GUILLET">
+            <organization abbrev="EPITECH">EPITECH</organization>
+            <address>
+                <email>etienne.guillet@epitech.eu</email>
+            </address>
+        </author>
+
+        <date year="2019" month="November"/>
+
+        <area>General</area>
+        <workgroup>EPITECH</workgroup>
+        <keyword>R-Type</keyword>
+    </front>
+
+    <middle>
+        <section anchor="intro" title="Introduction">
+
+            <t>The R-Type is a third year project at EPITECH school. The objective of this project is to implement a
+                multiplayer R-Type game from 1 to 4 players, using a client/server architecture.
+            </t>
+
+            <t>Here is the protocol we have wrote to describe how clients and server exchange data trough
+                network.
+                This paper assumes knowledge of the User Datagram Protocol
+                <eref target="https://tools.ietf.org/html/rfc768">(UDP)</eref>
+            </t>
+
+            <section title="Terminology">
+                <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+                    NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
+                    in this document are to be interpreted as described in
+                    <xref target="RFC2119"/>.
+                </t>
+            </section>
+        </section>
+
+        <section anchor="protocol" title="The R-Type Protocol">
+
+            <t>
+                The protocol will use UDP to communicate between client and server,
+                every packet that the client receive that does not come from the server will be ignored.
+                The same happen for the server, every packet not recognized by the server won't be taken into consideration.
+            </t>
+
+            <figure>
+                <artwork>
+                             UDP transmission
++--------------+            +------------+            +-------------+
+|    Client    |------------|   Server   |------------|    Client   |
++--------------+            +------------+            +-------------+
+                </artwork>
+            </figure>
+        </section>
+
+        <section title="Protocol">
+            <t>
+                Operation codes are on 3 bytes
+                <list>
+                    <t>1XX - Used for out of game protocol</t>
+                    <t>2XX - Used for in-game protocol</t>
+                    <t>3XX - Used for errors</t>
+                </list>
+            </t>
+
+            <section title="Out of game protocol">
+                <t>
+                    <list>
+                        <t>10X - Connection</t>
+                        <t>11X - Rooms</t>
+                    </list>
+                </t>
+            </section>
+
+            <section title="In-game protocol">
+                <t>
+                    <list>
+                        <t>20X - Action</t>
+                        <t>21X - Disp</t>
+                        <t>22X - Living</t>
+                        <t>23X - Charge</t>
+                        <t>24X - Score</t>
+                        <t>25X - EndGame</t>
+                    </list>
+                </t>
+            </section>
+
+            <section title="Errors">
+                <t>
+                    <list>
+                        <t>30X - Error</t>
+                    </list>
+                </t>
+            </section>
+        </section>
+
+        <section title="Packets">
+            <section anchor="connection" title="Connection">
+                <t>
+                    These packets are used to describe the connection steps.
+                </t>
+                <section anchor="connect" title="Connect">
+                    <t>
+                        110 : Connect : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent continuously by the client until a <xref target="connected"/> packet has been received.
+                    </t>
+
+                    <texttable>
+                        <preamble>Connection packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center" width="75%">Username</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>10 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="connected" title="Connected">
+                    <t>
+                        111 : Connected : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent continuously by the server when he received a connect packet (<xref target="connect"/>). It stops when the server receive a <!--<xref target="pong"/>--> packet.
+                    </t>
+
+                    <texttable>
+                        <preamble>Connection packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center" width="75%">Username</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>10 bytes</c>
+                    </texttable>
+                </section>
+            </section>
+        </section>
+    </middle>
+
+    <back>
+
+        <references title="Normative References">
+            &RFC2119;
+        </references>
+
+        <!--
+            TODO REFERENCE PROTOCOL UDP
+        -->
+    </back>
+</rfc>
