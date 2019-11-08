@@ -104,30 +104,30 @@
             <t>
                 Operation codes are on 3 bytes
                 <list>
-                    <t>1XX - Used for out of game protocol</t>
-                    <t>2XX - Used for in-game protocol</t>
-                    <t>3XX - Used for errors</t>
+                    <t>1XX - Used for out of game protocol (<xref target="out-of-game"/>)</t>
+                    <t>2XX - Used for in-game protocol (<xref target="in-game-packets"/>)</t>
+                    <t>3XX - Used for errors (<xref target="errors"/>)</t>
                 </list>
             </t>
 
-            <section title="Out of game protocol">
+            <section anchor="out-of-game" title="Out of game protocol">
                 <t>
                     <list>
-                        <t>10X - Connection</t>
-                        <t>11X - Rooms</t>
+                        <t>10X - Connection (<xref target="connection"/>)</t>
+                        <t>11X - Rooms (<xref target="rooms"/>)</t>
                     </list>
                 </t>
             </section>
 
-            <section title="In-game protocol">
+            <section anchor="in-game-packets" title="In-game protocol">
                 <t>
                     <list>
-                        <t>200 - Action</t>
-                        <t>210 - Disp</t>
-                        <t>220 - Living</t>
-                        <t>230 - Charge</t>
-                        <t>240 - Score</t>
-                        <t>250 - EndGame</t>
+                        <t>200 - Action (<xref target="action"/>)</t>
+                        <t>210 - Disp (<xref target="disp"/>)</t>
+                        <t>220 - Living (<xref target="living"/>)</t>
+                        <t>230 - Charge (<xref target="charge"/>)</t>
+                        <t>240 - Score (<xref target="score"/>)</t>
+                        <t>250 - EndGame (<xref target="end-game"/>)</t>
                     </list>
                 </t>
             </section>
