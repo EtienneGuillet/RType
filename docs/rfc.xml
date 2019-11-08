@@ -8,6 +8,9 @@
 <?rfc strict="yes"?>
 <?rfc toc="yes" ?>
 
+<!-- TODO Calculate the size of every packet -->
+<!-- TODO Be sure that we don't need a timestamp at the start of every packet -->
+
 <rfc
         category="std"
         docName="R-Type-Protocol-UDP-00"
@@ -83,7 +86,8 @@
             <t>
                 The protocol will use UDP to communicate between client and server,
                 every packet that the client receive that does not come from the server will be ignored.
-                The same happen for the server, every packet not recognized by the server won't be taken into consideration.
+                The same happen for the server, every packet not recognized by the server won't be taken into
+                consideration.
             </t>
 
             <figure>
@@ -142,11 +146,14 @@
                 <t>
                     These packets are used to describe the connection steps.
                 </t>
+
                 <section anchor="connect" title="Connect">
                     <t>
-                        110 : Connect : X bytes
+                        100 : Connect : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent continuously by the client until a <xref target="connected"/> packet has been received.
+                        This packet is sent continuously by the client until a
+                        <xref target="connected"/>
+                        packet has been received.
                     </t>
 
                     <texttable>
@@ -161,18 +168,378 @@
 
                 <section anchor="connected" title="Connected">
                     <t>
-                        111 : Connected : X bytes
+                        101 : Connected : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent continuously by the server when he received a connect packet (<xref target="connect"/>). It stops when the server receive a <!--<xref target="pong"/>--> packet.
+                        This packet is sent continuously by the server when he received a connect packet (<xref
+                            target="connect"/>). It stops when the server receive a pong packet (<xref target="pong"/>).
                     </t>
 
                     <texttable>
                         <preamble>Connection packet</preamble>
                         <ttcol align="center">OpCode</ttcol>
-                        <ttcol align="center" width="75%">Username</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ping" title="Ping">
+                    <t>
+                        102 : Ping : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is used to check the availability of a connected client or server. The response of
+                        this packet is always a pong packet (<xref target="pong"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Ping packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="pong" title="Pong">
+                    <t>
+                        103 : Pong : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is the response of a ping packet (<xref target="ping"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Ping packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="disconnect" title="Disconnect">
+                    <t>
+                        104 : Disconnect : X bytes
+                        <vspace blankLines="2"/>
+                        This packet informs the client that the server is going to shutdown or the server that the client is disconnecting.
+                    </t>
+
+                    <texttable>
+                        <preamble>Disconnect</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="Disconnected" title="Disconnected">
+                    <t>
+                        105 : Disconnected : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is send as response to disconnect packet (<xref target="disconnect"/>) to confirm the reception of disconnection.
+                    </t>
+
+                    <texttable>
+                        <preamble>Disconnected</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+            </section>
+
+            <section anchor="rooms" title="Rooms">
+                <t>
+                    These packets are used to describe the room system.
+                </t>
+
+                <section anchor="get-rooms" title="Get rooms">
+                    <t>
+                        110 : Get rooms : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent continuously by the client until it receives a list
+                        of rooms packet (<xref target="rooms-list"/>)
+                    </t>
+
+                    <texttable>
+                        <preamble>Get rooms</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="rooms-list" title="Rooms list">
+                    <t>
+                        111 : Rooms list : X bytes
+                        <vspace blankLines="2"/>
+                    </t>
+
+                    <texttable>
+                        <preamble>Rooms</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Rooms count</ttcol>
+                        <ttcol align="center">Room name</ttcol>
+                        <ttcol align="center">Require password</ttcol>
+                        <ttcol align="center">Slots used</ttcol>
+                        <ttcol align="center">Capacity</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>4 bytes</c>
+                        <c>10 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="create-room" title="Create rooms">
+                    <t>
+                        112 : Create room : X bytes
+                        <vspace blankLines="2"/>
+                    </t>
+
+                    <texttable>
+                        <preamble>Create rooms</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Room name</ttcol>
+                        <ttcol align="center">Capacity</ttcol>
+                        <ttcol align="center">Password size</ttcol>
+                        <ttcol align="center">Password</ttcol>
 
                         <c>3 bytes</c>
                         <c>10 bytes</c>
+                        <c>1 bytes</c>
+                        <c>4 bytes</c>
+                        <c>&lt;Password size> bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ok-create" title="OK create room">
+                    <t>
+                        113 : OK create : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a create room packet (<xref target="create-room"/>)
+                    </t>
+
+                    <texttable>
+                        <preamble>Ok create</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="quit-room" title="Quit room">
+                    <t>
+                        114 : Quit room : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent continuously by the client that wants to leave a room
+                        until it receives a ok quit packet (<xref target="ok-quit"/>)
+                    </t>
+
+                    <texttable>
+                        <preamble>Quit room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ok-quit" title="OK quit room">
+                    <t>
+                        115 : OK quit : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a quit room packet (<xref target="quit-room"/>)
+                    </t>
+
+                    <texttable>
+                        <preamble>Ok quit</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="join-room" title="Join room">
+                    <t>
+                        116 : Join room : X bytes
+                        <vspace blankLines="2"/>
+                    </t>
+
+                    <texttable>
+                        <preamble>Join room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Room name</ttcol>
+                        <ttcol align="center">Password size</ttcol>
+                        <ttcol align="center">Password</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>10 bytes</c>
+                        <c>4 bytes</c>
+                        <c>&lt;Password size> bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="joined-room" title="Joined room">
+                    <t>
+                        117 : Joined room : X bytes
+                        <vspace blankLines="2"/>
+                    </t>
+
+                    <texttable>
+                        <preamble>Joined room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">User count</ttcol>
+                        <ttcol align="center">Username</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>1 bytes</c>
+                        <c>&lt;User count> * 10 bytes</c>
+                    </texttable>
+                </section>
+
+            </section>
+
+            <section anchor="errors" title="Errors">
+                <t>
+                    These packets are used to describe all the errors that may occur.
+                </t>
+
+                <section anchor="unknown" title="Unknown packet">
+                    <t>
+                        300 : Unknown packet : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to any unknown packet.
+                    </t>
+
+                    <texttable>
+                        <preamble>Unknown packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="invalid" title="Invalid packet">
+                    <t>
+                        301 : Invalid packet : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to any packet that has a known opcode but has malformated data.
+                    </t>
+
+                    <texttable>
+                        <preamble>Invalid packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="invalid-param" title="Invalid param">
+                    <t>
+                        302 : Invalid param : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to any packet that is well formatted but has an invalid param.
+                    </t>
+
+                    <texttable>
+                        <preamble>Invalid param</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="duplicated-username" title="Already used username">
+                    <t>
+                        302 : Already used username : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a connect packet (<xref target="connect"/>) when the username
+                        requested is already used by another client.
+                    </t>
+
+                    <texttable>
+                        <preamble>Already used username</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="duplicated-room" title="Room name already used">
+                    <t>
+                        303 : Room name already used : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a create room packet (<xref target="create-room"/>) when a
+                        room exists with the same name.
+                    </t>
+
+                    <texttable>
+                        <preamble>Room name already used</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="not-in-room" title="Not in room">
+                    <t>
+                        304 : Not in room : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a quit room packet (<xref target="quit-room"/>) when the
+                        client isn't in any room.
+                    </t>
+
+                    <texttable>
+                        <preamble>Not in room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="room-not-exist" title="Unknown room">
+                    <t>
+                        305 : Unknown room : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a join room packet (<xref target="join-room"/>) when the room
+                        name request is unknown.
+                    </t>
+
+                    <texttable>
+                        <preamble>Unknown room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="invalid-password" title="Invalid password">
+                    <t>
+                        306 : Invalid password : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a join room packet (<xref target="join-room"/>) when the
+                        password is invalid.
+                    </t>
+
+                    <texttable>
+                        <preamble>invalid password</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="room-full" title="Room full">
+                    <t>
+                        307 : Room full : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a join room packet (<xref target="join-room"/>) when the room
+                        has no empty slots.
+                    </t>
+
+                    <texttable>
+                        <preamble>Room full</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
                     </texttable>
                 </section>
             </section>
