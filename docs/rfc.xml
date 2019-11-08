@@ -122,12 +122,12 @@
             <section title="In-game protocol">
                 <t>
                     <list>
-                        <t>20X - Action</t>
-                        <t>21X - Disp</t>
-                        <t>22X - Living</t>
-                        <t>23X - Charge</t>
-                        <t>24X - Score</t>
-                        <t>25X - EndGame</t>
+                        <t>200 - Action</t>
+                        <t>210 - Disp</t>
+                        <t>220 - Living</t>
+                        <t>230 - Charge</t>
+                        <t>240 - Score</t>
+                        <t>250 - EndGame</t>
                     </list>
                 </t>
             </section>
@@ -395,6 +395,144 @@
                     </texttable>
                 </section>
 
+            </section>
+
+            <section anchor="in-game" title="In-game Packets">
+                <t>
+                    These packets are send during the game to describe actions made by the client or
+                    informations about the game being played.
+                </t>
+
+                <section anchor="action" title="Action">
+                    <t>
+                        200 : Action : X bytes
+                        <vspace blankLines="2"/>
+                        This packet contains a boolean for every key of a client. The boolean is true if the key is pressed
+                    </t>
+
+                    <texttable>
+                        <preamble>Action</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Shot</ttcol>
+                        <ttcol align="center">Up</ttcol>
+                        <ttcol align="center">Down</ttcol>
+                        <ttcol align="center">Left</ttcol>
+                        <ttcol align="center">Right</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="disp" title="Display entity">
+                    <t>
+                        210 : Disp : X bytes
+                        <vspace blankLines="2"/>
+                        This packet contains minimal informations to let the client display an entity
+                    </t>
+
+                    <texttable>
+                        <preamble>Disp</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Entity ID</ttcol>
+                        <ttcol align="center">Positions [X, Y, Z]</ttcol>
+                        <ttcol align="center">Rotation [X, Y]</ttcol>
+                        <ttcol align="center">Scale [X, Y]</ttcol>
+                        <ttcol align="center">Type</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>8 bytes</c>
+                        <c>12 bytes</c>
+                        <c>8 bytes</c>
+                        <c>8 bytes</c>
+                        <c>4 bytes</c>
+                    </texttable>
+
+                </section>
+
+                <section anchor="living" title="Living">
+                    <t>
+                        220 : Living : X bytes
+                        <vspace blankLines="2"/>
+                        This packet contains the health points of an entity
+                    </t>
+
+                    <texttable>
+                        <preamble>Living</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Entity ID</ttcol>
+                        <ttcol align="center">HP</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>8 bytes</c>
+                        <c>4 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="charge" title="Charge">
+                    <t>
+                        230 : Charge : X bytes
+                        <vspace blankLines="2"/>
+                        This packet contains the charge percentage of the player
+                    </t>
+
+                    <texttable>
+                        <preamble>Living</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Charge percentage</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>1 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="score" title="Score">
+                    <t>
+                        240 : Score : X bytes
+                        <vspace blankLines="2"/>
+                        This packet contains the score of the players.
+                    </t>
+
+                    <texttable>
+                        <preamble>Living</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Player 1</ttcol>
+                        <ttcol align="center">Player 2</ttcol>
+                        <ttcol align="center">Player 3</ttcol>
+                        <ttcol align="center">Player 4</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="end-game" title="Endgame">
+                    <t>
+                        240 : Endgame : X bytes
+                        <vspace blankLines="2"/>
+                        This packet contains the score of the players and informs the client that the game has ended.
+                    </t>
+
+                    <texttable>
+                        <preamble>Endgame</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Player 1</ttcol>
+                        <ttcol align="center">Player 2</ttcol>
+                        <ttcol align="center">Player 3</ttcol>
+                        <ttcol align="center">Player 4</ttcol>
+
+                        <c>3 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                    </texttable>
+                </section>
             </section>
 
             <section anchor="errors" title="Errors">
