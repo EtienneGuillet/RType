@@ -1,0 +1,10 @@
+[requires]
+boost/1.71.0@conan/stable
+sfml/2.5.1@bincrafters/stable
+
+[generators]
+cmake
+
+[imports]
+bin, *.dll -> ./bin # Copies all dll files from packages bin folder to my local "bin" folder
+lib, *.dylib* -> ./bin # Copies all dylib files from packages lib folder to my local "bin" folder
