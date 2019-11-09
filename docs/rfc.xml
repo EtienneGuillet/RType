@@ -587,7 +587,7 @@
 
                 <section anchor="duplicated-username" title="Already used username">
                     <t>
-                        302 : Already used username : X bytes
+                        303 : Already used username : X bytes
                         <vspace blankLines="2"/>
                         This packet is sent as response to a connect packet (<xref target="connect"/>) when the username
                         requested is already used by another client.
@@ -603,7 +603,7 @@
 
                 <section anchor="duplicated-room" title="Room name already used">
                     <t>
-                        303 : Room name already used : X bytes
+                        304 : Room name already used : X bytes
                         <vspace blankLines="2"/>
                         This packet is sent as response to a create room packet (<xref target="create-room"/>) when a
                         room exists with the same name.
@@ -619,7 +619,7 @@
 
                 <section anchor="not-in-room" title="Not in room">
                     <t>
-                        304 : Not in room : X bytes
+                        305 : Not in room : X bytes
                         <vspace blankLines="2"/>
                         This packet is sent as response to a quit room packet (<xref target="quit-room"/>) when the
                         client isn't in any room.
@@ -635,7 +635,7 @@
 
                 <section anchor="room-not-exist" title="Unknown room">
                     <t>
-                        305 : Unknown room : X bytes
+                        306 : Unknown room : X bytes
                         <vspace blankLines="2"/>
                         This packet is sent as response to a join room packet (<xref target="join-room"/>) when the room
                         name request is unknown.
@@ -651,7 +651,7 @@
 
                 <section anchor="invalid-password" title="Invalid password">
                     <t>
-                        306 : Invalid password : X bytes
+                        307 : Invalid password : X bytes
                         <vspace blankLines="2"/>
                         This packet is sent as response to a join room packet (<xref target="join-room"/>) when the
                         password is invalid.
@@ -667,7 +667,7 @@
 
                 <section anchor="room-full" title="Room full">
                     <t>
-                        307 : Room full : X bytes
+                        308 : Room full : X bytes
                         <vspace blankLines="2"/>
                         This packet is sent as response to a join room packet (<xref target="join-room"/>) when the room
                         has no empty slots.
