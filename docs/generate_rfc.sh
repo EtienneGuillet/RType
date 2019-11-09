@@ -10,5 +10,6 @@ if [ -s rfc69420 ]
 then
   exit 0
 else
+  rm $RFC_NAME $RFC_NAME.html
   exit 1
 fi
