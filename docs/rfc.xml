@@ -102,7 +102,7 @@
 
         <section title="Protocol">
             <t>
-                Operation codes are on 3 bytes
+                Operation codes are on 2 bytes
                 <list>
                     <t>1XX - Used for out of game protocol (<xref target="out-of-game"/>)</t>
                     <t>2XX - Used for in-game protocol (<xref target="in-game-packets"/>)</t>
@@ -336,7 +336,7 @@
                     <t>
                         114 : Quit room : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent continuously by the client that wants to leave a room
+                        This packet is sent continuously by the client that wants to leave a room,
                         until it receives a ok-quit packet (<xref target="ok-quit"/>).
                     </t>
 
@@ -352,7 +352,7 @@
                     <t>
                         115 : OK quit : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a quit room packet (<xref target="quit-room"/>)
+                        This packet is sent as response to a quit room packet (<xref target="quit-room"/>).
                     </t>
 
                     <texttable>
@@ -367,8 +367,8 @@
                     <t>
                         116 : Join room : X bytes
                         <vspace blankLines="2"/>
-
-                        <!-- TODO EN BOUCLE -->
+                        This packet is sent continuously by the client that want to join a room,
+                        until it receives a joined-room packet (<xref target="joined-room"/>).
                     </t>
 
                     <texttable>
@@ -389,8 +389,7 @@
                     <t>
                         117 : Joined room : X bytes
                         <vspace blankLines="2"/>
-
-                        <!-- TODO Response -->
+                        This packet is sent by the server as a respond to join-room (<xref target="join-room"/>).
                     </t>
 
                     <texttable>
@@ -525,7 +524,7 @@
 
                 <section anchor="end-game" title="Endgame">
                     <t>
-                        240 : Endgame : X bytes
+                        250 : Endgame : X bytes
                         <vspace blankLines="2"/>
                         This packet contains the score of the players and informs the client that the game has ended.
                     </t>
@@ -544,6 +543,23 @@
                         <c>1 bytes</c>
                     </texttable>
                 </section>
+
+                <section anchor="ok-endgame" title="OK endgame">
+                    <t>
+                        260 : OK endgame : X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a Endgame packet (<xref target="end-game"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Ok Endgame</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
+                    </texttable>
+                </section>
+
+
             </section>
 
             <section anchor="errors" title="Errors">
