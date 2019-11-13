@@ -217,7 +217,7 @@
                     <t>
                         104 : Disconnect : X bytes
                         <vspace blankLines="2"/>
-                        This packet informs the client that the server is going to shutdown or the server that the client is disconnecting.
+                        This packet informs the client that the server is going to shutdown, or to the server that the client is disconnecting.
                     </t>
 
                     <texttable>
@@ -254,7 +254,7 @@
                         110 : Get rooms : X bytes
                         <vspace blankLines="2"/>
                         This packet is sent continuously by the client until it receives a list
-                        of rooms packet (<xref target="rooms-list"/>)
+                        of rooms packet (<xref target="rooms-list"/>).
                     </t>
 
                     <texttable>
@@ -315,7 +315,7 @@
                     <t>
                         113 : OK create : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a create room packet (<xref target="create-room"/>)
+                        This packet is sent by the server when the client as successfully created a room using create-room packet (<xref target="create-room"/>).
                     </t>
 
                     <texttable>
@@ -331,7 +331,7 @@
                         114 : Quit room : X bytes
                         <vspace blankLines="2"/>
                         This packet is sent continuously by the client that wants to leave a room
-                        until it receives a ok quit packet (<xref target="ok-quit"/>)
+                        until it receives a ok-quit packet (<xref target="ok-quit"/>).
                     </t>
 
                     <texttable>
@@ -399,7 +399,7 @@
 
             <section anchor="in-game" title="In-game Packets">
                 <t>
-                    These packets are send during the game to describe actions made by the client or
+                    These packets are sent during the game to describe actions made by the client or
                     informations about the game being played.
                 </t>
 
@@ -432,7 +432,7 @@
                     <t>
                         210 : Disp : X bytes
                         <vspace blankLines="2"/>
-                        This packet contains minimal informations to let the client display an entity
+                        This packet contains the minimums informations to let the client display an entity
                     </t>
 
                     <texttable>
@@ -544,7 +544,7 @@
                     <t>
                         300 : Unknown packet : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to any unknown packet.
+                        This packet is sent in response to any unknown packet.
                     </t>
 
                     <texttable>
@@ -559,7 +559,7 @@
                     <t>
                         301 : Invalid packet : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to any packet that has a known opcode but has malformated data.
+                        This packet is sent in response to any packet that has a known opcode but has malformated data.
                     </t>
 
                     <texttable>
@@ -574,7 +574,7 @@
                     <t>
                         302 : Invalid param : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to any packet that is well formatted but has an invalid param.
+                        This packet is sent as response to any packet that is well formatted but has an invalid parameter(s).
                     </t>
 
                     <texttable>
@@ -605,8 +605,8 @@
                     <t>
                         304 : Room name already used : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a create room packet (<xref target="create-room"/>) when a
-                        room exists with the same name.
+                        This packet is sent in response to a create room packet (<xref target="create-room"/>) when a
+                        room with the same name already exists.
                     </t>
 
                     <texttable>
@@ -621,7 +621,7 @@
                     <t>
                         305 : Not in room : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a quit room packet (<xref target="quit-room"/>) when the
+                        This packet is sent in response to a quit-room packet (<xref target="quit-room"/>) when the
                         client isn't in any room.
                     </t>
 
@@ -637,7 +637,7 @@
                     <t>
                         306 : Unknown room : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a join room packet (<xref target="join-room"/>) when the room
+                        This packet is sent in response to a join room packet (<xref target="join-room"/>) when the room
                         name request is unknown.
                     </t>
 
@@ -653,7 +653,7 @@
                     <t>
                         307 : Invalid password : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a join room packet (<xref target="join-room"/>) when the
+                        This packet is sent in response to a join room packet (<xref target="join-room"/>) when the
                         password is invalid.
                     </t>
 
@@ -669,7 +669,7 @@
                     <t>
                         308 : Room full : X bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a join room packet (<xref target="join-room"/>) when the room
+                        This packet is sent in response to a join room packet (<xref target="join-room"/>) when the room
                         has no empty slots.
                     </t>
 
