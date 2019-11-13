@@ -13,7 +13,7 @@ public:
     virtual std::string getType() = 0;
     virtual bool isRunning() = 0;
     virtual setWorld(IWorld world) = 0;
-    virtual std::vector<std::string> getRequiredComponents();
+    virtual std::vector<std::string> getRequiredComponents() = 0;
 };
 
 #endif /* _I_SYSTEM_HPP_ */
