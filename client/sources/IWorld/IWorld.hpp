@@ -3,6 +3,7 @@
 
 #include "IEntity.hpp"
 #include "ISystem.hpp"
+#include <iostream>
 
 class IWorld
 {
