@@ -52,17 +52,17 @@ namespace b12software {
              * @brief Create a new IUdpSocket
              * @return A IUdpSocket
              */
-            virtual const std::weak_ptr<udp::IUdpSocket> &createNewUdpSocket() = 0;
+            virtual std::weak_ptr<udp::IUdpSocket> createNewUdpSocket() = 0;
             /*!
              * @brief Create a new ITcpClient
              * @return A ITcpClient
              */
-            virtual const std::weak_ptr<tcp::ITcpClient> &createNewTcpClient() = 0;
+            virtual std::weak_ptr<tcp::ITcpClient> createNewTcpClient() = 0;
             /*!
              * @brief Create a new ITcpServer
              * @return A ITcpServer
              */
-            virtual const std::weak_ptr<tcp::ITcpServer> &createNewTcpServer() = 0;
+            virtual std::weak_ptr<tcp::ITcpServer> createNewTcpServer() = 0;
 
             /*!
              * @brief Indicate to the manager that this socket is not needed anymore

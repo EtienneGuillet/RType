@@ -124,7 +124,7 @@ namespace b12software::network {
              * @param clientId The id of the client
              * @return A weak pointer to the requested client (will be null if the id is not found)
              */
-            virtual const std::weak_ptr<ITcpClient> &getClientById(int clientId) = 0;
+            virtual std::weak_ptr<ITcpClient> getClientById(int clientId) = 0;
         };
     }
 }
