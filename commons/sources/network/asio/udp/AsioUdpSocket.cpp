@@ -109,11 +109,11 @@ std::string b12software::network::asio::AsioUdpSocket::getAddress() const
 void b12software::network::asio::AsioUdpSocket::startReceiving()
 {
     std::shared_ptr<std::array<char, maxReceiveDatagramSize>> buffer(new std::array<char, maxReceiveDatagramSize>());
-    std::shared_ptr<AsioUdpSocket::endpoint> endpoint(new AsioUdpSocket::endpoint());
+    std::shared_ptr<AsioUdpSocket::endpoint> endp(new AsioUdpSocket::endpoint());
     _socket.async_receive_from(
         boost::asio::buffer(*buffer),
-        *endpoint,
-        boost::bind(&AsioUdpSocket::receiveHandler, this, buffer, endpoint, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+        *endp,
+        boost::bind(&AsioUdpSocket::receiveHandler, this, buffer, endp, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
     );
 }
 
@@ -133,7 +133,7 @@ void b12software::network::asio::AsioUdpSocket::sendHandler([[maybe_unused]]cons
 }
 
 void b12software::network::asio::AsioUdpSocket::receiveHandler(const std::shared_ptr<std::array<char, maxReceiveDatagramSize>> &array,
-                                                         const std::shared_ptr<AsioUdpSocket::endpoint> &endpoint,
+                                                         const std::shared_ptr<AsioUdpSocket::endpoint> &endp,
                                                          const boost::system::error_code &error, size_t byteReceived)
 {
     if (error == boost::asio::error::operation_aborted) {
@@ -141,7 +141,7 @@ void b12software::network::asio::AsioUdpSocket::receiveHandler(const std::shared
         return;
     }
     if (!error) {
-        HostInfos host = {endpoint->address().to_string(), endpoint->port()};
+        HostInfos host = {endp->address().to_string(), endp->port()};
         _datagrams.push(udp::Datagram(host, array->data(), byteReceived));
         startReceiving();
     } else {

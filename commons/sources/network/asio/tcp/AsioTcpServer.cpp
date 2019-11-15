@@ -11,6 +11,7 @@
 #include "exception/NetworkException.hpp"
 #include "logger/DefaultLogger.hpp"
 #include "AsioTcpServer.hpp"
+#include "network/asio/utils.hpp"
 
 b12software::network::asio::AsioTcpServer::AsioTcpServer(boost::asio::io_context &context)
     : _context(context), _acceptor(_context), _clients(), _clientMapMutex(), _idVectorMutex(), _newIds(), _freeIds(), _disconnectedIds(), _maxId(0)
@@ -199,7 +200,7 @@ void b12software::network::asio::AsioTcpServer::startAccept()
     logger::DefaultLogger::Log(logger::LogLevelDebug, "[AsioTcpServer] Start accepting");
 }
 
-void b12software::network::asio::AsioTcpServer::handleAccept(const std::shared_ptr<AsioTcpClient> &client,
+void b12software::network::asio::AsioTcpServer::handleAccept(boost::shared_ptr<AsioTcpClient> client,
                                                              const boost::system::error_code &error)
 {
     if (error == boost::asio::error::operation_aborted) {
@@ -218,7 +219,7 @@ void b12software::network::asio::AsioTcpServer::handleAccept(const std::shared_p
         }
         _newIds.push_back(id);
         client->recompute();
-        _clients.emplace(id, client);
+        _clients.emplace(id, make_shared_ptr(client));
         logger::DefaultLogger::Log(logger::LogLevelDebug, "[AsioTcpServer] Accepted ID: " + std::to_string(id));
         startAccept();
     } else {

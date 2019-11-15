@@ -76,7 +76,9 @@ std::weak_ptr<b12software::network::tcp::ITcpServer> b12software::network::asio:
 
 void b12software::network::asio::AsioNetworkManager::destroyUdpSocket(const std::weak_ptr<b12software::network::udp::IUdpSocket> &socket)
 {
-    auto it = std::find(_udpSockets.begin(), _udpSockets.end(), socket);
+    auto it = std::find_if(_udpSockets.begin(), _udpSockets.end(), [&socket](auto &elem) {
+        return elem.get() == socket.lock().get();
+    });
     if (it != _udpSockets.end()) {
         _udpSockets.erase(it);
     }
@@ -84,7 +86,9 @@ void b12software::network::asio::AsioNetworkManager::destroyUdpSocket(const std:
 
 void b12software::network::asio::AsioNetworkManager::destroyTcpClient(const std::weak_ptr<b12software::network::tcp::ITcpClient> &client)
 {
-    auto it = std::find(_tcpClients.begin(), _tcpClients.end(), client);
+    auto it = std::find_if(_tcpClients.begin(), _tcpClients.end(), [&client](auto &elem) {
+        return elem.get() == client.lock().get();
+    });
     if (it != _tcpClients.end()) {
         _tcpClients.erase(it);
     }
@@ -92,7 +96,9 @@ void b12software::network::asio::AsioNetworkManager::destroyTcpClient(const std:
 
 void b12software::network::asio::AsioNetworkManager::destroyTcpServer(const std::weak_ptr<b12software::network::tcp::ITcpServer> &server)
 {
-    auto it = std::find(_tcpServers.begin(), _tcpServers.end(), server);
+    auto it = std::find_if(_tcpServers.begin(), _tcpServers.end(), [&server](auto &elem) {
+        return elem.get() == server.lock().get();
+    });
     if (it != _tcpServers.end()) {
         _tcpServers.erase(it);
     }

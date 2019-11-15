@@ -80,7 +80,7 @@ namespace b12software::network {
              * @param client The new connected client to recompute data for
              * @param error Boost errors that could have happened
              */
-            void handleAccept(const std::shared_ptr<AsioTcpClient> &client, const boost::system::error_code& error);
+            void handleAccept(boost::shared_ptr<AsioTcpClient> client, const boost::system::error_code& error);
 
         private:
             boost::asio::io_context &_context; /*!< The boost asio io context */

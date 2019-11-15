@@ -114,7 +114,7 @@ namespace b12software {
 
         private:
             mutable std::recursive_mutex _mutex; /*!< The internal mutex */
-            std::condition_variable _variable; /*!< Conditional variable that notify when data becomes available*/
+            std::condition_variable_any _variable; /*!< Conditional variable that notify when data becomes available*/
             std::queue<T> _queue; /*!< The internal queue */
         };
 
@@ -154,7 +154,7 @@ namespace b12software {
         template<typename T>
         T &ThreadSafeQueue<T>::front()
         {
-            std::scoped_lock lock(_mutex);
+            std::unique_lock lock(_mutex);
             while (_queue.empty()) {
                 _variable.wait(lock);
             }
@@ -164,7 +164,7 @@ namespace b12software {
         template<typename T>
         T &ThreadSafeQueue<T>::back()
         {
-            std::scoped_lock lock(_mutex);
+            std::unique_lock lock(_mutex);
             while (_queue.empty()) {
                 _variable.wait(lock);
             }
@@ -216,7 +216,7 @@ namespace b12software {
         template<typename T>
         void ThreadSafeQueue<T>::pop()
         {
-            std::scoped_lock lock(_mutex);
+            std::unique_lock lock(_mutex);
             while (_queue.empty()) {
                 _variable.wait(lock);
             }
