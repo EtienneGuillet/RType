@@ -30,9 +30,9 @@ The rfc for the r-type binary protocol can be found [here](./docs/rfc42069).
 ### Install
 Add the required conan remotes:
 ```shell script
-conan remote add conan-center https://bintray.com/conan/conan-center
-conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-conan remote add epitech https://api.bintray.com/conan/epitech/public-conan
+conan remote add conan-center https://api.bintray.com/conan/conan/conan-center -f
+conan remote add epitech https://api.bintray.com/conan/epitech/public-conan -f
+conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan -f
 ```
 Then make a build folder and go into it:
 ```shell script
