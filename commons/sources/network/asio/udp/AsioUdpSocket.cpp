@@ -93,7 +93,7 @@ b12software::network::udp::Datagram b12software::network::asio::AsioUdpSocket::r
 
 bool b12software::network::asio::AsioUdpSocket::hasPendingDatagrams() const
 {
-    return _datagrams.empty();
+    return !_datagrams.empty();
 }
 
 int b12software::network::asio::AsioUdpSocket::getPort() const
