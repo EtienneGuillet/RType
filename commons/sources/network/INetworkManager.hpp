@@ -10,6 +10,7 @@
 #ifndef B12NETWORKING_INETWORKMANAGER_HPP
 #define B12NETWORKING_INETWORKMANAGER_HPP
 
+#include <memory>
 #include "network/udp/IUdpSocket.hpp"
 #include "network/tcp/ITcpClient.hpp"
 #include "network/tcp/ITcpServer.hpp"
@@ -51,33 +52,33 @@ namespace b12software {
              * @brief Create a new IUdpSocket
              * @return A IUdpSocket
              */
-            virtual udp::IUdpSocket *createNewUdpSocket() = 0;
+            virtual const std::weak_ptr<udp::IUdpSocket> &createNewUdpSocket() = 0;
             /*!
              * @brief Create a new ITcpClient
              * @return A ITcpClient
              */
-            virtual tcp::ITcpClient *createNewTcpClient() = 0;
+            virtual const std::weak_ptr<tcp::ITcpClient> &createNewTcpClient() = 0;
             /*!
              * @brief Create a new ITcpServer
              * @return A ITcpServer
              */
-            virtual tcp::ITcpServer *createNewTcpServer() = 0;
+            virtual const std::weak_ptr<tcp::ITcpServer> &createNewTcpServer() = 0;
 
             /*!
-             * @brief Destroy a managed IUdpSocket
-             * @param socket the socket to destroy
+             * @brief Indicate to the manager that this socket is not needed anymore
+             * @param socket the socket not needed
              */
-            virtual void destroyUdpSocket(udp::IUdpSocket *socket) = 0;
+            virtual void destroyUdpSocket(const std::weak_ptr<udp::IUdpSocket> &socket) = 0;
             /*!
-             * @brief Destroy a managed ITcpClient
-             * @param client the client to destroy
+             * @brief Indicate to the manager that this client is not needed anymore
+             * @param client the client not needed
              */
-            virtual void destroyTcpClient(tcp::ITcpClient *client) = 0;
+            virtual void destroyTcpClient(const std::weak_ptr<tcp::ITcpClient> &client) = 0;
             /*!
-             * @brief Destroy a managed ITcpServer
-             * @param server the server to destroy
+             * @brief Indicate to the manager that this server is not needed anymore
+             * @param server the server not needed
              */
-            virtual void destroyTcpServer(tcp::ITcpServer *server) = 0;
+            virtual void destroyTcpServer(const std::weak_ptr<tcp::ITcpServer> &server) = 0;
         };
     }
 }

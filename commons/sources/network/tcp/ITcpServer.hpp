@@ -10,6 +10,7 @@
 #ifndef B12NETWORKING_ITCPSERVER_HPP
 #define B12NETWORKING_ITCPSERVER_HPP
 
+#include <memory>
 #include <vector>
 #include "ITcpClient.hpp"
 
@@ -121,9 +122,9 @@ namespace b12software::network {
             /*!
              * @brief Get a client by it's id
              * @param clientId The id of the client
-             * @return A pointer to the requested client (will be null if the id is not found)
+             * @return A weak pointer to the requested client (will be null if the id is not found)
              */
-            virtual ITcpClient *getClientById(int clientId) = 0;
+            virtual const std::weak_ptr<ITcpClient> &getClientById(int clientId) = 0;
         };
     }
 }
