@@ -11,6 +11,10 @@ before_script:
 
 build-binaries-linux:
   stage: build
+  cache:
+    key: rtypeEldriannConanData
+    paths:
+      - /root/.conan/data/
   script:
     - mkdir build
     - cd build
@@ -20,6 +24,10 @@ build-binaries-linux:
 
 run-tests:
   stage: test
+  cache:
+    key: rtypeEldriannConanData
+    paths:
+      - /root/.conan/data/
   script:
     - mkdir build
     - cd build
