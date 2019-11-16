@@ -30,10 +30,10 @@ namespace b12software {
          */
         struct HostInfos {
             std::string host; /*!< The host as an address or a domain */
-            int port; /*!< The port for this host */
+            unsigned short port; /*!< The port for this host */
         };
 
-        const HostInfos emptyHost = {"", -1};
+        const HostInfos emptyHost = {"", 0};
     }
 }
 #endif //B12NETWORKING_HOSTINFOS_HPP

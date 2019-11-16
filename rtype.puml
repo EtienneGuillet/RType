@@ -102,9 +102,9 @@ enum b12software::logger::LogLevel {
 }
 
 interface b12software::logger::ILogger {
-    + void setLogLevel(LogLevel level)
-    + LogLevel getLogLevel() const
-    + void log(LogLevel messageLevel, const std::string &message)
+    + {abstract} void setLogLevel(LogLevel level)
+    + {abstract} LogLevel getLogLevel() const
+    + {abstract} void log(LogLevel messageLevel, const std::string &message)
 }
 
 class b12software::logger::StandardLogger {
@@ -114,6 +114,17 @@ class b12software::logger::StandardLogger {
     + StandardLogger &operator=(const StandardLogger &rhs)
 
     - LogLevel _currentLevel
+}
+
+class b12software::logger::DefaultLogger {
+    - DefaultLogger()
+    + {static} void SetDefaultLogger(const std::shared_ptr<ILogger> &logger)
+    + {static} const std::shared_ptr<ILogger> &GetCurrentLogger()
+    + {static} void ClearDefautLogger()
+    + {static} void SetLogLevel(LogLevel level)
+    + {static} LogLevel GetLogLevel()
+    + {static} void Log(LogLevel messageLevel, const std::string &message)
+    - {static} std::shared_ptr<ILogger> currentLogger
 }
 
 'Extension
