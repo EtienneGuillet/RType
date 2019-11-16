@@ -1,3 +1,46 @@
 @startuml
+skinparam classAttributeIconSize 0
+set namespaceSeparator ::
+
+'Classes
+
+class std::exception
+
+class b12software::exception::B12SoftwareException {
+    + B12SoftwareException(const std::string &what, const std::string &where)
+    + ~B12SoftwareException()
+    + const char *what() const noexcept
+    + const char *where() const noexcept
+
+    - std::string _what
+    - std::string _where
+}
+
+class b12software::exception::CircularBufferException {
+    + CircularBufferException(const std::string &what, const std::string &where): B12SoftwareException(what, where)
+}
+
+class b12software::exception::NetworkException {
+    + NetworkException(const std::string &what, const std::string &where)
+}
+
+class b12software::exception::NullPointerException {
+    + NullPointerException(const std::string &what, const std::string &where)
+}
+
+class b12software::exception::NotEnoughDataInCircularBufferException {
+    + NotEnoughDataInCircularBufferException(const std::string &what, const std::string &where)
+}
+
+'Extension
+
+std::exception <|-- b12software::exception::B12SoftwareException
+
+b12software::exception::B12SoftwareException <|-- b12software::exception::CircularBufferException
+b12software::exception::CircularBufferException <|-- b12software::exception::NotEnoughDataInCircularBufferException
+
+b12software::exception::B12SoftwareException <|-- b12software::exception::NetworkException
+
+b12software::exception::B12SoftwareException <|-- b12software::exception::NullPointerException
 
 @enduml
