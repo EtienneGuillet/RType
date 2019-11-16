@@ -37,6 +37,18 @@ namespace b12software::network {
              */
             ~AsioUdpSocket() override = default;
 
+            /*!
+             * @brief cpy ctor
+             */
+            AsioUdpSocket(const AsioUdpSocket &other) = delete;
+
+            /*!
+             * @brief Assignment operator
+             * @param rhs socket to assign to
+             * @return *this
+             */
+            AsioUdpSocket &operator=(const AsioUdpSocket &rhs) = delete;
+
         public:
             void bind(int port) override;
             void unbind() override;

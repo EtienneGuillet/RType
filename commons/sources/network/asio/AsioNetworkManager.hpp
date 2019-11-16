@@ -38,6 +38,18 @@ namespace b12software::network {
              */
             ~AsioNetworkManager() override;
 
+            /*!
+             * @brief cpy ctor
+             */
+            AsioNetworkManager(const AsioNetworkManager &other) = delete;
+
+            /*!
+             * @brief Assignment operator
+             * @param rhs manager to assign to
+             * @return *this
+             */
+            AsioNetworkManager &operator=(const AsioNetworkManager &rhs) = delete;
+
         public:
             void start() override;
             void stop() override;

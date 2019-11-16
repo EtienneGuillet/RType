@@ -44,6 +44,18 @@ namespace b12software::network {
              */
             ~AsioTcpClient() override;
 
+            /*!
+             * @brief cpy ctor
+             */
+            AsioTcpClient(const AsioTcpClient &other) = delete;
+
+            /*!
+             * @brief Assignment operator
+             * @param rhs client to assign to
+             * @return *this
+             */
+            AsioTcpClient &operator=(const AsioTcpClient &rhs) = delete;
+
             static constexpr size_t bufferSizeInBytes = 4096;
 
         public:

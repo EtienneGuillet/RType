@@ -218,6 +218,84 @@ interface b12software::network::tcp::ITcpServer {
     + {abstract} std::weak_ptr<ITcpClient> getClientById(int clientId)
 }
 
+class b12software::network::asio::AsioNetworkManager {
+    + AsioNetworkManager()
+    + ~AsioNetworkManager()
+    - {static} void networkingThreadFunc(AsioNetworkManager *manager)
+    - boost::asio::io_context _ioContext
+    - boost::asio::io_context::work *_worker
+    - std::vector<std::shared_ptr<udp::IUdpSocket>> _udpSockets
+    - std::vector<std::shared_ptr<tcp::ITcpClient>> _tcpClients
+    - std::vector<std::shared_ptr<tcp::ITcpServer>> _tcpServers
+    - std::thread _networkThread
+    - bool _started
+}
+
+class b12software::network::asio::AsioUdpSocket {
+    + AsioUdpSocket(boost::asio::io_context &context)
+    + ~AsioUdpSocket()
+    - void startReceiving()
+    - void sendHandler(const std::shared_ptr<udp::Datagram> &message, const boost::system::error_code &error, size_t byteTransferred)
+    - void receiveHandler(const std::shared_ptr<std::array<char, maxReceiveDatagramSize>> &array, const std::shared_ptr<AsioUdpSocket::endpoint> &endpoint, const boost::system::error_code &error, size_t byteReceived)
+    - boost::asio::io_context &_context
+    - socket _socket
+    - containers::ThreadSafeQueue<udp::Datagram> _datagrams
+    - HostInfos _defaultHost
+    - {static} static constexpr size_t maxReceiveDatagramSize
+}
+
+note left
+using socket = boost::asio::ip::udp::socket;
+using endpoint = boost::asio::ip::udp::endpoint;
+end note
+
+class b12software::network::asio::AsioTcpServer {
+    + AsioTcpServer(boost::asio::io_context &context)
+    + ~AsioTcpServer()
+    - void recomputeDisconnected()
+    - void startAccept()
+    - void handleAccept(boost::shared_ptr<AsioTcpClient> client, const boost::system::error_code& error)
+    - boost::asio::io_context &_context
+    - acceptor _acceptor
+    - std::map<int, std::shared_ptr<AsioTcpClient>> _clients
+    - mutex _clientMapMutex
+    - mutex _idVectorMutex
+    - std::vector<int> _newIds
+    - std::queue<int> _freeIds
+    - std::vector<int> _disconnectedIds
+    - int _maxId
+}
+
+note left
+using acceptor = boost::asio::ip::tcp::acceptor;
+using endpoint = boost::asio::ip::tcp::endpoint;
+using mutex = std::recursive_mutex;
+using lock = std::scoped_lock<mutex>;
+end note
+
+class b12software::network::asio::AsioTcpClient {
+    + AsioTcpClient(boost::asio::io_context &context)
+    + ~AsioTcpClient()
+    + socket &getSocket()
+    + void recompute()
+    - void startReceive()
+    - void handleConnect(const boost::system::error_code &error, boost::asio::ip::tcp::resolver::iterator endpointIterator)
+    - void handleSend(const std::shared_ptr<byte[]> &message, const boost::system::error_code &error, size_t byteTransferred)
+    - void handleReceive(const std::shared_ptr<byte[]> &message, const boost::system::error_code &error, size_t byteTransferred)
+    - {static} constexpr size_t bufferSizeInBytes
+    - boost::asio::io_context &_context
+    - socket _socket
+    - HostInfos _distantInfos
+    - HostInfos _selfInfos
+    - containers::ThreadSafeCircularBuffer _buffer
+}
+
+note left
+using socket = boost::asio::ip::tcp::socket;
+using endpoint = boost::asio::ip::tcp::endpoint;
+using byte = unsigned char;
+end note
+
 'Extension
 
 '-Exceptions
@@ -240,5 +318,9 @@ b12software::logger::ILogger <|- b12software::logger::StandardLogger
 
 '-Network
 
+b12software::network::INetworkManager <|-- b12software::network::asio::AsioNetworkManager
+b12software::network::udp::IUdpSocket <|-- b12software::network::asio::AsioUdpSocket
+b12software::network::tcp::ITcpClient <|-- b12software::network::asio::AsioTcpClient
+b12software::network::tcp::ITcpServer <|-- b12software::network::asio::AsioTcpServer
 
 @enduml

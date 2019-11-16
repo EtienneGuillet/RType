@@ -48,6 +48,18 @@ namespace b12software::network {
              */
             ~AsioTcpServer() override;
 
+            /*!
+             * @brief cpy ctor
+             */
+            AsioTcpServer(const AsioTcpServer &other) = delete;
+
+            /*!
+             * @brief Assignment operator
+             * @param rhs server to assign to
+             * @return *this
+             */
+            AsioTcpServer &operator=(const AsioTcpServer &rhs) = delete;
+
         public:
             void bind(int port) override;
             void unbind() override;
