@@ -4,6 +4,8 @@ set namespaceSeparator ::
 
 'Classes
 
+'-Exceptions
+
 class std::exception
 
 class b12software::exception::B12SoftwareException {
@@ -32,7 +34,65 @@ class b12software::exception::NotEnoughDataInCircularBufferException {
     + NotEnoughDataInCircularBufferException(const std::string &what, const std::string &where)
 }
 
+'-Containers
+
+class b12software::containers::CircularBuffer {
+    + explicit CircularBuffer(size_t size)
+    + CircularBuffer(const CircularBuffer &other)
+    + ~CircularBuffer()
+    + CircularBuffer &operator=(const CircularBuffer &rhs)
+    + bool write(const void *data, size_t size)
+    + size_t read(void *toWrite, size_t size)
+    + size_t read(std::string &str, const char *delim, size_t size)
+    + void clear()
+    + bool isFull() const
+    + size_t getNbBufferedBytes() const
+    + size_t getBufferSize() const
+
+    - size_t _bufferSize
+    - size_t _readIdx
+    - size_t _writeIdx
+    - std::uint8_t *_buffer
+    - bool _full
+    - size_t _nbBufferedBytes
+}
+
+class b12software::containers::ThreadSafeCircularBuffer {
+    + ThreadSafeCircularBuffer(int size)
+    + ThreadSafeCircularBuffer(const ThreadSafeCircularBuffer &other)
+    + ~ThreadSafeCircularBuffer()
+    + ThreadSafeCircularBuffer &operator=(const ThreadSafeCircularBuffer &rhs)
+    + void lock()
+    + void unlock()
+    + void tryLock()
+    - ThreadSafeCircularBuffer(const ThreadSafeCircularBuffer &other, const std::lock_guard<std::recursive_mutex> &)
+    - mutable std::recursive_mutex _mutex
+}
+
+class b12software::containers::ThreadSafeQueue<T : queue elements type> {
+    + ThreadSafeQueue()
+    + ThreadSafeQueue(const ThreadSafeQueue<T> &other)
+    + ThreadSafeQueue<T> &operator=(const ThreadSafeQueue<T> &rhs)
+    + T &front()
+    + T &back()
+    + bool empty() const
+    + size_t size() const
+    + void push(const T &elem)
+    + void push(T &&elem)
+    + void emplace<class... Args>(Args&&... args)
+    + void pop()
+    + void lock()
+    + void unlock()
+    + void trylock()
+
+    - mutable std::recursive_mutex _mutex
+    - std::condition_variable_any _variable
+    - std::queue<T> _queue
+}
+
 'Extension
+
+'-Exceptions
 
 std::exception <|-- b12software::exception::B12SoftwareException
 
@@ -42,5 +102,8 @@ b12software::exception::CircularBufferException <|-- b12software::exception::Not
 b12software::exception::B12SoftwareException <|-- b12software::exception::NetworkException
 
 b12software::exception::B12SoftwareException <|-- b12software::exception::NullPointerException
+
+'-Containers
+b12software::containers::CircularBuffer <|-- b12software::containers::ThreadSafeCircularBuffer
 
 @enduml
