@@ -96,7 +96,7 @@ bool b12software::network::asio::AsioUdpSocket::hasPendingDatagrams() const
     return !_datagrams.empty();
 }
 
-int b12software::network::asio::AsioUdpSocket::getPort() const
+unsigned short b12software::network::asio::AsioUdpSocket::getPort() const
 {
     return _socket.local_endpoint().port();
 }

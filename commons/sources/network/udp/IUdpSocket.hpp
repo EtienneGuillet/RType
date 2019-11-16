@@ -87,9 +87,9 @@ namespace b12software::network {
 
             /*!
              * @brief Get the bind port
-             * @return -1 if no port has been bind or the port
+             * @return 0 if no port has been bind or the port
              */
-            virtual int getPort() const = 0;
+            virtual unsigned short getPort() const = 0;
 
             /*!
              * @brief Get the address of this socket

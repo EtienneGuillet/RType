@@ -1,5 +1,5 @@
 @startuml
-skinparam classAttributeIconSize 0
+'skinparam classAttributeIconSize 0
 set namespaceSeparator ::
 
 'Classes
@@ -127,6 +127,97 @@ class b12software::logger::DefaultLogger {
     - {static} std::shared_ptr<ILogger> currentLogger
 }
 
+'-Network
+
+class b12software::network::HostInfos << (S, orchid) >> {
+    + std::string host
+    + unsigned short port
+}
+
+interface b12software::network::INetworkManager {
+    + {abstract} void start()
+    + {abstract} void stop()
+    + {abstract} std::weak_ptr<udp::IUdpSocket> createNewUdpSocket()
+    + {abstract} std::weak_ptr<tcp::ITcpClient> createNewTcpClient()
+    + {abstract} std::weak_ptr<tcp::ITcpServer> createNewTcpServer()
+    + {abstract} void destroyUdpSocket(const std::weak_ptr<udp::IUdpSocket> &socket)
+    + {abstract} void destroyTcpClient(const std::weak_ptr<tcp::ITcpClient> &client)
+    + {abstract} void destroyTcpServer(const std::weak_ptr<tcp::ITcpServer> &server)
+}
+
+class b12software::network::udp::Datagram {
+    + Datagram()
+    + Datagram(const HostInfos &destination)
+    + Datagram(const void *data, size_t size)
+    + Datagram(const HostInfos &destination, const void *data, size_t size)
+    + Datagram(const Datagram &other)
+    + ~Datagram()
+    + Datagram &operator=(const Datagram &rhs)
+    + void setData(const void *data, size_t size)
+    + void setDestination(const HostInfos &infos)
+    + const void *getData() const
+    + size_t getDatagramSize() const
+    + const HostInfos &getHostInfos() const
+    + bool isValid() const
+    + void clear()
+
+    - byte *_data
+    - size_t _size
+    - HostInfos _infos
+}
+
+interface b12software::network::udp::IUdpSocket {
+    + {abstract} void bind(int port)
+    + {abstract} void unbind()
+    + {abstract} void registerHost(const HostInfos &infos)
+    + {abstract} void unregisterHost()
+    + {abstract} void send(const void *data, size_t size, const HostInfos &infos)
+    + {abstract} void send(const Datagram &datagram)
+    + {abstract} Datagram receive()
+    + {abstract} bool hasPendingDatagrams() const
+    + {abstract} unsigned short getPort() const
+    + {abstract} std::string getAddress() const
+}
+
+interface b12software::network::tcp::IPacket {
+    + {abstract} size_t getSize() const
+    + {abstract} const void *getData() const
+    + {abstract} size_t setData(const void *data, size_t size)
+    + {abstract} void clear()
+    + {abstract} bool isValid() const
+}
+
+interface b12software::network::tcp::ITcpClient {
+    + {abstract} void connect(const HostInfos &infos)
+    + {abstract} void disconnect()
+    + {abstract} bool isConnected() const
+    + {abstract} const HostInfos &getHostInfos() const
+    + {abstract} const HostInfos &getSelfInfos() const
+    + {abstract} size_t send(const void *data, size_t size)
+    + {abstract} void send(const IPacket &packet)
+    + {abstract} size_t receive(void *data, size_t size)
+    + {abstract} void receive(IPacket &packet)
+    + {abstract} size_t getAvailableBytesSize() const
+}
+
+interface b12software::network::tcp::ITcpServer {
+    + {abstract} void bind(int port)
+    + {abstract} void unbind()
+    + {abstract} void disconnect(int clientId)
+    + {abstract} void sendToAll(const void *data, size_t size)
+    + {abstract} void sendToAll(const IPacket &packet)
+    + {abstract} void sendToClient(int clientId, const void *data, size_t size)
+    + {abstract} void sendToClient(int clientId, const IPacket &packet)
+    + {abstract} void sendToClients(const std::vector<int> &clientIds, const void *data, size_t size)
+    + {abstract} void sendToClients(const std::vector<int> &clientIds, const IPacket &packet)
+    + {abstract} void sendExceptClients(const std::vector<int> &exceptIds, const void *data, size_t size)
+    + {abstract} void sendExceptClients(const std::vector<int> &exceptIds, const IPacket &packet)
+    + {abstract} std::vector<int> getConnectedClientIds()
+    + {abstract} std::vector<int> getNewConnectedClientIds()
+    + {abstract} std::vector<int> getDisconnectedClientIds()
+    + {abstract} std::weak_ptr<ITcpClient> getClientById(int clientId)
+}
+
 'Extension
 
 '-Exceptions
@@ -146,5 +237,8 @@ b12software::containers::CircularBuffer <|-- b12software::containers::ThreadSafe
 '-Logger
 
 b12software::logger::ILogger <|- b12software::logger::StandardLogger
+
+'-Network
+
 
 @enduml

@@ -46,7 +46,7 @@ namespace b12software::network {
             void send(const udp::Datagram &datagram) override;
             udp::Datagram receive() override;
             bool hasPendingDatagrams() const override;
-            int getPort() const override;
+            unsigned short getPort() const override;
             std::string getAddress() const override;
 
         private:

@@ -89,7 +89,7 @@ namespace b12software::network {
             size_t getDatagramSize() const;
             /*!
              * @brief Get the host information (sender/destination)
-             * @return The host informations of the sender / destination
+             * @return The host information of the sender / destination
              */
             const HostInfos &getHostInfos() const;
 
