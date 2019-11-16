@@ -90,6 +90,32 @@ class b12software::containers::ThreadSafeQueue<T : queue elements type> {
     - std::queue<T> _queue
 }
 
+'-Logger
+
+enum b12software::logger::LogLevel {
+    LogLevelDebug
+    LogLevelInfo
+    LogLevelWarn
+    LogLevelError
+    LogLevelFatal
+    LogLevelNone
+}
+
+interface b12software::logger::ILogger {
+    + void setLogLevel(LogLevel level)
+    + LogLevel getLogLevel() const
+    + void log(LogLevel messageLevel, const std::string &message)
+}
+
+class b12software::logger::StandardLogger {
+    + StandardLogger(LogLevel defaultLevel = LogLevelError)
+    + ~StandardLogger()
+    + StandardLogger(const StandardLogger &other)
+    + StandardLogger &operator=(const StandardLogger &rhs)
+
+    - LogLevel _currentLevel
+}
+
 'Extension
 
 '-Exceptions
@@ -105,5 +131,9 @@ b12software::exception::B12SoftwareException <|-- b12software::exception::NullPo
 
 '-Containers
 b12software::containers::CircularBuffer <|-- b12software::containers::ThreadSafeCircularBuffer
+
+'-Logger
+
+b12software::logger::ILogger <|- b12software::logger::StandardLogger
 
 @enduml
