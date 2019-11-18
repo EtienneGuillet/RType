@@ -3,13 +3,13 @@
 
 #include <iostream>
 
-namespace ECS {
+namespace ecs {
     class DLLoader
     {
     public:
         virtual void loadDL(std::string path) = 0;
         virtual void unloadDL(std::string path) = 0;
     };
-} /* ECS */
+} /* ecs */
 
 #endif /* _I_COMPONENT_HPP_ */

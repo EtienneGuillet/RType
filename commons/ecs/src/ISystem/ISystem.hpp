@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-namespace ECS {
+namespace ecs {
     class ISystem
     {
     public:
@@ -16,6 +16,6 @@ namespace ECS {
         virtual setWorld(IWorld world) = 0;
         virtual std::vector<std::string> getRequiredComponents() = 0;
     };
-} /* ECS */
+} /* ecs */
 
 #endif /* _I_SYSTEM_HPP_ */

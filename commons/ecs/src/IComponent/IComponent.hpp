@@ -4,7 +4,7 @@
 #include "Version.hpp"
 #include <iostream>
 
-namespace ECS {
+namespace ecs {
     class IComponent
     {
     public:
@@ -13,6 +13,6 @@ namespace ECS {
         template <typename T> virtual T &getParam(std::string &type) = 0;
         template <typename T> virtual void setParam(std::string type, T &value) = 0;
     };
-} /* ECS */
+} /* ecs */
 
 #endif /* _I_COMPONENT_HPP_ */

@@ -3,11 +3,11 @@
 
 #include "IECS.hpp"
 
-namespace ECS {
+namespace ecs {
     class IEntityAPI: public IECS
     {
     public:
     };
-} /* ECS */
+} /* ecs */
 
 #endif /* _I_ENTITY_API_HPP_ */

@@ -4,12 +4,12 @@
 #include "ISystem.hpp"
 #include "IECS.hpp"
 
-namespace ECS {
+namespace ecs {
     class ISystemAPI: public IECS
     {
     public:
         virtual ISystem create() = 0;
     };
-} /* ECS */
+} /* ecs */
 
 #endif /* _I_SYSTEM_API_HPP_ */

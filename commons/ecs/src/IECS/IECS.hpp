@@ -6,7 +6,7 @@
 #include "IEntity.hpp"
 #include <iostream>
 
-namespace ECS {
+namespace ecs {
     class IECS
     {
     public:
@@ -18,6 +18,6 @@ namespace ECS {
         template <typename T> virtual void learn(const std::string &type, T &api) = 0;
         template <typename T> virtual T &forget(const std::string &type, Version &version) = 0;
     };
-} /* ECS */
+} /* ecs */
 
 #endif /* _I_ECS_HPP_ */

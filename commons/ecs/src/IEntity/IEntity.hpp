@@ -4,7 +4,7 @@
 #include "IComponent.hpp"
 #include <iostream>
 
-namespace ECS {
+namespace ecs {
     class IEntity
     {
     public:
@@ -16,6 +16,6 @@ namespace ECS {
         virtual void addComponent(IComponent Component) = 0;
         virtual IComponent removeComponent(std::string type) = 0;
     };
-} /* ECS */
+} /* ecs */
 
 #endif /* _I_ENTITY_HPP_ */

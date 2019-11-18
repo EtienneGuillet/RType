@@ -1,10 +1,13 @@
 #ifndef _I_VERSION_HPP_
 #define _I_VERSION_HPP_
 
-namespace ECS {
+#include <iostream>
+
+namespace ecs {
     class Version {
     public:
         Version();
+        ~Version();
     private:
         std::string &_type;
         int _lilianVersion;
@@ -12,6 +15,6 @@ namespace ECS {
         int _julianVersion;
         int _etienneVersion;
     };
-} /* ECS */
+} /* ecs */
 
 #endif /* _I_VERSION_HPP_ */

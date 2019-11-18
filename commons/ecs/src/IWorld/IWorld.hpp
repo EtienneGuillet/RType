@@ -5,7 +5,7 @@
 #include "ISystem.hpp"
 #include <iostream>
 
-namespace ECS {
+namespace ecs {
     class IWorld
     {
     public:
@@ -18,6 +18,6 @@ namespace ECS {
         virtual ISystem removeSystem(std::string type) = 0;
         virtual ISystem getSystem(std::string type) = 0;
     };
-} /* ECS */
+} /* ecs */
 
 #endif /* _I_WORLD_HPP_ */

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-namespace ECS {
+namespace ecs {
     class ASystem : public ISystem
     {
     public:
@@ -13,7 +13,7 @@ namespace ECS {
         virtual void start() = 0;
         virtual void stop() = 0;
     };
-} /* ECS */
+} /* ecs */
 
 
 #endif /* _A_SYSTEM_HPP_ */
