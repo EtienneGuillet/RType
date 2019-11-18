@@ -105,7 +105,7 @@ namespace b12software::network {
              */
             void clear();
 
-        private:
+        protected:
             using byte = unsigned char;
 
             byte *_data; /*!< The data of the datagram */
