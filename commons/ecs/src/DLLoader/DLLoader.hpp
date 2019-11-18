@@ -1,9 +1,11 @@
 #ifndef _DL_LOADER_HPP_
 #define _DL_LOADER_HPP_
 
-class DLLoader
-{
-public:
-};
+namespace ECS {
+    class DLLoader
+    {
+    public:
+    };
+} /* ECS */
 
 #endif /* _I_COMPONENT_HPP_ */

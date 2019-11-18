@@ -5,9 +5,12 @@
 #include <iostream>
 #include <vector>
 
-class ASystem : public ISystem
-{
-public:
-};
+namespace ECS {
+    class ASystem : public ISystem
+    {
+    public:
+    };
+} /* ECS */
+
 
 #endif /* _A_SYSTEM_HPP_ */
