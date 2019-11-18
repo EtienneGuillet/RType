@@ -525,7 +525,10 @@
 
                 <section anchor="end-game" title="Endgame">
                     <t>
-                        240 : Endgame : X bytes
+                        250 : Endgame : X bytes
+                        This packet is sent continuously by the server until a
+                        <xref target="ok-end-game"/>
+                        packet has been received.
                         <vspace blankLines="2"/>
                         This packet contains the score of the players and informs the client that the game has ended.
                     </t>
@@ -542,6 +545,21 @@
                         <c>1 bytes</c>
                         <c>1 bytes</c>
                         <c>1 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ok-end-game" title="OK Endgame">
+                    <t>
+                        260 : OK Endgame: X bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent by the client to inform the server that a Endgame packet (<xref target="end-game"/>) has been received.
+                    </t>
+
+                    <texttable>
+                        <preamble>Ok endgame</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>3 bytes</c>
                     </texttable>
                 </section>
             </section>
