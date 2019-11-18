@@ -56,14 +56,14 @@ namespace b12software::network {
             /*!
              * @brief dtor
              */
-            ~Datagram();
+            virtual ~Datagram();
 
             /*!
              * @brief Assignment operator
              * @param rhs The datagram to copy
              * @return this datagram
              */
-            Datagram &operator=(const Datagram &rhs);
+            virtual Datagram &operator=(const Datagram &rhs);
 
             /*!
              * @brief Set the data of the datagram
