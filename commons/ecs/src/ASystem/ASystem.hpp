@@ -9,6 +9,9 @@ namespace ECS {
     class ASystem : public ISystem
     {
     public:
+        virtual bool isRunning() = 0;
+        virtual void start() = 0;
+        virtual void stop() = 0;
     };
 } /* ECS */
 

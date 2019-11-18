@@ -10,7 +10,7 @@ namespace ECS {
     public:
         virtual std::string getType() = 0;
         virtual Version getVersion() = 0;
-        virtual T getParam<T>(std::string type) = 0;
+        virtual T getParam<T> &(std::string type) = 0;
         virtual setParam<T>(std::string type, T value) = 0;
     };
 } /* ECS */
