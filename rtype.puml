@@ -296,6 +296,124 @@ using endpoint = boost::asio::ip::tcp::endpoint;
 using byte = unsigned char;
 end note
 
+'-Rtype datagram
+
+class rtype::network::RTypeDatagram {
+    + RTypeDatagram()
+    + RTypeDatagram(const RTypeDatagram &other)
+    + RTypeDatagram(const Datagram &other)
+    + RTypeDatagram(const HostInfos &destination)
+    + RTypeDatagram(const void *data, size_t size)
+    + RTypeDatagram(const HostInfos &destination, const void *data, size_t size)
+    + ~RTypeDatagram()
+    + RTypeDatagram &operator=(const RTypeDatagram &rhs)
+    + RTypeDatagram &operator=(const Datagram &rhs)
+    + void initSingleOpCodeDatagram(RTypeDatagramType type)
+    + void init100ConnectDatagram(const std::string &username)
+    + void init111RoomListDatagram(const std::vector<RTypeDatagramRoom> &rooms)
+    + void init112CreateRoomDatagram(const RTypeDatagramRoom &room)
+    + void init116JoinRoomDatagram(const RTypeDatagramRoom &room)
+    + void init117RoomJoinedDatagram(const std::vector<std::string> &users)
+    + void init200ActionDatagram(const RTypeDatagramAction &action)
+    + void init210DisplayDatagram(const RTypeDatagramDisplay &entity)
+    + void init220LivingDatagram(const RTypeDatagramLiving &data)
+    + void init230ChargeDatagram(unsigned char charge)
+    + void init240ScoreDatagram(const RTypeDatagramScore &score)
+    + void init250EndGameDatagram(const RTypeDatagramScore &score)
+    + unsigned short getType() const
+    + void extract100ConnectDatagram(std::string &username)
+    + void extract111RoomListDatagram(std::vector<RTypeDatagramRoom> &rooms)
+    + void extract112CreateRoomDatagram(RTypeDatagramRoom &room)
+    + void extract116JoinRoomDatagram(RTypeDatagramRoom &room)
+    + void extract117RoomJoinedDatagram(std::vector<std::string> &users)
+    + void extract200ActionDatagram(RTypeDatagramAction &action)
+    + void extract210DisplayDatagram(RTypeDatagramDisplay &entity)
+    + void extract220LivingDatagram(RTypeDatagramLiving &data)
+    + void extract230ChargeDatagram(unsigned char &charge)
+    + void extract240ScoreDatagram(RTypeDatagramScore &score)
+    + void extract250EndGameDatagram(RTypeDatagramScore &score)
+}
+
+class rtype::network::RTypeDatagramAction << (S, orchid) >> {
+    + bool shot
+    + bool up
+    + bool down
+    + bool left
+    + bool right
+}
+
+class rtype::network::RTypeDatagramDisplay::Vector2 << (S, orchid) >> {
+    + int x
+    + int y
+}
+
+class rtype::network::RTypeDatagramDisplay::Vector3 << (S, orchid) >> {
+    + int x
+    + int y
+    + int z
+}
+
+class rtype::network::RTypeDatagramDisplay << (S, orchid) >> {
+    + uint64_t entityId
+    + Vector3 position
+    + Vector2 rotation
+    + Vector2 scale
+    + uint32_t type
+}
+
+class rtype::network::RTypeDatagramLiving << (S, orchid) >> {
+    + uint64_t entityId
+    + int life
+}
+
+class rtype::network::RTypeDatagramRoom << (S, orchid) >> {
+    + std::string name
+    + unsigned char capacity
+    + unsigned char slotUsed
+    + bool hasPassword
+    + std::string password
+}
+
+class rtype::network::RTypeDatagramScore << (S, orchid) >> {
+    + unsigned int p1Score
+    + unsigned int p2Score
+    + unsigned int p3Score
+    + unsigned int p4Score
+}
+
+enum rtype::network::RTypeDatagramType {
+    T_100_CONNECT = 100
+    T_101_CONNECTED = 101
+    T_102_PING = 102
+    T_103_PONG = 103
+    T_104_DISCONNECT = 104
+    T_105_DISCONNECTED = 105
+    T_110_GET_ROOMS = 110
+    T_111_ROOM_LIST = 111
+    T_112_CREATE_ROOM = 112
+    T_113_ROOM_CREATED = 113
+    T_114_QUIT_ROOM = 114
+    T_115_ROOM_QUITTED = 115
+    T_116_JOIN_ROOM = 116
+    T_117_ROOM_JOINED = 117
+    T_200_ACTION = 200
+    T_210_DISPLAY = 210
+    T_220_LIVING = 220
+    T_230_CHARGE = 230
+    T_240_SCORE = 240
+    T_250_END_GAME = 250
+    T_260_GAME_ENDED = 260
+    T_300_UNKNOWN_PACKET = 300
+    T_301_INVALID_PACKET = 301
+    T_302_INVALID_PARAM = 302
+    T_303_USERNAME_ALREADY_USED = 303
+    T_304_ROOM_NAME_ALREADY_USED = 304
+    T_305_NOT_IN_A_ROOM = 305
+    T_306_UNKNOWN_ROOM = 306
+    T_307_INVALID_PASSWORD = 307
+    T_308_ROOM_FULL = 308
+}
+
 'Extension
 
 '-Exceptions
@@ -322,5 +440,9 @@ b12software::network::INetworkManager <|-- b12software::network::asio::AsioNetwo
 b12software::network::udp::IUdpSocket <|-- b12software::network::asio::AsioUdpSocket
 b12software::network::tcp::ITcpClient <|-- b12software::network::asio::AsioTcpClient
 b12software::network::tcp::ITcpServer <|-- b12software::network::asio::AsioTcpServer
+
+'-Rtype datagram
+
+b12software::network::udp::Datagram <|-- rtype::network::RTypeDatagram
 
 @enduml
