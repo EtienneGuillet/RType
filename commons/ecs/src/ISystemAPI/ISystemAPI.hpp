@@ -4,6 +4,10 @@
 #include "ISystem.hpp"
 #include "IECS.hpp"
 
+/*!
+ * @namespace ecs
+ * @brief Main namespace for all ecs related classes.
+ */
 namespace ecs {
     class ISystemAPI: public IECS
     {

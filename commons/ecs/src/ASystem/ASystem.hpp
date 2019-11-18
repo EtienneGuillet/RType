@@ -5,13 +5,39 @@
 #include <iostream>
 #include <vector>
 
+/*!
+ * @namespace ecs
+ * @brief Main namespace for all ecs related classes.
+ */
 namespace ecs {
+
+    /*!
+     * @class ASystem
+     * @brief An abstract class that describe default behavior of any system.
+     */
     class ASystem : public ISystem
     {
     public:
-        virtual bool isRunning() = 0;
-        virtual void start() = 0;
-        virtual void stop() = 0;
+
+        virtual ~ASystem() = default;
+        /*!
+         * @brief Return true or false whether the system is running or not.
+         */
+        virtual bool isRunning();
+
+        /*!
+         * @brief Start the system.
+         */
+        virtual void start();
+
+        /*!
+         * @brief Stop the system.
+         */
+        virtual void stop();
+
+    private:
+
+        bool isRunning = false;
     };
 } /* ecs */
 

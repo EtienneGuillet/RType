@@ -3,7 +3,16 @@
 
 #include "IECS.hpp"
 
+/*!
+ * @namespace ecs
+ * @brief Main namespace for all ecs related classes.
+ */
 namespace ecs {
+
+    /*!
+     * @class IComponentAPI
+     * @brief An interface used to create any type of component.
+     */
     class IComponentAPI: public IECS
     {
     public:
