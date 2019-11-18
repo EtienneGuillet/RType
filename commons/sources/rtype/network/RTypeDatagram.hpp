@@ -160,6 +160,62 @@ namespace rtype {
              * @return The type of a datagram
              */
             unsigned short getType() const;
+
+            /*!
+             * @brief Extract this datagram to be a connect datagram
+             * @param username The username to use (will be truncated if more that 10 chars)
+             */
+            void extract100ConnectDatagram(std::string &username);
+            /*!
+             * @brief Extract a room list datagram
+             * @param rooms The rooms to send
+             */
+            void extract111RoomListDatagram(std::vector<RTypeDatagramRoom> &rooms);
+            /*!
+             * @brief Extract a create room datagram
+             * @param room The room to create
+             */
+            void extract112CreateRoomDatagram(RTypeDatagramRoom &room);
+            /*!
+             * @brief Extract a join room datagram
+             * @param room The room to join
+             */
+            void extract116JoinRoomDatagram(RTypeDatagramRoom &room);
+            /*!
+             * @brief Extract a joined room response datagram
+             * @param users The users in this room
+             */
+            void extract117RoomJoinedDatagram(std::vector<std::string> &users);
+            /*!
+             * @brief Extract a action datagram
+             * @param action the action to send
+             */
+            void extract200ActionDatagram(RTypeDatagramAction &action);
+            /*!
+             * @brief Extract a display datagram
+             * @param entity The entity to display
+             */
+            void extract210DisplayDatagram(RTypeDatagramDisplay &entity);
+            /*!
+             * @brief Extract a living datagram
+             * @param data the data to send
+             */
+            void extract220LivingDatagram(RTypeDatagramLiving &data);
+            /*!
+             * @brief Extract a charge datagram
+             * @param charge The charge percentage
+             */
+            void extract230ChargeDatagram(unsigned char &charge);
+            /*!
+             * @brief Extract a score datagram
+             * @param score The game score
+             */
+            void extract240ScoreDatagram(RTypeDatagramScore &score);
+            /*!
+             * @brief Extract a end game datagram
+             * @param score The end game score
+             */
+            void extract250EndGameDatagram(RTypeDatagramScore &score);
         };
     }
 }

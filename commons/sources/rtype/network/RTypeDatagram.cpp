@@ -394,3 +394,203 @@ unsigned short rtype::network::RTypeDatagram::getType() const
         return 0;
     return NTOHS(*static_cast<const unsigned short *>(getData()));
 }
+
+void rtype::network::RTypeDatagram::extract100ConnectDatagram(std::string &username)
+{
+    RTypeDatagramType type = T_100_CONNECT;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    auto wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    username = std::string(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), 10));
+}
+
+void rtype::network::RTypeDatagram::extract111RoomListDatagram(std::vector<RTypeDatagramRoom> &rooms)
+{
+    RTypeDatagramType type = T_111_ROOM_LIST;
+    constexpr size_t maxRoomNameSize = 10;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    rooms.clear();
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    auto nbRoom = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(nbRoom);
+    for (uint32_t i = 0; i < nbRoom; ++i) {
+        std::string name(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), maxRoomNameSize));
+        wPtr += maxRoomNameSize;
+        bool hasPassword = *reinterpret_cast<const bool *>(wPtr);
+        wPtr += sizeof(hasPassword);
+        unsigned char slotUsed = *reinterpret_cast<const unsigned char *>(wPtr);
+        wPtr += sizeof(slotUsed);
+        unsigned char capacity = *reinterpret_cast<const unsigned char *>(wPtr);
+        wPtr += sizeof(capacity);
+        rooms.push_back({name, capacity, slotUsed, hasPassword, ""});
+    }
+}
+
+void rtype::network::RTypeDatagram::extract112CreateRoomDatagram(rtype::network::RTypeDatagramRoom &room)
+{
+    RTypeDatagramType type = T_112_CREATE_ROOM;
+    constexpr size_t maxRoomNameSize = 10;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    std::string name(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), maxRoomNameSize));
+    wPtr += maxRoomNameSize;
+    unsigned char capacity = *reinterpret_cast<const unsigned char *>(wPtr);
+    wPtr += sizeof(capacity);
+    uint32_t passwordSize = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(passwordSize);
+    std::string password(reinterpret_cast<const char *>(wPtr), passwordSize);
+    wPtr += passwordSize;
+    room = {name, capacity, 0, passwordSize != 0, password};
+}
+
+void rtype::network::RTypeDatagram::extract116JoinRoomDatagram(rtype::network::RTypeDatagramRoom &room)
+{
+    RTypeDatagramType type = T_116_JOIN_ROOM;
+    constexpr size_t maxRoomNameSize = 10;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    std::string name(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), maxRoomNameSize));
+    wPtr += maxRoomNameSize;
+    uint32_t passwordSize = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(passwordSize);
+    std::string password(reinterpret_cast<const char *>(wPtr), passwordSize);
+    wPtr += passwordSize;
+    room = {name, 0, 0, passwordSize != 0, password};
+}
+
+void rtype::network::RTypeDatagram::extract117RoomJoinedDatagram(std::vector<std::string> &users)
+{
+    RTypeDatagramType type = T_117_ROOM_JOINED;
+    constexpr size_t maxUsernameSize = 10;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    users.clear();
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    unsigned char nbUser = *reinterpret_cast<const uint32_t *>(wPtr);
+    wPtr += sizeof(nbUser);
+    for (unsigned char i = 0; i < nbUser; ++i) {
+        std::string name(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), maxUsernameSize));
+        wPtr += maxUsernameSize;
+        users.push_back(name);
+    }
+}
+
+void rtype::network::RTypeDatagram::extract200ActionDatagram(rtype::network::RTypeDatagramAction &action)
+{
+    RTypeDatagramType type = T_200_ACTION;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    action.shot = *reinterpret_cast<const bool *>(wPtr);
+    wPtr += sizeof(action.shot);
+    action.up = *reinterpret_cast<const bool *>(wPtr);
+    wPtr += sizeof(action.up);
+    action.down = *reinterpret_cast<const bool *>(wPtr);
+    wPtr += sizeof(action.down);
+    action.left = *reinterpret_cast<const bool *>(wPtr);
+    wPtr += sizeof(action.left);
+    action.right = *reinterpret_cast<const bool *>(wPtr);
+    wPtr += sizeof(action.right);
+}
+
+void rtype::network::RTypeDatagram::extract210DisplayDatagram(rtype::network::RTypeDatagramDisplay &entity)
+{
+    RTypeDatagramType type = T_210_DISPLAY;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    entity.entityId = NTOHLL(*reinterpret_cast<const uint64_t *>(wPtr));
+    wPtr += sizeof(entity.entityId);
+    entity.position.x = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(entity.position.x);
+    entity.position.y = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(entity.position.y);
+    entity.position.z = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(entity.position.z);
+    entity.rotation.x = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(entity.rotation.x);
+    entity.rotation.y = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(entity.rotation.y);
+    entity.scale.x = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(entity.scale.x);
+    entity.scale.y = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(entity.scale.y);
+    entity.type = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+}
+
+void rtype::network::RTypeDatagram::extract220LivingDatagram(rtype::network::RTypeDatagramLiving &data)
+{
+    RTypeDatagramType type = T_220_LIVING;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    data.entityId = NTOHLL(*reinterpret_cast<const uint64_t *>(wPtr));
+    wPtr += sizeof(data.entityId);
+    data.life = NTOHL(*reinterpret_cast<const uint64_t *>(wPtr));
+}
+
+void rtype::network::RTypeDatagram::extract230ChargeDatagram(unsigned char &charge)
+{
+    RTypeDatagramType type = T_230_CHARGE;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    charge = *reinterpret_cast<const unsigned char *>(wPtr);
+}
+
+void rtype::network::RTypeDatagram::extract240ScoreDatagram(rtype::network::RTypeDatagramScore &score)
+{
+    RTypeDatagramType type = T_240_SCORE;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    score.p1Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(score.p1Score);
+    score.p2Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(score.p2Score);
+    score.p3Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(score.p3Score);
+    score.p4Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+}
+
+void rtype::network::RTypeDatagram::extract250EndGameDatagram(rtype::network::RTypeDatagramScore &score)
+{
+    RTypeDatagramType type = T_250_END_GAME;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+
+    intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    score.p1Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(score.p1Score);
+    score.p2Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(score.p2Score);
+    score.p3Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+    wPtr += sizeof(score.p3Score);
+    score.p4Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
+}
