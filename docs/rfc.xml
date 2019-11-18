@@ -336,7 +336,7 @@
                     <t>
                         114 : Quit room : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent continuously by the client that wants to leave a room
+                        This packet is sent continuously by the client that wants to leave a room,
                         until it receives a ok-quit packet (<xref target="ok-quit"/>).
                     </t>
 
@@ -352,7 +352,7 @@
                     <t>
                         115 : OK quit : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a quit room packet (<xref target="quit-room"/>)
+                        This packet is sent as response to a quit room packet (<xref target="quit-room"/>).
                     </t>
 
                     <texttable>
@@ -367,6 +367,8 @@
                     <t>
                         116 : Join room : 16 + Password size bytes
                         <vspace blankLines="2"/>
+                        This packet is sent continuously by the client that want to join a room,
+                        until it receives a joined-room packet (<xref target="joined-room"/>).
 
                         This packet is sent continuously by the client that wants to join a room
                         until it receives a joined packet (<xref target="joined-room"/>).
@@ -390,6 +392,7 @@
                     <t>
                         117 : Joined room : 2 + (User count * 10) bytes
                         <vspace blankLines="2"/>
+                        This packet is sent by the server as a respond to join-room (<xref target="join-room"/>).
 
                         This packet is sent as response to a join room packet (<xref target="join-room"/>)
                     </t>
