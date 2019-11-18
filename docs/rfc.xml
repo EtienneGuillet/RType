@@ -492,7 +492,7 @@
                     </t>
 
                     <texttable>
-                        <preamble>Living</preamble>
+                        <preamble>Charge</preamble>
                         <ttcol align="center">OpCode</ttcol>
                         <ttcol align="center">Charge percentage</ttcol>
 
@@ -509,7 +509,7 @@
                     </t>
 
                     <texttable>
-                        <preamble>Living</preamble>
+                        <preamble>Score</preamble>
                         <ttcol align="center">OpCode</ttcol>
                         <ttcol align="center">Player 1</ttcol>
                         <ttcol align="center">Player 2</ttcol>
