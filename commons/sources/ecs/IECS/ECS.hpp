@@ -39,11 +39,11 @@ namespace ecs {
         void learnSystem(const std::shared_ptr<ISystemAPI> &api) override;
         void learnEntity(const std::shared_ptr<IEntityAPI> &api) override;
         std::shared_ptr<ISystemAPI> forgetSystem(const Version &version) override;
-        std::shared_ptr<IEntity> forgetEntity(const Version &version) override;
+        std::shared_ptr<IEntityAPI> forgetEntity(const Version &version) override;
 
     private:
         std::vector<std::shared_ptr<ISystemAPI>> _systemsAPI; /*!< known system api */
-        std::vector<std::shared_ptr<IEntity>> _entitysAPI; /*!< known entity api */
+        std::vector<std::shared_ptr<IEntityAPI>> _entitysAPI; /*!< known entity api */
     };
 }
 #endif //R_TYPE_ECS_HPP
