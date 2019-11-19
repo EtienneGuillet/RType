@@ -86,8 +86,8 @@
             <t>
                 The protocol will use UDP to communicate between client and server,
                 every packet that the client receive that does not come from the server will be ignored.
-                The same happen for the server, every packet not recognized by the server won't be taken into
-                consideration.
+                The same happen for the server, every packet not recognized by the server will send the unknown
+                packet (<xref target="unknown"/>).
             </t>
 
             <figure>
@@ -102,7 +102,7 @@
 
         <section title="Protocol">
             <t>
-                Operation codes are on 2 bytes stored as usigned short
+                Operation codes are on 2 bytes stored as unsigned short
                 <list>
                     <t>1XX - Used for out of game protocol (<xref target="out-of-game"/>)</t>
                     <t>2XX - Used for in-game protocol (<xref target="in-game-packets"/>)</t>
@@ -270,7 +270,7 @@
 
                 <section anchor="rooms-list" title="Rooms list">
                     <t>
-                        111 : Rooms list : 6 + (Rooms count * 3) bytes
+                        111 : Rooms list : 6 + (Rooms count * 13) bytes
                         <vspace blankLines="2"/>
                     </t>
 
@@ -370,9 +370,6 @@
                         <vspace blankLines="2"/>
                         This packet is sent continuously by the client that want to join a room,
                         until it receives a joined-room packet (<xref target="joined-room"/>).
-
-                        This packet is sent continuously by the client that wants to join a room
-                        until it receives a joined packet (<xref target="joined-room"/>).
                     </t>
 
                     <texttable>
@@ -391,11 +388,9 @@
 
                 <section anchor="joined-room" title="Joined room">
                     <t>
-                        117 : Joined room : 2 + (User count * 10) bytes
+                        117 : Joined room : 3 + (User count * 10) bytes
                         <vspace blankLines="2"/>
                         This packet is sent by the server as a respond to join-room (<xref target="join-room"/>).
-
-                        This packet is sent as response to a join room packet (<xref target="join-room"/>)
                     </t>
 
                     <texttable>
@@ -415,7 +410,7 @@
             <section anchor="in-game" title="In-game Packets">
                 <t>
                     These packets are sent during the game to describe actions made by the client or
-                    informations about the game being played.
+                    information about the game being played.
                 </t>
 
                 <section anchor="action" title="Action">
@@ -448,7 +443,7 @@
                     <t>
                         210 : Disp : 42 bytes
                         <vspace blankLines="2"/>
-                        This packet contains the minimums informations to let the client display an entity
+                        This packet contains the minimums information to let the client display an entity
                     </t>
 
                     <texttable>
@@ -508,7 +503,7 @@
 
                 <section anchor="score" title="Score">
                     <t>
-                        240 : Score : 14 bytes
+                        240 : Score : 18 bytes
                         <vspace blankLines="2"/>
                         This packet contains the score of the players.
                     </t>
@@ -531,7 +526,7 @@
 
                 <section anchor="end-game" title="Endgame">
                     <t>
-                        250 : Endgame : 6 bytes
+                        250 : Endgame : 18 bytes
                         This packet is sent continuously by the server until a
                         <xref target="ok-end-game"/>
                         packet has been received.
@@ -548,10 +543,10 @@
                         <ttcol align="center">Player 4</ttcol>
 
                         <c>2 bytes</c>
-                        <c>1 bytes</c>
-                        <c>1 bytes</c>
-                        <c>1 bytes</c>
-                        <c>1 bytes</c>
+                        <c>4 bytes</c>
+                        <c>4 bytes</c>
+                        <c>4 bytes</c>
+                        <c>4 bytes</c>
                     </texttable>
                 </section>
 
@@ -559,7 +554,8 @@
                     <t>
                         260 : OK Endgame: 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent by the client to inform the server that a Endgame packet (<xref target="end-game"/>) has been received.
+                        This packet is sent by the client to inform the server that a Endgame packet
+                        (<xref target="end-game"/>) has been received.
                     </t>
 
                     <texttable>
@@ -595,7 +591,7 @@
                     <t>
                         301 : Invalid packet : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent in response to any packet that has a known opcode but has malformated data.
+                        This packet is sent in response to any packet that has a known opcode but has malformed data.
                     </t>
 
                     <texttable>
@@ -721,13 +717,8 @@
     </middle>
 
     <back>
-
         <references title="Normative References">
             &RFC2119;
         </references>
-
-        <!--
-            TODO REFERENCE PROTOCOL UDP
-        -->
     </back>
 </rfc>
