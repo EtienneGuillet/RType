@@ -22,7 +22,7 @@ namespace ecs {
         /*!
          * @brief Dtor of the class IWord.
          */
-        virtual ~IWord() = 0;
+        virtual ~IWorld() = 0;
 
         /*!
          * @brief Run all the system in the world.
@@ -42,7 +42,7 @@ namespace ecs {
         /*!
          * @brief Return the entities that has the component asked as parameter.
          */
-        virtual std::vector<IEntity> &getEntitiesWith(std::vector<std::weak_ptr<IEntity>> const entity) const = 0;
+        [[nodiscard]] virtual std::vector<IEntity> &getEntitiesWith(const std::vector<std::weak_ptr<IEntity>> &entity) const = 0;
 
         /*!
          * @brief Apply a rule to every entities that has the set of components given as parameter.
