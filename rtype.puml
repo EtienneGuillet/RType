@@ -492,12 +492,13 @@ interface ecs::IECS {
 interface ecs::IEntity {
     + {abstract} ~IEntity() = default
     + {abstract} std::weak_ptr<IComponent> getComponent(const Version &componentType)
+    + {abstract} std::vector<std::weak_ptr<IComponent>> getComponents(const std::vector<Version> &componentTypes)
     + {abstract} bool hasComponent(const Version &componentType) const
     + {abstract} bool hasComponents(const std::vector<Version> &componentTypes)
     + {abstract} int getId() const
     + {abstract} const std::string &getName() const
-    + {abstract} void addComponent(const std::shared_ptr<IComponent> &Component)
-    + {abstract} const std::shared_ptr<IComponent> &removeComponent(const Version &version)
+    + {abstract} void addComponent(const std::shared_ptr<IComponent> &component)
+    + {abstract} std::shared_ptr<IComponent> removeComponent(const Version &version)
 }
 
 interface ecs::IEntityAPI {
@@ -528,7 +529,7 @@ interface ecs::IWorld {
     + {abstract} void pushEntity(const std::shared_ptr<IEntity> &entity)
     + {abstract} std::shared_ptr<IEntity> popEntity(int id)
     + {abstract} std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components)
-    + {abstract} void applyToEach(const std::vector<Version> &components, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply)
+    + {abstract} void applyToEach(const std::vector<Version> &componentTypes, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply)
     + {abstract} void addSystem(const std::shared_ptr<ISystem> &system)
     + {abstract} void removeSystem(const Version &system)
     + {abstract} std::weak_ptr<ISystem> getSystem(const Version &system)

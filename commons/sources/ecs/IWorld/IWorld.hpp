@@ -57,7 +57,7 @@ namespace ecs {
          * @param components the set of components.
          * @param toApply the function to apply.
          */
-        virtual void applyToEach(const std::vector<Version> &components, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply) = 0;
+        virtual void applyToEach(const std::vector<Version> &componentTypes, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply) = 0;
 
         /*!
          * @brief Add a new system to the world.
