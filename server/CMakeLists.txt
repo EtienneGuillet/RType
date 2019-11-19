@@ -15,6 +15,7 @@ target_include_directories(
 )
 target_link_libraries(
         r-type_server
+        dl
         ${CONAN_LIBS}
 )
 

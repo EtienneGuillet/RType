@@ -29,3 +29,4 @@ file(GLOB BUILD_DEPENDENCY "build_dependency/*")
 file(COPY ${BUILD_DEPENDENCY} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 add_subdirectory(systems)
+add_subdirectory(entities)

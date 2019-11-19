@@ -26,5 +26,6 @@ target_include_directories(
 target_link_libraries(
         tests_client
         criterion
+        dl
         ${CONAN_LIBS}
 )

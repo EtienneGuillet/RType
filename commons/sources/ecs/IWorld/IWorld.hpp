@@ -24,7 +24,7 @@ namespace ecs {
         /*!
          * @brief Dtor of the class IWord.
          */
-        virtual ~IWorld() = 0;
+        virtual ~IWorld() = default;
 
         /*!
          * @brief Run all the system in the world.
