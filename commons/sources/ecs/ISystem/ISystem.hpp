@@ -27,6 +27,7 @@ namespace ecs {
 
         /*!
          * @brief Run the system main functionality.
+         * @param deltatime the elapsed delta time as ms.
          */
         virtual void tick(long deltatime) = 0;
 
@@ -41,17 +42,20 @@ namespace ecs {
         virtual void stop() = 0;
 
         /*!
-         * @brief Return the type of the entity.
+         * @brief Return the type of the entity as a Version object.
+         * @return The Version object.
          */
         virtual const Version &getType() const = 0;
 
         /*!
          * @brief Return true or false whether the system is running or not.
+         * @return True if running, false otherwise.
          */
         virtual bool isRunning() const = 0;
 
         /*!
          * @brief Set the world where the system is executed.
+         * @param Weak pointer of the world to be assigned.
          */
         virtual void setWorld(const std::weak_ptr<IWorld> &world) = 0;
     };

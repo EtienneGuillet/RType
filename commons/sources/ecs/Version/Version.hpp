@@ -19,6 +19,11 @@ namespace ecs {
 
         /*!
          * @brief Ctor.
+         * @param type of item, whether a entity or a system.
+         * @param lilianVersion Version id of Lilian.
+         * @param titouanVersion Version id of Titouan.
+         * @param julianVersion Version id of Julian.
+         * @param etienneVersion Version id of Etienne.  
          */
         Version(const std::string &type, int lilianVersion, int titouanVersion, int julianVersion, int etienneVersion);
 
@@ -29,55 +34,55 @@ namespace ecs {
 
         /*!
          * @brief Return a vector of the versions of every contributor, 4 in our instance.
-         * @return A vector which contains every version number
+         * @return A vector which contains every version number.
          */
         const std::vector<int> &getVersions() const;
 
         /*!
-         * @brief Return a string of the type
-         * @return the version type
+         * @brief Return a string of the type.
+         * @return the version type.
          */
         const std::string &getType() const;
 
         /*!
          * @brief operator <
-         * @param rhs right hand side
-         * @return true or false
+         * @param rhs right hand side.
+         * @return true or false.
          */
         bool operator<(const Version &rhs) const;
 
         /*!
          * @brief operator >
-         * @param rhs right hand side
-         * @return true or false
+         * @param rhs right hand side.
+         * @return true or false.
          */
         bool operator>(const Version &rhs) const;
 
         /*!
          * @brief operator <=
-         * @param rhs right hand side
-         * @return true or false
+         * @param rhs right hand side.
+         * @return true or false.
          */
         bool operator<=(const Version &rhs) const;
 
         /*!
          * @brief operator >=
-         * @param rhs right hand side
-         * @return true or false
+         * @param rhs right hand side.
+         * @return true or false.
          */
         bool operator>=(const Version &rhs) const;
 
         /*!
          * @brief operator ==
-         * @param rhs right hand side
-         * @return true or false
+         * @param rhs right hand side.
+         * @return true or false.
          */
         bool operator==(const Version &rhs) const;
 
         /*!
          * @brief operator ==
-         * @param rhs right hand side
-         * @return true or false
+         * @param rhs right hand side.
+         * @return true or false.
          */
         bool operator!=(const Version &rhs) const;
     private:

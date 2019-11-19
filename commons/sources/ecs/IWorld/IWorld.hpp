@@ -28,7 +28,7 @@ namespace ecs {
 
         /*!
          * @brief Run all the system in the world.
-         * @param deltatime the elapsed delta time as ms
+         * @param deltatime the elapsed delta time as ms.
          */
         virtual void tick(long deltatime) = 0;
 
@@ -40,40 +40,40 @@ namespace ecs {
 
         /*!
          * @brief Remove a entity from the world.
-         * @param id the entity id
-         * @return a shared ptr to the entity that as pop
+         * @param id the entity id.
+         * @return a shared ptr to the entity that as pop.
          */
         virtual std::shared_ptr<IEntity> popEntity(int id) = 0;
 
         /*!
          * @brief Return the entities that has the component asked as parameter.
-         * @param components the components seached
-         * @return entities that matched this set of components
+         * @param components the components seached.
+         * @return entities that matched this set of components.
          */
         [[nodiscard]] virtual std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components) const = 0;
 
         /*!
          * @brief Apply a rule to every entities that has the set of components given as parameter.
-         * @param components the set of components
-         * @param toApply the function to apply
+         * @param components the set of components.
+         * @param toApply the function to apply.
          */
         virtual void applyToEach(const std::vector<Version> &components, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply) = 0;
 
         /*!
          * @brief Add a new system to the world.
-         * @param system the system to add
+         * @param system the system to add.
          */
         virtual void addSystem(const std::shared_ptr<ISystem> &system) = 0;
 
         /*!
          * @brief Remove a system from the world.
-         * @param system the version of the system to remove
+         * @param system the version of the system to remove.
          */
         virtual void removeSystem(const Version &system) = 0;
 
         /*!
          * @brief Return the system asked as a string parameter.
-         * @param system the version of the system to remove
+         * @param system the version of the system to remove.
          */
         virtual std::weak_ptr<ISystem> getSystem(const Version &system) = 0;
     };

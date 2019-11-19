@@ -24,14 +24,14 @@ namespace ecs {
         virtual ~IEntityAPI() = default;
 
         /*!
-         * @brief Get a version describing the entity
-         * @return A version that can be created with this api
+         * @brief Get a version describing the entity.
+         * @return A version that can be created with this api.
          */
         [[nodiscard]] virtual const Version &getVersion() const = 0;
 
         /*!
-         * @brief Create a new entity
-         * @return A new entity
+         * @brief Create a new entity.
+         * @return A new entity.
          */
         [[nodiscard]] virtual std::shared_ptr<IEntity> createNewEntity() const = 0;
     };
