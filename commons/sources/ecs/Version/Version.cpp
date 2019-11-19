@@ -10,16 +10,15 @@ namespace ecs {
         _versions.push_back(etienneVersion);
     }
 
-    Version::~Version() {
-    }
-
-    std::vector<int> &Version::getVersions() {
+    std::vector<int> Version::getVersions() const {
         return _versions;
     }
 
-    bool Version::operator>(Version &compareVersion) {
-        std::vector<int> compare = compareVersion.getVersions();
+    bool Version::operator<(const Version &rhs) const {
+        std::vector<int> compare = rhs.getVersions();
 
+        if (rhs.getType() != getType())
+            return false;
         for (size_t i = 0; i < compare.size() && i < _versions.size(); i++) {
             if (_versions[i] < compare[i])
                 return false;
@@ -27,13 +26,38 @@ namespace ecs {
         return true;
     }
 
-    bool Version::operator<(Version &compareVersion) {
-        std::vector<int> compare = compareVersion.getVersions();
+    bool Version::operator>(const Version &rhs) const {
+        if (rhs.getType() != getType())
+            return false;
+        return rhs < *this;
+    }
 
-        for (size_t i = 0; i < compare.size() && i < _versions.size(); i++) {
-            if (_versions[i] < compare[i])
-                return true;
-        }
-        return false;
+    bool Version::operator<=(const Version &rhs) const {
+        if (rhs.getType() != getType())
+            return false;
+        return !(rhs < *this);
+    }
+
+    bool Version::operator>=(const Version &rhs) const {
+        if (rhs.getType() != getType())
+            return false;
+        return !(*this < rhs);
+    }
+
+    bool Version::operator==(const Version &rhs) const {
+        if (rhs.getType() != getType())
+            return false;
+        return _type == rhs._type &&
+               _versions == rhs._versions;
+    }
+
+    bool Version::operator!=(const Version &rhs) const {
+        if (rhs.getType() != getType())
+            return false;
+        return !(rhs == *this);
+    }
+
+    const std::string &Version::getType() const {
+        return _type;
     }
 } /* ecs */
