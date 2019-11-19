@@ -7,7 +7,7 @@ const ecs::Version &ExampleSystem::getType() const {
     return ExampleSystem::Version;
 }
 
-void ExampleSystem::tick(long deltatime) {
+void ExampleSystem::tick([[maybe_unused]] long deltatime) {
     auto logger = b12software::logger::StandardLogger(b12software::logger::LogLevelDebug);
 
     logger.log(b12software::logger::LogLevelDebug, "[ExampleSystem] TICK");
