@@ -46,8 +46,7 @@ run-tests:
 rfc:
   stage: docs
   script:
-    - cd docs
-    - ./generate_rfc.sh
+    - ./scripts/generate_rfc.sh
     - cat rfc69420
   artifacts:
     paths:
