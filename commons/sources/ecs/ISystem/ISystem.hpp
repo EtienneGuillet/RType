@@ -1,8 +1,8 @@
 #ifndef _I_SYSTEM_HPP_
 #define _I_SYSTEM_HPP_
 
-#include "../IWorld/IWorld.hpp"
-#include "../Version/Version.hpp"
+#include "ecs/IWordl/IWorld.hpp"
+#include "ecs/Version/Version.hpp"
 #include <iostream>
 #include <vector>
 #include <memory>
