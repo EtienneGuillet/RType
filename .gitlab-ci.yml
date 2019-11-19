@@ -39,4 +39,3 @@ rfc:
     paths:
       - docs/rfc69420
       - docs/rfc69420.html
-    expire_in: 30 days
