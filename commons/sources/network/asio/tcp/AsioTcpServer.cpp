@@ -7,7 +7,6 @@
 
 /* Created the 26/09/2019 at 11:37 by julian.frabel@epitech.eu */
 
-#include <boost/bind.hpp>
 #include "exception/NetworkException.hpp"
 #include "logger/DefaultLogger.hpp"
 #include "AsioTcpServer.hpp"
@@ -195,7 +194,7 @@ void b12software::network::asio::AsioTcpServer::startAccept()
     boost::shared_ptr<AsioTcpClient> client(new AsioTcpClient(_context));
     _acceptor.async_accept(
         client->getSocket(),
-        boost::bind(&AsioTcpServer::handleAccept, this, client, boost::asio::placeholders::error)
+        std::bind(&AsioTcpServer::handleAccept, this, client, std::placeholders::_1)
     );
     logger::DefaultLogger::Log(logger::LogLevelDebug, "[AsioTcpServer] Start accepting");
 }

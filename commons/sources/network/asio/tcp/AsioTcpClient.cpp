@@ -7,7 +7,6 @@
 
 /* Created the 26/09/2019 at 11:27 by julian.frabel@epitech.eu */
 
-#include <boost/bind.hpp>
 #include "AsioTcpClient.hpp"
 #include "logger/DefaultLogger.hpp"
 #include "exception/NetworkException.hpp"
@@ -38,7 +37,7 @@ void b12software::network::asio::AsioTcpClient::connect(const b12software::netwo
     _distantInfos = {"", 0};
     _selfInfos = {"", 0};
     endpoint endPoint = *it;
-    _socket.async_connect(endPoint, boost::bind(&AsioTcpClient::handleConnect, this, boost::asio::placeholders::error, ++it));
+    _socket.async_connect(endPoint, std::bind(&AsioTcpClient::handleConnect, this, std::placeholders::_1, ++it));
 }
 
 void b12software::network::asio::AsioTcpClient::disconnect()
@@ -74,7 +73,7 @@ size_t b12software::network::asio::AsioTcpClient::send(const void *data, size_t 
     std::memcpy(message.get(), data, size);
     _socket.async_send(
         boost::asio::buffer(message.get(), size),
-        boost::bind(&AsioTcpClient::handleSend, this, message, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+        std::bind(&AsioTcpClient::handleSend, this, message, std::placeholders::_1, std::placeholders::_2)
     );
     return 0;
 }
@@ -114,7 +113,7 @@ void b12software::network::asio::AsioTcpClient::startReceive()
     std::shared_ptr<byte[]> message(new byte[bufferSizeInBytes]);
     _socket.async_receive(
         boost::asio::buffer(message.get(), bufferSizeInBytes),
-        boost::bind(&AsioTcpClient::handleReceive, this, message, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+        std::bind(&AsioTcpClient::handleReceive, this, message, std::placeholders::_1, std::placeholders::_2)
     );
 }
 
@@ -130,7 +129,7 @@ void b12software::network::asio::AsioTcpClient::handleConnect(const boost::syste
     } else if (endpointIterator != boost::asio::ip::tcp::resolver::iterator()) {
         _socket.close();
         endpoint endPoint = *endpointIterator;
-        _socket.async_connect(endPoint, boost::bind(&AsioTcpClient::handleConnect, this, boost::asio::placeholders::error, ++endpointIterator));
+        _socket.async_connect(endPoint, std::bind(&AsioTcpClient::handleConnect, this, std::placeholders::_1, ++endpointIterator));
     } else {
         logger::DefaultLogger::Log(logger::LogLevelError, "[AsioTcpClient] Failed to connect to server: " + error.message());
     }
