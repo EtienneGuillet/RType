@@ -1,7 +1,7 @@
 #ifndef _I_COMPONENT_HPP_
 #define _I_COMPONENT_HPP_
 
-#include "../Version/Version.hpp"
+#include "ecs/Version/Version.hpp"
 #include <iostream>
 
 /*!
@@ -14,9 +14,13 @@ namespace ecs {
      * @class IComponent
      * @brief An interface that is common to all components in the ecs.
      */
-    class IComponent
-    {
+    class IComponent {
     public:
+
+        /*!
+         * @brief Dtor of the class IComponent.
+         */
+        virtual ~IComponent() = 0;
 
         /*!
          * @brief Get the parameter value, the parameter speed would return a int or a float for instance.
