@@ -23,6 +23,10 @@ namespace ecs {
      */
     class IECS {
     public:
+
+        /*!
+         * @brief virtual dtor.
+         */
         virtual ~IECS() = default;
 
         /*!
