@@ -53,3 +53,13 @@ rfc:
     paths:
       - docs/rfc69420
       - docs/rfc69420.html
+
+uml:
+  stage: docs
+  before_script:
+    - dnf -y install plantuml graphviz
+  script:
+    - plantuml rtype.puml
+  artifacts:
+    paths:
+      - rtype.png
