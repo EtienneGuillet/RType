@@ -1,7 +1,7 @@
 #ifndef _A_SYSTEM_HPP_
 #define _A_SYSTEM_HPP_
 
-#include "IWorld.hpp"
+#include "ecs/IWord/IWorld.hpp"
 #include <iostream>
 #include <vector>
 
@@ -15,8 +15,7 @@ namespace ecs {
      * @class ASystem
      * @brief An abstract class that describe default behavior of any system.
      */
-    class ASystem : public ISystem
-    {
+    class ASystem : public ISystem {
     public:
 
         /*!
