@@ -5,6 +5,7 @@
 #include "ecs/ISystem/ISystem.hpp"
 #include "ecs/Version/Version.hpp"
 #include <iostream>
+#include <functional>
 
 /*!
  * @namespace ecs
@@ -47,7 +48,7 @@ namespace ecs {
         /*!
          * @brief Apply a rule to every entities that has the set of components given as parameter.
          */
-        virtual void applyToEach(std::vector<Version> &version) = 0;
+        virtual void applyToEach(const std::vector<Version> &versions, const std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> &toApply) = 0;
 
         /*!
          * @brief Add a new system to the world.
