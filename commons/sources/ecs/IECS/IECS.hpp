@@ -1,13 +1,13 @@
 #ifndef _I_ECS_HPP_
 #define _I_ECS_HPP_
 
-#include "IWorld.hpp"
-#include "IComponent.hpp"
-#include "IEntity.hpp"
-#include "Version.hpp"
-#include "IComponentAPI.hpp"
-#include "IEntityAPI.hpp"
-#include "ISystemAPI.hpp"
+#include "../IWorld/IWorld.hpp"
+#include "../IComponent/IComponent.hpp"
+#include "../IEntity/IEntity.hpp"
+#include "../IEntity/Version.hpp"
+#include "../IComponentAPI/IComponentAPI.hpp"
+#include "../IEntityAPI/IEntityAPI.hpp"
+#include "../ISystemAPI/ISystemAPI.hpp"
 #include <iostream>
 #include <memory>
 
