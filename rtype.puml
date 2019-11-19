@@ -485,8 +485,8 @@ interface ecs::IECS {
     + {abstract} bool knowEntities(const std::vector<Version> &versions)
     + {abstract} void learnSystem(const std::shared_ptr<ISystemAPI> &api)
     + {abstract} void learnEntity(const std::shared_ptr<IEntityAPI> &api)
-    + {abstract} std::shared_ptr<ISystemAPI> &forgetSystem(const Version &version)
-    + {abstract} std::shared_ptr<IEntity> &forgetEntity(const Version &version)
+    + {abstract} std::shared_ptr<ISystemAPI> forgetSystem(const Version &version)
+    + {abstract} std::shared_ptr<IEntity> forgetEntity(const Version &version)
 }
 
 interface ecs::IEntity {

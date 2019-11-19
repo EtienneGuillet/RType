@@ -86,14 +86,14 @@ namespace ecs {
          * @param version the system to be forget.
          * @return Shared pointer of the system's API just forgot.
          */
-        virtual std::shared_ptr<ISystemAPI> &forgetSystem(const Version &version) = 0;
+        virtual std::shared_ptr<ISystemAPI> forgetSystem(const Version &version) = 0;
 
         /*!
          * @brief Make the ecs forget the entity.
          * @param version the entity to be forget.
          * @return Shared pointer of the entity's API just forgot.
          */
-        virtual std::shared_ptr<IEntity> &forgetEntity(const Version &version) = 0;
+        virtual std::shared_ptr<IEntity> forgetEntity(const Version &version) = 0;
     };
 } /* ecs */
 

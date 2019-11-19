@@ -59,12 +59,12 @@ void ecs::ECS::learnEntity(const std::shared_ptr<IEntityAPI> &api)
 
 }
 
-std::shared_ptr<ecs::ISystemAPI> &ecs::ECS::forgetSystem(const ecs::Version &version)
+std::shared_ptr<ecs::ISystemAPI> ecs::ECS::forgetSystem(const ecs::Version &version)
 {
-    return <#initializer#>;
+    return std::shared_ptr<ecs::ISystemAPI>();
 }
 
-std::shared_ptr<ecs::IEntity> &ecs::ECS::forgetEntity(const ecs::Version &version)
+std::shared_ptr<ecs::IEntity> ecs::ECS::forgetEntity(const ecs::Version &version)
 {
-    return <#initializer#>;
+    return std::shared_ptr<ecs::IEntity>();
 }
