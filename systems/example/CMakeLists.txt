@@ -1,6 +1,7 @@
 file(
         GLOB_RECURSE
         RTYPE_SOURCES_SYSTEM_EXAMPLE
+        ${RTYPE_SOURCES_COMMON}
         *.cpp
 )
 

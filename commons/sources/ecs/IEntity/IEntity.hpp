@@ -30,6 +30,13 @@ namespace ecs {
         virtual std::weak_ptr<IComponent> getComponent(const Version &componentType) = 0;
 
         /*!
+         * @brief Return the components asked as a string parameter.
+         * @param componentTypes Version of the components asked.
+         * @return vector of weak pointer of the components if all the components are found, and empty vector else.
+         */
+        virtual std::vector<std::weak_ptr<IComponent>> getComponents(const std::vector<Version> &componentTypes) = 0;
+
+        /*!
          * @brief Return true or false whether the entity has the component or not.
          * @param componentType Version of the component to check.
          * @return True if the entity has the component, false otherwise.
@@ -59,14 +66,14 @@ namespace ecs {
          * @brief Add a new component to the entity.
          * @param Component A shared pointer of the component to add to the entity.
          */
-        virtual void addComponent(const std::shared_ptr<IComponent> &Component) = 0;
+        virtual void addComponent(const std::shared_ptr<IComponent> &component) = 0;
 
         /*!
          * @brief Remove a component from the entity.
          * @param version the component to be removed.
          * @return Shared pointer of the component just removed.
          */
-        virtual const std::shared_ptr<IComponent> &removeComponent(const Version &version) = 0;
+        virtual std::shared_ptr<IComponent> removeComponent(const Version &version) = 0;
     };
 } /* ecs */
 

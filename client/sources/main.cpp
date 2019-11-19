@@ -5,8 +5,15 @@
 ** main.cpp
 */
 
+#include <ecs/IECS/IECS.hpp>
+#include <memory>
+#include <ecs/DLLoader/DLLoader.hpp>
+#include <logger/DefaultLogger.hpp>
+#include <logger/StandardLogger.hpp>
+
 /* Created the 07/11/2019 at 18:00 by julian.frabel@epitech.eu */
 
+<<<<<<< HEAD
 #include "logger/DefaultLogger.hpp"
 
 int main()
@@ -29,6 +36,5 @@ int main()
             world.tick();
         }
     }
-
     return 0;
 }

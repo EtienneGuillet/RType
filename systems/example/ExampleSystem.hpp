@@ -1,8 +1,8 @@
 #ifndef R_TYPE_EXAMPLESYSTEM_HPP
 #define R_TYPE_EXAMPLESYSTEM_HPP
 
-#include "../../commons/sources/ecs/ASystem/ASystem.hpp"
-#include "../../commons/sources/ecs/Version/Version.hpp"
+#include "ecs/ASystem/ASystem.hpp"
+#include "ecs/Version/Version.hpp"
 
 class ExampleSystem : public ecs::ASystem {
     virtual const ecs::Version &getType() const override;
