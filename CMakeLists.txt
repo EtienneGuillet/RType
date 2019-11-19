@@ -43,6 +43,8 @@ file(
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
         ${PROJECT_SOURCE_DIR}/client/tests/*.cpp
         ${PROJECT_SOURCE_DIR}/client/tests/*.hpp
+        ${PROJECT_SOURCE_DIR}/commons/tests/*.cpp
+        ${PROJECT_SOURCE_DIR}/commons/tests/*.hpp
 )
 list(REMOVE_ITEM RTYPE_SOURCES_CLIENT_TESTS "${PROJECT_SOURCE_DIR}/client/sources/main.cpp")
 
@@ -55,6 +57,8 @@ file(
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
         ${PROJECT_SOURCE_DIR}/server/tests/*.cpp
         ${PROJECT_SOURCE_DIR}/server/tests/*.hpp
+        ${PROJECT_SOURCE_DIR}/commons/tests/*.cpp
+        ${PROJECT_SOURCE_DIR}/commons/tests/*.hpp
 )
 list(REMOVE_ITEM RTYPE_SOURCES_SERVER_TESTS "${PROJECT_SOURCE_DIR}/server/sources/main.cpp")
 
@@ -89,6 +93,7 @@ target_include_directories(
         ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/client/sources
         ${PROJECT_SOURCE_DIR}/client/tests
+        ${PROJECT_SOURCE_DIR}/commons/tests
 )
 target_link_libraries(
         tests_client
@@ -103,6 +108,7 @@ target_include_directories(
         ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/server/sources
         ${PROJECT_SOURCE_DIR}/server/tests
+        ${PROJECT_SOURCE_DIR}/commons/tests
 )
 target_link_libraries(
         tests_server

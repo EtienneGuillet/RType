@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+        <!ENTITY RFC2119 SYSTEM
+                "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
+        ]>
+
+<?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
+<?rfc strict="yes"?>
+<?rfc toc="yes" ?>
+
+<!-- TODO Calculate the size of every packet -->
+<!-- TODO Be sure that we don't need a timestamp at the start of every packet -->
+
+<rfc
+        category="std"
+        docName="R-Type-Protocol-UDP-00"
+        consensus="no"
+        submissionType="IETF"
+        xml:lang="en"
+>
+
+    <front>
+        <title abbrev="R-Type protocol">
+            Describing UDP Protocol for R-Type game project
+        </title>
+
+        <author fullname="Titouan PAUTIER" initials="T." surname="PAUTIER">
+            <organization abbrev="EPITECH">EPITECH</organization>
+            <address>
+                <email>titouan.pautier@epitech.eu</email>
+            </address>
+        </author>
+
+        <author fullname="Lilian ARAGO" initials="L." surname="ARAGO">
+            <organization abbrev="EPITECH">EPITECH</organization>
+            <address>
+                <email>lilian.arago@epitech.eu</email>
+            </address>
+        </author>
+
+        <author fullname="Julian FRABEL" initials="J." surname="FRABEL">
+            <organization abbrev="EPITECH">EPITECH</organization>
+            <address>
+                <email>julian.frabel@epitech.eu</email>
+            </address>
+        </author>
+
+        <author fullname="Etienne GUILLET" initials="E." surname="GUILLET">
+            <organization abbrev="EPITECH">EPITECH</organization>
+            <address>
+                <email>etienne.guillet@epitech.eu</email>
+            </address>
+        </author>
+
+        <date year="2019" month="November"/>
+
+        <area>General</area>
+        <workgroup>EPITECH</workgroup>
+        <keyword>R-Type</keyword>
+    </front>
+
+    <middle>
+        <section anchor="intro" title="Introduction">
+
+            <t>The R-Type is a third year project at EPITECH school. The objective of this project is to implement a
+                multiplayer R-Type game from 1 to 4 players, using a client/server architecture.
+            </t>
+
+            <t>Here is the protocol we have wrote to describe how clients and server exchange data trough
+                network.
+                This paper assumes knowledge of the User Datagram Protocol
+                <eref target="https://tools.ietf.org/html/rfc768">(UDP)</eref>
+            </t>
+
+            <section title="Terminology">
+                <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+                    NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
+                    in this document are to be interpreted as described in
+                    <xref target="RFC2119"/>.
+                </t>
+            </section>
+        </section>
+
+        <section anchor="protocol" title="The R-Type Protocol">
+
+            <t>
+                The protocol will use UDP to communicate between client and server,
+                every packet that the client receive that does not come from the server will be ignored.
+                The same happen for the server, every packet not recognized by the server will send the unknown
+                packet (<xref target="unknown"/>).
+            </t>
+
+            <figure>
+                <artwork>
+                             UDP transmission
++--------------+            +------------+            +-------------+
+|    Client    |------------|   Server   |------------|    Client   |
++--------------+            +------------+            +-------------+
+                </artwork>
+            </figure>
+        </section>
+
+        <section title="Protocol">
+            <t>
+                Operation codes are on 2 bytes stored as unsigned short
+                <list>
+                    <t>1XX - Used for out of game protocol (<xref target="out-of-game"/>)</t>
+                    <t>2XX - Used for in-game protocol (<xref target="in-game-packets"/>)</t>
+                    <t>3XX - Used for errors (<xref target="errors"/>)</t>
+                </list>
+            </t>
+
+            <section anchor="out-of-game" title="Out of game protocol">
+                <t>
+                    <list>
+                        <t>10X - Connection (<xref target="connection"/>)</t>
+                        <t>11X - Rooms (<xref target="rooms"/>)</t>
+                    </list>
+                </t>
+            </section>
+
+            <section anchor="in-game-packets" title="In-game protocol">
+                <t>
+                    <list>
+                        <t>200 - Action (<xref target="action"/>)</t>
+                        <t>210 - Disp (<xref target="disp"/>)</t>
+                        <t>220 - Living (<xref target="living"/>)</t>
+                        <t>230 - Charge (<xref target="charge"/>)</t>
+                        <t>240 - Score (<xref target="score"/>)</t>
+                        <t>250 - EndGame (<xref target="end-game"/>)</t>
+                        <t>260 - OK Endgame (<xref target="ok-end-game"/>)</t>
+                    </list>
+                </t>
+            </section>
+
+            <section title="Errors">
+                <t>
+                    <list>
+                        <t>30X - Error</t>
+                    </list>
+                </t>
+            </section>
+        </section>
+
+        <section title="Packets">
+            <section anchor="connection" title="Connection">
+                <t>
+                    These packets are used to describe the connection steps.
+                </t>
+
+                <section anchor="connect" title="Connect">
+                    <t>
+                        100 : Connect : 12 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent continuously by the client until a
+                        <xref target="connected"/>
+                        packet has been received.
+                    </t>
+
+                    <texttable>
+                        <preamble>Connection packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center" width="75%">Username</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>10 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="connected" title="Connected">
+                    <t>
+                        101 : Connected : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent by the server when he received a connect packet
+                        (<xref target="connect"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Connection packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ping" title="Ping">
+                    <t>
+                        102 : Ping : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is used to check the availability of a connected client or server. The response of
+                        this packet is always a pong packet (<xref target="pong"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Ping packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="pong" title="Pong">
+                    <t>
+                        103 : Pong : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is the response of a ping packet (<xref target="ping"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Ping packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="disconnect" title="Disconnect">
+                    <t>
+                        104 : Disconnect : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent continuously to inform the client that the server is going to shutdown
+                        , or to the server that the client is disconnecting.
+                    </t>
+
+                    <texttable>
+                        <preamble>Disconnect</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="Disconnected" title="Disconnected">
+                    <t>
+                        105 : Disconnected : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is send as response to disconnect packet
+                        (<xref target="disconnect"/>) to confirm the reception of disconnection.
+                    </t>
+
+                    <texttable>
+                        <preamble>Disconnected</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+            </section>
+
+            <section anchor="rooms" title="Rooms">
+                <t>
+                    These packets are used to describe the room system.
+                </t>
+
+                <section anchor="get-rooms" title="Get rooms">
+                    <t>
+                        110 : Get rooms : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent continuously by the client until it receives a list
+                        of rooms packet (<xref target="rooms-list"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Get rooms</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="rooms-list" title="Rooms list">
+                    <t>
+                        111 : Rooms list : 6 + (Rooms count * 13) bytes
+                        <vspace blankLines="2"/>
+                    </t>
+
+                    <texttable>
+                        <preamble>Rooms</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Rooms count</ttcol>
+                        <ttcol align="center">Room name</ttcol>
+                        <ttcol align="center">Require password</ttcol>
+                        <ttcol align="center">Slots used</ttcol>
+                        <ttcol align="center">Capacity</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>4 bytes</c>
+                        <c>10 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="create-room" title="Create rooms">
+                    <t>
+                        112 : Create room : 17 + Password size bytes
+                        <vspace blankLines="2"/>
+
+                        This packet is sent continuously by the client until it receives a
+                        ok-create packet (<xref target="ok-create"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Create rooms</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Room name</ttcol>
+                        <ttcol align="center">Capacity</ttcol>
+                        <ttcol align="center">Password size</ttcol>
+                        <ttcol align="center">Password</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>10 bytes</c>
+                        <c>1 bytes</c>
+                        <c>4 bytes</c>
+                        <c>Password size bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ok-create" title="OK create room">
+                    <t>
+                        113 : OK create : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent by the server when the client as successfully created a
+                        room using create-room packet (<xref target="create-room"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Ok create</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="quit-room" title="Quit room">
+                    <t>
+                        114 : Quit room : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent continuously by the client that wants to leave a room,
+                        until it receives a ok-quit packet (<xref target="ok-quit"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Quit room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ok-quit" title="OK quit room">
+                    <t>
+                        115 : OK quit : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a quit room packet (<xref target="quit-room"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Ok quit</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="join-room" title="Join room">
+                    <t>
+                        116 : Join room : 16 + Password size bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent continuously by the client that want to join a room,
+                        until it receives a joined-room packet (<xref target="joined-room"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Join room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Room name</ttcol>
+                        <ttcol align="center">Password size</ttcol>
+                        <ttcol align="center">Password</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>10 bytes</c>
+                        <c>4 bytes</c>
+                        <c>Password size bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="joined-room" title="Joined room">
+                    <t>
+                        117 : Joined room : 3 + (User count * 10) bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent by the server as a respond to join-room (<xref target="join-room"/>).
+                    </t>
+
+                    <texttable>
+                        <preamble>Joined room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">User count</ttcol>
+                        <ttcol align="center">Username</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>1 bytes</c>
+                        <c>User count * 10 bytes</c>
+                    </texttable>
+                </section>
+
+            </section>
+
+            <section anchor="in-game" title="In-game Packets">
+                <t>
+                    These packets are sent during the game to describe actions made by the client or
+                    information about the game being played.
+                </t>
+
+                <section anchor="action" title="Action">
+                    <t>
+                        200 : Action : 7 bytes
+                        <vspace blankLines="2"/>
+                        This packet contains a boolean for every key of a client.
+                        The boolean is true if the key is pressed
+                    </t>
+
+                    <texttable>
+                        <preamble>Action</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Shot</ttcol>
+                        <ttcol align="center">Up</ttcol>
+                        <ttcol align="center">Down</ttcol>
+                        <ttcol align="center">Left</ttcol>
+                        <ttcol align="center">Right</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                        <c>1 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="disp" title="Display entity">
+                    <t>
+                        210 : Disp : 42 bytes
+                        <vspace blankLines="2"/>
+                        This packet contains the minimums information to let the client display an entity
+                    </t>
+
+                    <texttable>
+                        <preamble>Disp</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Entity ID</ttcol>
+                        <ttcol align="center">Positions [X, Y, Z]</ttcol>
+                        <ttcol align="center">Rotation [X, Y]</ttcol>
+                        <ttcol align="center">Scale [X, Y]</ttcol>
+                        <ttcol align="center">Type</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>8 bytes</c>
+                        <c>12 bytes</c>
+                        <c>8 bytes</c>
+                        <c>8 bytes</c>
+                        <c>4 bytes</c>
+                    </texttable>
+
+                </section>
+
+                <section anchor="living" title="Living">
+                    <t>
+                        220 : Living : 14 bytes
+                        <vspace blankLines="2"/>
+                        This packet contains the health points of an entity
+                    </t>
+
+                    <texttable>
+                        <preamble>Living</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Entity ID</ttcol>
+                        <ttcol align="center">HP</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>8 bytes</c>
+                        <c>4 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="charge" title="Charge">
+                    <t>
+                        230 : Charge : 3 bytes
+                        <vspace blankLines="2"/>
+                        This packet contains the charge percentage of the player
+                    </t>
+
+                    <texttable>
+                        <preamble>Charge</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Charge percentage</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>1 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="score" title="Score">
+                    <t>
+                        240 : Score : 18 bytes
+                        <vspace blankLines="2"/>
+                        This packet contains the score of the players.
+                    </t>
+
+                    <texttable>
+                        <preamble>Score</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Player 1</ttcol>
+                        <ttcol align="center">Player 2</ttcol>
+                        <ttcol align="center">Player 3</ttcol>
+                        <ttcol align="center">Player 4</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>4 bytes</c>
+                        <c>4 bytes</c>
+                        <c>4 bytes</c>
+                        <c>4 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="end-game" title="Endgame">
+                    <t>
+                        250 : Endgame : 18 bytes
+                        This packet is sent continuously by the server until a
+                        <xref target="ok-end-game"/>
+                        packet has been received.
+                        <vspace blankLines="2"/>
+                        This packet contains the score of the players and informs the client that the game has ended.
+                    </t>
+
+                    <texttable>
+                        <preamble>Endgame</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center">Player 1</ttcol>
+                        <ttcol align="center">Player 2</ttcol>
+                        <ttcol align="center">Player 3</ttcol>
+                        <ttcol align="center">Player 4</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>4 bytes</c>
+                        <c>4 bytes</c>
+                        <c>4 bytes</c>
+                        <c>4 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ok-end-game" title="OK Endgame">
+                    <t>
+                        260 : OK Endgame: 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent by the client to inform the server that a Endgame packet
+                        (<xref target="end-game"/>) has been received.
+                    </t>
+
+                    <texttable>
+                        <preamble>Ok endgame</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+            </section>
+
+            <section anchor="errors" title="Errors">
+                <t>
+                    These packets are used to describe all the errors that may occur.
+                </t>
+
+                <section anchor="unknown" title="Unknown packet">
+                    <t>
+                        300 : Unknown packet : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent in response to any unknown packet.
+                    </t>
+
+                    <texttable>
+                        <preamble>Unknown packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="invalid" title="Invalid packet">
+                    <t>
+                        301 : Invalid packet : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent in response to any packet that has a known opcode but has malformed data.
+                    </t>
+
+                    <texttable>
+                        <preamble>Invalid packet</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="invalid-param" title="Invalid param">
+                    <t>
+                        302 : Invalid param : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to any packet that is well formatted but has an invalid parameter(s).
+                    </t>
+
+                    <texttable>
+                        <preamble>Invalid param</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="duplicated-username" title="Already used username">
+                    <t>
+                        303 : Already used username : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent as response to a connect packet (<xref target="connect"/>) when the username
+                        requested is already used by another client.
+                    </t>
+
+                    <texttable>
+                        <preamble>Already used username</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="duplicated-room" title="Room name already used">
+                    <t>
+                        304 : Room name already used : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent in response to a create room packet (<xref target="create-room"/>) when a
+                        room with the same name already exists.
+                    </t>
+
+                    <texttable>
+                        <preamble>Room name already used</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="not-in-room" title="Not in room">
+                    <t>
+                        305 : Not in room : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent in response to a quit-room packet (<xref target="quit-room"/>) when the
+                        client isn't in any room.
+                    </t>
+
+                    <texttable>
+                        <preamble>Not in room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="room-not-exist" title="Unknown room">
+                    <t>
+                        306 : Unknown room : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent in response to a join room packet (<xref target="join-room"/>) when the room
+                        name request is unknown.
+                    </t>
+
+                    <texttable>
+                        <preamble>Unknown room</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="invalid-password" title="Invalid password">
+                    <t>
+                        307 : Invalid password : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent in response to a join room packet (<xref target="join-room"/>) when the
+                        password is invalid.
+                    </t>
+
+                    <texttable>
+                        <preamble>invalid password</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="room-full" title="Room full">
+                    <t>
+                        308 : Room full : 2 bytes
+                        <vspace blankLines="2"/>
+                        This packet is sent in response to a join room packet (<xref target="join-room"/>) when the room
+                        has no empty slots.
+                    </t>
+
+                    <texttable>
+                        <preamble>Room full</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+            </section>
+        </section>
+    </middle>
+
+    <back>
+        <references title="Normative References">
+            &RFC2119;
+        </references>
+    </back>
+</rfc>
