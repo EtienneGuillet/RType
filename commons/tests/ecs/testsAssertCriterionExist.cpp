@@ -15,9 +15,9 @@ static void init()
 static void fini()
 {}
 
-Test(criterion, assert_criterion_exist,
+Test(none, none,
     .timeout=10,
-    .description="Assert that criterion exist",
+    .description="none",
     .init=init,
     .fini=fini
 )
