@@ -41,6 +41,7 @@ namespace ecs {
         /*!
          * @brief ctor
          * @param libraryPath the path of the library to load
+         * @throw DLLoader exception if the library wasn't found
          */
         explicit DLLoader(const std::string &libraryPath)
             : _instance()
@@ -70,6 +71,13 @@ namespace ecs {
 #endif
         }
 
+        /*!
+         * @brief Return an API from entry point
+         * @tparam API Type of API
+         * @param entryPoint Entrypoint name
+         * @return A shared ptr of the API
+         * @throw DLLoader exception if the entrypoint wasn't found
+         */
         template<typename API>
         std::shared_ptr<API> loadAPI(const std::string &entryPoint) const
         {
