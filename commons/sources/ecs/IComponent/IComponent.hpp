@@ -2,7 +2,9 @@
 #define _I_COMPONENT_HPP_
 
 #include "ecs/Version/Version.hpp"
+#include "ecs/IEntity/IEntity.hpp"
 #include <iostream>
+#include <memory>
 
 /*!
  * @namespace ecs
@@ -23,16 +25,16 @@ namespace ecs {
         virtual ~IComponent() = 0;
 
         /*!
-         * @brief Get the parameter value, the parameter speed would return a int or a float for instance.
+         * @brief Set the parent entity
+         * @param entity The entity to set
          */
-        template <typename T>
-        virtual T &getParam(const std::string &type) const = 0;
+        virtual void setEntity(const std::weak_ptr<IEntity> &entity) = 0;
 
         /*!
-         * @brief Assign a new value to a parameter.
+         * @brief Get a component version
+         * @return
          */
-        template <typename T>
-        virtual void setParam(const std::string &type, T &value) = 0;
+        virtual const Version &getVersion() const = 0;
     };
 } /* ecs */
 

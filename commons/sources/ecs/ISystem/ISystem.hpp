@@ -36,7 +36,7 @@ namespace ecs {
         virtual void start() = 0;
 
         /*!
-         * @brief Forbide the system ability to execute.
+         * @brief Forbid the system ability to execute.
          */
         virtual void stop() = 0;
 
@@ -54,11 +54,6 @@ namespace ecs {
          * @brief Set the world where the system is executed.
          */
         virtual void setWorld(const std::weak_ptr<IWorld> &world) = 0;
-
-        /*!
-         * @brief Return a vector of string describing every components needed.
-         */
-        virtual std::vector<Version> getRequiredComponents() = 0;
     };
 } /* ecs */
 

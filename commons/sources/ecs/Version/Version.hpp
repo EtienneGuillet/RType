@@ -20,7 +20,7 @@ namespace ecs {
         /*!
          * @brief Ctor.
          */
-        Version(const std::string &type, int lilianVersion, int _titouanVersion, int _julianVersion, int _etienneVersion);
+        Version(const std::string &type, int lilianVersion, int titouanVersion, int julianVersion, int etienneVersion);
 
         /*!
          * @brief Dtor.

@@ -6,6 +6,7 @@
 #include "ecs/Version/Version.hpp"
 #include <iostream>
 #include <functional>
+#include <memory>
 
 /*!
  * @namespace ecs
@@ -27,43 +28,54 @@ namespace ecs {
 
         /*!
          * @brief Run all the system in the world.
+         * @param deltatime the elapsed delta time as ms
          */
         virtual void tick(long deltatime) = 0;
 
         /*!
          * @brief Add a new entity to the world.
+         * @param entity the entity to add
          */
-        virtual void pushEntity(std::shared_ptr<IEntity> entity) = 0;
+        virtual void pushEntity(const std::shared_ptr<IEntity> &entity) = 0;
 
         /*!
          * @brief Remove a entity from the world.
+         * @param id the entity id
+         * @return a shared ptr to the entity that as pop
          */
-        virtual IEntity &popEntity(std::shared_ptr<const Version &> version) = 0;
+        virtual std::shared_ptr<IEntity> popEntity(int id) = 0;
 
         /*!
          * @brief Return the entities that has the component asked as parameter.
+         * @param components the components seached
+         * @return entities that matched this set of components
          */
-        [[nodiscard]] virtual std::vector<IEntity> &getEntitiesWith(const std::vector<std::weak_ptr<IEntity>> &entity) const = 0;
+        [[nodiscard]] virtual std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components) const = 0;
 
         /*!
          * @brief Apply a rule to every entities that has the set of components given as parameter.
+         * @param components the set of components
+         * @param toApply the function to apply
          */
-        virtual void applyToEach(const std::vector<Version> &versions, const std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> &toApply) = 0;
+        virtual void applyToEach(const std::vector<Version> &components, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply) = 0;
 
         /*!
          * @brief Add a new system to the world.
+         * @param system the system to add
          */
-        virtual void addSystem(std::shared_ptr<ISystem> system) = 0;
+        virtual void addSystem(const std::shared_ptr<ISystem> &system) = 0;
 
         /*!
          * @brief Remove a system from the world.
+         * @param system the version of the system to remove
          */
-        virtual void removeSystem(const Version &version) = 0;
+        virtual void removeSystem(const Version &system) = 0;
 
         /*!
          * @brief Return the system asked as a string parameter.
+         * @param system the version of the system to remove
          */
-        virtual std::weak_ptr<ISystem> getSystem(const Version &version) = 0;
+        virtual std::weak_ptr<ISystem> getSystem(const Version &system) = 0;
     };
 } /* ecs */
 

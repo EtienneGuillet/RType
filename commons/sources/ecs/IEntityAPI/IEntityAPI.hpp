@@ -31,10 +31,9 @@ namespace ecs {
 
         /*!
          * @brief Create a new entity
-         * @param world The world to get the components from
          * @return A new entity
          */
-        [[nodiscard]] virtual std::shared_ptr<IEntity> createNewEntity(const std::weak_ptr<IWorld> &world) const = 0;
+        [[nodiscard]] virtual std::shared_ptr<IEntity> createNewEntity() const = 0;
     };
 } /* ecs */
 

@@ -25,17 +25,17 @@ namespace ecs {
         /*!
          * @brief Return the component asked as a string parameter.
          */
-        virtual const std::weak_ptr<IComponent> &getComponent(const std::string &componentType) = 0;
+        virtual std::weak_ptr<IComponent> getComponent(const Version &componentType) = 0;
 
         /*!
          * @brief Return true or false whether the entity has the component or not.
          */
-        virtual bool hasComponent(const Version &version) const = 0;
+        virtual bool hasComponent(const Version &componentType) const = 0;
 
         /*!
          * @brief Return true or false whether the entity has all the components or not.
          */
-        virtual bool hasComponents(const std::vector<Version> &componentsType) = 0;
+        virtual bool hasComponents(const std::vector<Version> &componentTypes) = 0;
 
         /*!
          * @brief Return the id of the entity.
