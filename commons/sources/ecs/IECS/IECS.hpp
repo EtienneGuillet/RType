@@ -1,13 +1,13 @@
 #ifndef _I_ECS_HPP_
 #define _I_ECS_HPP_
 
-#include "../IWorld/IWorld.hpp"
-#include "../IComponent/IComponent.hpp"
-#include "../IEntity/IEntity.hpp"
-#include "../IEntity/Version.hpp"
-#include "../IComponentAPI/IComponentAPI.hpp"
-#include "../IEntityAPI/IEntityAPI.hpp"
-#include "../ISystemAPI/ISystemAPI.hpp"
+#include "ecs/IWorld/IWorld.hpp"
+#include "ecs/IComponent/IComponent.hpp"
+#include "ecs/IEntity/IEntity.hpp"
+#include "ecs/Version/Version.hpp"
+#include "ecs/IComponentAPI/IComponentAPI.hpp"
+#include "ecs/IEntityAPI/IEntityAPI.hpp"
+#include "ecs/ISystemAPI/ISystemAPI.hpp"
 #include <iostream>
 #include <memory>
 
@@ -21,9 +21,9 @@ namespace ecs {
      * @class IECS
      * @brief An interface common to every ecs classes.
      */
-    class IECS
-    {
+    class IECS {
     public:
+        virtual ~IECS() = default;
 
         /*!
          * @brief Create a new IWorld and returns it.
@@ -38,7 +38,7 @@ namespace ecs {
         /*!
          * @brief Create a new IEntity and returns it.
          */
-        virtual std::shared_ptr<IEntity> createEntity(onst Version &version) = 0;
+        virtual std::shared_ptr<IEntity> createEntity(const Version &version) = 0;
 
         /*!
          * @brief Return true or false whether the ecs have the system.
@@ -48,7 +48,7 @@ namespace ecs {
         /*!
          * @brief Return true or false whether the ecs have the component.
          */
-        virtual bool knowComponent(const Version &name) = 0;
+        virtual bool knowComponent(const Version &version) = 0;
 
         /*!
          * @brief Return true or false whether the ecs have the entity.
@@ -58,17 +58,17 @@ namespace ecs {
         /*!
          * @brief Return true or false whether the ecs have the differents systems.
          */
-        virtual bool knowSystem(const std::vector<Version> &apis) = 0;
+        virtual bool knowSystem(const std::vector<Version> &versions) = 0;
 
         /*!
          * @brief Return true or false whether the ecs have the differents components.
          */
-        virtual bool knowsComponents(const std::vector<Version> &apis) = 0;
+        virtual bool knowsComponents(const std::vector<Version> &versions) = 0;
 
         /*!
          * @brief Return true or false whether the ecs have the differents entities.
          */
-        virtual bool knowsEntities(const std::vector<Version> &apis) = 0;
+        virtual bool knowsEntities(const std::vector<Version> &versions) = 0;
 
         /*!
          * @brief Make the ecs learn a new system.
