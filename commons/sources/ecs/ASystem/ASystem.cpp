@@ -1,5 +1,10 @@
 #include "ASystem.hpp"
 
+ASystem::ASystem()
+{
+    this.isRunning = false;
+}
+
 bool ASystem::isRunning()
 {
     return this.isRunning;

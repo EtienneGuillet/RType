@@ -19,11 +19,20 @@ namespace ecs {
     {
     public:
 
+        /*!
+         * @brief Ctor of the class ASystem.
+         */
+        virtual ASystem();
+
+        /*!
+         * @brief Dtor of the class ASystem.
+         */
         virtual ~ASystem() = default;
+
         /*!
          * @brief Return true or false whether the system is running or not.
          */
-        virtual bool isRunning();
+        virtual bool isRunning() const;
 
         /*!
          * @brief Start the system.
@@ -37,7 +46,7 @@ namespace ecs {
 
     private:
 
-        bool isRunning = false;
+        bool isRunning;
     };
 } /* ecs */
 
