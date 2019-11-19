@@ -23,14 +23,14 @@ namespace ecs {
         virtual ~ISystemAPI() = default;
 
         /*!
-         * @brief Get a version describing the system
-         * @return A version that can be created with this api
+         * @brief Get a version describing the system.
+         * @return A version that can be created with this api.
          */
         [[nodiscard]] virtual const Version &getVersion() const = 0;
 
         /*!
-         * @brief Create a new system
-         * @return A new system
+         * @brief Create a new system.
+         * @return A new system.
          */
         [[nodiscard]] virtual std::shared_ptr<ISystem> createNewSystem() const = 0;
 

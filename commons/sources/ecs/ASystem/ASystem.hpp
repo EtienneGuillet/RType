@@ -30,6 +30,7 @@ namespace ecs {
 
         /*!
          * @brief Return true or false whether the system is running or not.
+         * @return True if running, false otherwise.
          */
         virtual bool isRunning() const;
 

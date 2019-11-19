@@ -25,14 +25,14 @@ namespace ecs {
         virtual ~IComponent() = 0;
 
         /*!
-         * @brief Set the parent entity
-         * @param entity The entity to set
+         * @brief Set the parent entity.
+         * @param entity The entity to set.
          */
         virtual void setEntity(const std::weak_ptr<IEntity> &entity) = 0;
 
         /*!
          * @brief Get a component version
-         * @return
+         * @return the Version asked.
          */
         virtual const Version &getVersion() const = 0;
     };
