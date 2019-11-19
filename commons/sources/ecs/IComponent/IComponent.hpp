@@ -19,11 +19,6 @@ namespace ecs {
     public:
 
         /*!
-         * @brief Return the version of the component.
-         */
-        virtual Version getVersion() const = 0;
-
-        /*!
          * @brief Get the parameter value, the parameter speed would return a int or a float for instance.
          */
         template <typename T> virtual T &getParam(const std::string &type) const = 0;
