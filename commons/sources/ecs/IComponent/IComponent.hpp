@@ -14,14 +14,13 @@ namespace ecs {
      * @class IComponent
      * @brief An interface that is common to all components in the ecs.
      */
-    class IComponent
-    {
+    class IComponent {
     public:
 
         /*!
-         * @brief Return the version of the component.
+         * @brief Dtor of the class IComponent.
          */
-        virtual Version getVersion() const = 0;
+        virtual ~IComponent() = 0;
 
         /*!
          * @brief Get the parameter value, the parameter speed would return a int or a float for instance.

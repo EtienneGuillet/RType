@@ -25,23 +25,61 @@ namespace ecs {
         /*!
          * @brief Dtor.
          */
-        ~Version();
+        ~Version() = default;
 
         /*!
          * @brief Return a vector of the versions of every contributor, 4 in our instance.
+         * @return A vector which contains every version number
          */
-        std::vector<int> &getVersions();
+        const std::vector<int> &getVersions() const;
 
         /*!
-         * @brief Return a boolean, whether the version asked as parameter is inferior or not.
+         * @brief Return a string of the type
+         * @return the version type
          */
-        bool operator>(Version &compareVersion);
+        const std::string &getType() const;
 
         /*!
-         * @brief Return a boolean, whether the version asked as parameter is superior or not.
+         * @brief operator <
+         * @param rhs right hand side
+         * @return true or false
          */
-        bool operator<(Version &compareVersion);
+        bool operator<(const Version &rhs) const;
 
+        /*!
+         * @brief operator >
+         * @param rhs right hand side
+         * @return true or false
+         */
+        bool operator>(const Version &rhs) const;
+
+        /*!
+         * @brief operator <=
+         * @param rhs right hand side
+         * @return true or false
+         */
+        bool operator<=(const Version &rhs) const;
+
+        /*!
+         * @brief operator >=
+         * @param rhs right hand side
+         * @return true or false
+         */
+        bool operator>=(const Version &rhs) const;
+
+        /*!
+         * @brief operator ==
+         * @param rhs right hand side
+         * @return true or false
+         */
+        bool operator==(const Version &rhs) const;
+
+        /*!
+         * @brief operator ==
+         * @param rhs right hand side
+         * @return true or false
+         */
+        bool operator!=(const Version &rhs) const;
     private:
         std::string _type;
         std::vector<int> _versions;

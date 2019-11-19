@@ -1,8 +1,11 @@
 #ifndef _I_SYSTEM_HPP_
 #define _I_SYSTEM_HPP_
 
+#include "ecs/IWordl/IWorld.hpp"
+#include "ecs/Version/Version.hpp"
 #include <iostream>
 #include <vector>
+#include <memory>
 
 /*!
  * @namespace ecs
@@ -36,22 +39,22 @@ namespace ecs {
         /*!
          * @brief Return the type of the entity.
          */
-        virtual std::string getType() = 0;
+        virtual const Version &getType() const = 0;
 
         /*!
          * @brief Return true or false whether the system is running or not.
          */
-        virtual bool isRunning() = 0;
+        virtual bool isRunning() const = 0;
 
         /*!
          * @brief Set the world where the system is executed.
          */
-        virtual setWorld(IWorld &world) = 0;
+        virtual void setWorld(const std::weak_ptr<IWorld> &world) = 0;
 
         /*!
          * @brief Return a vector of string describing every components needed.
          */
-        virtual std::vector<std::string> getRequiredComponents() = 0;
+        virtual std::vector<Version> getRequiredComponents() = 0;
     };
 } /* ecs */
 

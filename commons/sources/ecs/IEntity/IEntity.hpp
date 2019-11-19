@@ -1,8 +1,9 @@
 #ifndef _I_ENTITY_HPP_
 #define _I_ENTITY_HPP_
 
-#include "IComponent.hpp"
+#include "ecs/IComponent/IComponent.hpp"
 #include <iostream>
+#include <memory>
 
 /*!
  * @namespace ecs
@@ -14,44 +15,43 @@ namespace ecs {
      * @class IEntity
      * @brief An interface common to every entities.
      */
-    class IEntity
-    {
+    class IEntity {
     public:
 
         /*!
          * @brief Return the component asked as a string parameter.
          */
-        virtual IComponent getComponent(const std::string &componentType) = 0;
+        virtual const std::weak_ptr<IComponent> &getComponent(const std::string &componentType) = 0;
 
         /*!
          * @brief Return true or false whether the entity has the component or not.
          */
-        virtual bool hasComponent(const std::string &componentType, Version &version) = 0;
+        virtual bool hasComponent(const Version &version) const = 0;
 
         /*!
          * @brief Return true or false whether the entity has all the components or not.
          */
-        virtual bool hasComponents(std::vector<Version> componentsType) = 0;
+        virtual bool hasComponents(const std::vector<Version> &componentsType) = 0;
 
         /*!
          * @brief Return the id of the entity.
          */
-        virtual int getID() = 0;
+        virtual int getID() const = 0;
 
         /*!
          * @brief Return the name of the entity.
          */
-        virtual std::string getName() = 0;
+        virtual const std::string &getName() const = 0;
 
         /*!
          * @brief Add a new component to the entity.
          */
-        virtual void addComponent(IComponent &Component) = 0;
+        virtual void addComponent(const std::shared_ptr<IComponent> &Component) = 0;
 
         /*!
          * @brief Remove a component from the entity.
          */
-        virtual IComponent removeComponent(const std::string &type) = 0;
+        virtual const std::shared_ptr<IComponent> &removeComponent(const Version &version) = 0;
     };
 } /* ecs */
 
