@@ -1,4 +1,4 @@
-image: epitechcontent/epitest-docker:latest
+image: lilianarago/epitest-docker-boost-sfml:latest
 
 stages:
   - build
