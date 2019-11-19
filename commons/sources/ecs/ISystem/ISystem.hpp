@@ -49,7 +49,7 @@ namespace ecs {
         /*!
          * @brief Set the world where the system is executed.
          */
-        virtual setWorld(const std::weak_ptr<IWorld> &world) = 0;
+        virtual void setWorld(const std::weak_ptr<IWorld> &world) = 0;
 
         /*!
          * @brief Return a vector of string describing every components needed.
