@@ -36,7 +36,7 @@ namespace b12software::network {
              * @brief Bind this socket to a port
              * @param port The port to bind to
              */
-            virtual void bind(int port) = 0;
+            virtual void bind(unsigned short port) = 0;
             /*!
              * @brief Unbind this socket from the port it was bind to
              *

@@ -50,7 +50,7 @@ namespace b12software::network {
             AsioUdpSocket &operator=(const AsioUdpSocket &rhs) = delete;
 
         public:
-            void bind(int port) override;
+            void bind(unsigned short port) override;
             void unbind() override;
             void registerHost(const HostInfos &infos) override;
             void unregisterHost() override;

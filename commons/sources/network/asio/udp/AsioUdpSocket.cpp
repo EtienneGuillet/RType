@@ -18,7 +18,7 @@ b12software::network::asio::AsioUdpSocket::AsioUdpSocket(boost::asio::io_context
 
 }
 
-void b12software::network::asio::AsioUdpSocket::bind(int port)
+void b12software::network::asio::AsioUdpSocket::bind(unsigned short port)
 {
     if (!_socket.is_open()) {
         try {
@@ -29,6 +29,7 @@ void b12software::network::asio::AsioUdpSocket::bind(int port)
         }
     }
     try {
+        _socket.set_option(boost::asio::ip::udp::socket::reuse_address(true));
         _socket.bind(endpoint(boost::asio::ip::udp::v4(), port));
     } catch (boost::system::system_error &e) {
         logger::DefaultLogger::Log(logger::LogLevelError, std::string("[AsioUdpSocket] Failed to bind: ") + e.what() + " [" + std::to_string(e.code().value()) + "(" + e.code().message() + ")]");
