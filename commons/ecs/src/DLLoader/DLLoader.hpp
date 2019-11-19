@@ -20,12 +20,12 @@ namespace ecs {
         /*!
          * @brief Load a dynamic library.
          */
-        virtual void loadDL(std::string path) = 0;
+        virtual void loadDL(const std::string &path) = 0;
 
         /*!
          * @brief Unload a dynamic library.
          */
-        virtual void unloadDL(std::string path) = 0;
+        virtual void unloadDL(const std::string &path) = 0;
     };
 } /* ecs */
 

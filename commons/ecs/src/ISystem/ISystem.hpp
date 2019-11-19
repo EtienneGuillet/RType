@@ -46,7 +46,7 @@ namespace ecs {
         /*!
          * @brief Set the world where the system is executed.
          */
-        virtual setWorld(IWorld world) = 0;
+        virtual setWorld(IWorld &world) = 0;
 
         /*!
          * @brief Return a vector of string describing every components needed.

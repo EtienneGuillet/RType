@@ -37,7 +37,7 @@ namespace ecs {
         /*!
          * @brief Create a new IEntity and returns it.
          */
-        virtual IEntity createEntity(std::string name) = 0;
+        virtual IEntity createEntity(const std::string &name) = 0;
 
         /*!
          * @brief Return true or false whether the ecs have the system.
@@ -83,7 +83,7 @@ namespace ecs {
          * @brief Make the ecs learn a new entity.
          */
         virtual void learnEntity(const std::string &type, const IEntityAPI &api) = 0;
-        
+
         /*!
          * @brief Make the ecs forget the system.
          */

@@ -21,12 +21,12 @@ namespace ecs {
         /*!
          * @brief Return the component asked as a string parameter.
          */
-        virtual IComponent getComponent(std::string componentType) = 0;
+        virtual IComponent getComponent(const std::string &componentType) = 0;
 
         /*!
          * @brief Return true or false whether the entity has the component or not.
          */
-        virtual bool hasComponent(std::string componentType, Version &version) = 0;
+        virtual bool hasComponent(const std::string &componentType, Version &version) = 0;
 
         /*!
          * @brief Return true or false whether the entity has all the components or not.
@@ -46,12 +46,12 @@ namespace ecs {
         /*!
          * @brief Add a new component to the entity.
          */
-        virtual void addComponent(IComponent Component) = 0;
+        virtual void addComponent(IComponent &Component) = 0;
 
         /*!
          * @brief Remove a component from the entity.
          */
-        virtual IComponent removeComponent(std::string type) = 0;
+        virtual IComponent removeComponent(const std::string &type) = 0;
     };
 } /* ecs */
 
