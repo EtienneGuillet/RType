@@ -445,4 +445,110 @@ b12software::network::tcp::ITcpServer <|-- b12software::network::asio::AsioTcpSe
 
 b12software::network::udp::Datagram <|-- rtype::network::RTypeDatagram
 
+title R-Type - Class Diagram
+
+abstract ecs::ASystem {
+    + ASystem()
+    + ~ASystem() = default
+    + bool isRunning() const
+    + void start()
+    + void stop()
+    - bool isRunning
+}
+
+class ecs::DLLoader {
+    + explicit DLLoader(const std::string &libraryPath)
+    + ~DLLoader()
+    + template<typename API> std::shared_ptr<API> loadAPI(const std::string &entryPoint) const
+    - HandlerType _instance
+}
+
+class ecs::DLLoader  {
+    + DLLoaderException(const std::string &msg, const std::string &where)
+    - std::string _what
+    - std::string _where
+}
+
+interface ecs::IComponent {
+    + {abstract} ~IComponent() = default
+    + {abstract} setEntity(const std::weak_ptr<IEntity> &entity)
+    + {abstract} const Version &getVersion() const
+}
+
+interface ecs::IECS {
+    + {abstract} ~IECS() = default
+    + {abstract} std::shared_ptr<IWorld> createWorld()
+    + {abstract} std::shared_ptr<IEntity> createEntity(const Version &version)
+    + {abstract} bool knowSystem(const Version &version)
+    + {abstract} bool knowEntity(const Version &version)
+    + {abstract} bool knowSystems(const std::vector<Version> &versions)
+    + {abstract} bool knowEntities(const std::vector<Version> &versions)
+    + {abstract} void learnSystem(const std::shared_ptr<ISystemAPI> &api)
+    + {abstract} void learnEntity(const std::shared_ptr<IEntityAPI> &api)
+    + {abstract} std::shared_ptr<ISystemAPI> &forgetSystem(const Version &version)
+    + {abstract} std::shared_ptr<IEntity> &forgetEntity(const Version &version)
+}
+
+interface ecs::IEntity {
+    + {abstract} ~IEntity() = default
+    + {abstract} std::weak_ptr<IComponent> getComponent(const Version &componentType)
+    + {abstract} bool hasComponent(const Version &componentType) const
+    + {abstract} bool hasComponents(const std::vector<Version> &componentTypes)
+    + {abstract} int getId() const
+    + {abstract} const std::string &getName() const
+    + {abstract} void addComponent(const std::shared_ptr<IComponent> &Component)
+    + {abstract} const std::shared_ptr<IComponent> &removeComponent(const Version &version)
+}
+
+interface ecs::IEntityAPI {
+    + {abstract} ~IEntityAPI() = default
+    + {abstract} [[nodiscard]] const Version &getVersion() const
+    + {abstract} [[nodiscard]] std::shared_ptr<IEntity> createNewEntity()
+}
+
+interface ecs::ISystem {
+    + {abstract} ~ISystem() = default
+    + {abstract} void tick(long deltatime)
+    + {abstract} void start()
+    + {abstract} void stop()
+    + {abstract} const Version &getType() const
+    + {abstract} bool isRunning() const
+    + {abstract} void setWorld(const std::weak_ptr<IWorld> &world)
+}
+
+interface ecs::ISystemAPI {
+    + {abstract} ~ISystemAPI() = default
+    + {abstract} [[nodiscard]] const Version &getVersion() const
+    + {abstract} [[nodiscard]] std::shared_ptr<ISystem> createNewSystem() const
+}
+
+interface ecs::IWorld {
+    + {abstract} ~IWorld() = default
+    + {abstract} tick(long deltatime)
+    + {abstract} void pushEntity(const std::shared_ptr<IEntity> &entity)
+    + {abstract} std::shared_ptr<IEntity> popEntity(int id)
+    + {abstract} std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components)
+    + {abstract} void applyToEach(const std::vector<Version> &components, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply)
+    + {abstract} void addSystem(const std::shared_ptr<ISystem> &system)
+    + {abstract} void removeSystem(const Version &system)
+    + {abstract} std::weak_ptr<ISystem> getSystem(const Version &system)
+}
+
+class ecs::Version {
+    + Version(const std::string, int lilianVersion, int titouanVersion, int julianVersion, int etienneVersion)
+    + ~Version() = default
+    + const std::vector<int> &getVersions() const
+    + const std::string &getType() const
+    + bool operator<(const Version &rhs) const
+    + bool operator>(const Version &rhs) const
+    + bool operator<=(const Version &rhs) const
+    + bool operator>=(const Version &rhs) const
+    + bool operator==(const Version &rhs) const
+    + bool operator!=(const Version &rhs) const
+    - std::string _type
+    - std::vector<int> _versions
+}
+
+ecs::ISystem <|-down- ecs::ASystem: Inheritance
+
 @enduml

@@ -24,7 +24,7 @@ namespace ecs {
         ASystem();
 
         /*!
-         * @brief Dtor of the class ASystem.
+         * @brief Dtor of the class ASystem. Set _isRunning to false.
          */
         virtual ~ASystem() = default;
 
