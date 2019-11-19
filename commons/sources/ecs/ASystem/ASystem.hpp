@@ -23,7 +23,7 @@ namespace ecs {
         /*!
          * @brief Return true or false whether the system is running or not.
          */
-        virtual bool isRunning();
+        virtual bool isRunning() const;
 
         /*!
          * @brief Start the system.
@@ -37,7 +37,7 @@ namespace ecs {
 
     private:
 
-        bool isRunning = false;
+        bool isRunning;
     };
 } /* ecs */
 
