@@ -10,7 +10,7 @@ namespace ecs {
         _versions.push_back(etienneVersion);
     }
 
-    std::vector<int> Version::getVersions() const {
+    const std::vector<int> &Version::getVersions() const {
         return _versions;
     }
 

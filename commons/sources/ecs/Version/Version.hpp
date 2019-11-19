@@ -31,7 +31,7 @@ namespace ecs {
          * @brief Return a vector of the versions of every contributor, 4 in our instance.
          * @return A vector which contains every version number
          */
-        std::vector<int> getVersions() const;
+        const std::vector<int> &getVersions() const;
 
         /*!
          * @brief Return a string of the type
