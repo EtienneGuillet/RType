@@ -24,7 +24,6 @@ build-binaries-linux:
     - cmake --build . --config Release
   artifacts:
     paths:
-      - build/bin/assets
       - build/bin/r-type_client
       - build/bin/r-type_server
 
