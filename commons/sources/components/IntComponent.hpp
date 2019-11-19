@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2022
-** intComponent.hpp
+** IntComponent.hpp
 ** File description:
 ** Created by tpautier,
 */
@@ -12,12 +12,12 @@
 #include "logger/DefaultLogger.hpp"
 
 
-class intComponent : public ecs::IComponent {
+class IntComponent : public ecs::IComponent {
 
     public:
 
-        intComponent(int value);
-        ~intComponent() override = default;
+        IntComponent(int value);
+        ~IntComponent() override = default;
 
         void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
         const ecs::Version &getVersion() const override;
