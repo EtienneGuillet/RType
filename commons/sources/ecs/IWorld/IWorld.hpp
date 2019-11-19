@@ -22,7 +22,7 @@ namespace ecs {
         /*!
          * @brief Dtor of the class IWord.
          */
-        virtual ~IWord() = 0;
+        virtual ~IWorld() = 0;
 
         /*!
          * @brief Run all the system in the world.
@@ -32,17 +32,17 @@ namespace ecs {
         /*!
          * @brief Add a new entity to the world.
          */
-        virtual void pushEntity(shared_ptr<IEntity> entity) = 0;
+        virtual void pushEntity(std::shared_ptr<IEntity> entity) = 0;
 
         /*!
          * @brief Remove a entity from the world.
          */
-        virtual IEntity &popEntity(shared_ptr<const Version &> version) = 0;
+        virtual IEntity &popEntity(std::shared_ptr<const Version &> version) = 0;
 
         /*!
          * @brief Return the entities that has the component asked as parameter.
          */
-        virtual std::vector<IEntity> &getEntitiesWith(std::vector<weak_ptr<IEntity>> const entity) const = 0;
+        [[nodiscard]] virtual std::vector<IEntity> &getEntitiesWith(const std::vector<std::weak_ptr<IEntity>> &entity) const = 0;
 
         /*!
          * @brief Apply a rule to every entities that has the set of components given as parameter.
@@ -52,7 +52,7 @@ namespace ecs {
         /*!
          * @brief Add a new system to the world.
          */
-        virtual void addSystem(shared_ptr<ISystem> system) = 0;
+        virtual void addSystem(std::shared_ptr<ISystem> system) = 0;
 
         /*!
          * @brief Remove a system from the world.
@@ -62,7 +62,7 @@ namespace ecs {
         /*!
          * @brief Return the system asked as a string parameter.
          */
-        virtual weak_ptr<ISystem> getSystem(const Version &version) = 0;
+        virtual std::weak_ptr<ISystem> getSystem(const Version &version) = 0;
     };
 } /* ecs */
 
