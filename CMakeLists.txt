@@ -121,3 +121,5 @@ add_custom_target(tests_run COMMAND tests_client COMMAND tests_server)
 file(GLOB BUILD_DEPENDENCY "build_dependency/*")
 
 file(COPY ${BUILD_DEPENDENCY} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+add_subdirectory(systems)
