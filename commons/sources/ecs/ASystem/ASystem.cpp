@@ -19,3 +19,7 @@ void ecs::ASystem::stop()
 {
     _isRunning = false;
 }
+
+void ecs::ASystem::setWorld(const std::weak_ptr<IWorld> &world) {
+    _world = world;
+}

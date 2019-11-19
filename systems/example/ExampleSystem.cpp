@@ -1,5 +1,5 @@
 #include "ExampleSystem.hpp"
-#include "../../commons/sources/logger/StandardLogger.hpp"
+#include "logger/StandardLogger.hpp"
 
 const ecs::Version ExampleSystem::Version = ecs::Version("ExampleSystem", 1, 0, 0, 0);
 
