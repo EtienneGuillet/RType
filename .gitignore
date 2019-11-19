@@ -1,6 +1,7 @@
 build
 r-type_server
 r-type_client
+docs/rfc69420*
 
 # Created by https://www.gitignore.io/api/c++,vim,cmake,emacs,clion+all,visualstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=c++,vim,cmake,emacs,clion+all,visualstudio,visualstudiocode

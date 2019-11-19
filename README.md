@@ -55,6 +55,10 @@ cmake --build . --config Release
 ```
 To change the configuration change between Debug and Release
 
+## Build RFC
+
+To build the RFC as HTMl or TXT you must use the script [generate_rfc.sh](./docs/generate_rfc.sh)
+
 ## FAQ
 CLion fails to load CMakeList.txt, why?
 

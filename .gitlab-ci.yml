@@ -3,6 +3,7 @@ image: epitechcontent/epitest-docker:latest
 stages:
   - build
   - test
+  - docs
 
 before_script:
   - conan remote add conan-center https://api.bintray.com/conan/conan/conan-center -f
@@ -35,3 +36,14 @@ run-tests:
     - cmake .. -G "Unix Makefiles"
     - cmake --build . --config Release
     - make tests_run
+
+rfc:
+  stage: docs
+  script:
+    - cd docs
+    - ./generate_rfc.sh
+    - cat rfc69420
+  artifacts:
+    paths:
+      - docs/rfc69420
+      - docs/rfc69420.html
