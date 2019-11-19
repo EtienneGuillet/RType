@@ -1,3 +1,448 @@
 @startuml
+'skinparam classAttributeIconSize 0
+set namespaceSeparator ::
+
+'Classes
+
+'-Exceptions
+
+class std::exception
+
+class b12software::exception::B12SoftwareException {
+    + B12SoftwareException(const std::string &what, const std::string &where)
+    + ~B12SoftwareException()
+    + const char *what() const noexcept
+    + const char *where() const noexcept
+
+    - std::string _what
+    - std::string _where
+}
+
+class b12software::exception::CircularBufferException {
+    + CircularBufferException(const std::string &what, const std::string &where): B12SoftwareException(what, where)
+}
+
+class b12software::exception::NetworkException {
+    + NetworkException(const std::string &what, const std::string &where)
+}
+
+class b12software::exception::NullPointerException {
+    + NullPointerException(const std::string &what, const std::string &where)
+}
+
+class b12software::exception::NotEnoughDataInCircularBufferException {
+    + NotEnoughDataInCircularBufferException(const std::string &what, const std::string &where)
+}
+
+'-Containers
+
+class b12software::containers::CircularBuffer {
+    + explicit CircularBuffer(size_t size)
+    + CircularBuffer(const CircularBuffer &other)
+    + ~CircularBuffer()
+    + CircularBuffer &operator=(const CircularBuffer &rhs)
+    + bool write(const void *data, size_t size)
+    + size_t read(void *toWrite, size_t size)
+    + size_t read(std::string &str, const char *delim, size_t size)
+    + void clear()
+    + bool isFull() const
+    + size_t getNbBufferedBytes() const
+    + size_t getBufferSize() const
+
+    - size_t _bufferSize
+    - size_t _readIdx
+    - size_t _writeIdx
+    - std::uint8_t *_buffer
+    - bool _full
+    - size_t _nbBufferedBytes
+}
+
+class b12software::containers::ThreadSafeCircularBuffer {
+    + ThreadSafeCircularBuffer(int size)
+    + ThreadSafeCircularBuffer(const ThreadSafeCircularBuffer &other)
+    + ~ThreadSafeCircularBuffer()
+    + ThreadSafeCircularBuffer &operator=(const ThreadSafeCircularBuffer &rhs)
+    + void lock()
+    + void unlock()
+    + void tryLock()
+    - ThreadSafeCircularBuffer(const ThreadSafeCircularBuffer &other, const std::lock_guard<std::recursive_mutex> &)
+    - mutable std::recursive_mutex _mutex
+}
+
+class b12software::containers::ThreadSafeQueue<T : queue elements type> {
+    + ThreadSafeQueue()
+    + ThreadSafeQueue(const ThreadSafeQueue<T> &other)
+    + ThreadSafeQueue<T> &operator=(const ThreadSafeQueue<T> &rhs)
+    + T &front()
+    + T &back()
+    + bool empty() const
+    + size_t size() const
+    + void push(const T &elem)
+    + void push(T &&elem)
+    + void emplace<class... Args>(Args&&... args)
+    + void pop()
+    + void lock()
+    + void unlock()
+    + void trylock()
+
+    - mutable std::recursive_mutex _mutex
+    - std::condition_variable_any _variable
+    - std::queue<T> _queue
+}
+
+'-Logger
+
+enum b12software::logger::LogLevel {
+    LogLevelDebug
+    LogLevelInfo
+    LogLevelWarn
+    LogLevelError
+    LogLevelFatal
+    LogLevelNone
+}
+
+interface b12software::logger::ILogger {
+    + {abstract} void setLogLevel(LogLevel level)
+    + {abstract} LogLevel getLogLevel() const
+    + {abstract} void log(LogLevel messageLevel, const std::string &message)
+}
+
+class b12software::logger::StandardLogger {
+    + StandardLogger(LogLevel defaultLevel = LogLevelError)
+    + ~StandardLogger()
+    + StandardLogger(const StandardLogger &other)
+    + StandardLogger &operator=(const StandardLogger &rhs)
+
+    - LogLevel _currentLevel
+}
+
+class b12software::logger::DefaultLogger {
+    - DefaultLogger()
+    + {static} void SetDefaultLogger(const std::shared_ptr<ILogger> &logger)
+    + {static} const std::shared_ptr<ILogger> &GetCurrentLogger()
+    + {static} void ClearDefautLogger()
+    + {static} void SetLogLevel(LogLevel level)
+    + {static} LogLevel GetLogLevel()
+    + {static} void Log(LogLevel messageLevel, const std::string &message)
+    - {static} std::shared_ptr<ILogger> currentLogger
+}
+
+'-Network
+
+class b12software::network::HostInfos << (S, orchid) >> {
+    + std::string host
+    + unsigned short port
+}
+
+interface b12software::network::INetworkManager {
+    + {abstract} void start()
+    + {abstract} void stop()
+    + {abstract} std::weak_ptr<udp::IUdpSocket> createNewUdpSocket()
+    + {abstract} std::weak_ptr<tcp::ITcpClient> createNewTcpClient()
+    + {abstract} std::weak_ptr<tcp::ITcpServer> createNewTcpServer()
+    + {abstract} void destroyUdpSocket(const std::weak_ptr<udp::IUdpSocket> &socket)
+    + {abstract} void destroyTcpClient(const std::weak_ptr<tcp::ITcpClient> &client)
+    + {abstract} void destroyTcpServer(const std::weak_ptr<tcp::ITcpServer> &server)
+}
+
+class b12software::network::udp::Datagram {
+    + Datagram()
+    + Datagram(const HostInfos &destination)
+    + Datagram(const void *data, size_t size)
+    + Datagram(const HostInfos &destination, const void *data, size_t size)
+    + Datagram(const Datagram &other)
+    + ~Datagram()
+    + Datagram &operator=(const Datagram &rhs)
+    + void setData(const void *data, size_t size)
+    + void setDestination(const HostInfos &infos)
+    + const void *getData() const
+    + size_t getDatagramSize() const
+    + const HostInfos &getHostInfos() const
+    + bool isValid() const
+    + void clear()
+
+    # byte *_data
+    # size_t _size
+    # HostInfos _infos
+}
+
+interface b12software::network::udp::IUdpSocket {
+    + {abstract} void bind(int port)
+    + {abstract} void unbind()
+    + {abstract} void registerHost(const HostInfos &infos)
+    + {abstract} void unregisterHost()
+    + {abstract} void send(const void *data, size_t size, const HostInfos &infos)
+    + {abstract} void send(const Datagram &datagram)
+    + {abstract} Datagram receive()
+    + {abstract} bool hasPendingDatagrams() const
+    + {abstract} unsigned short getPort() const
+    + {abstract} std::string getAddress() const
+}
+
+interface b12software::network::tcp::IPacket {
+    + {abstract} size_t getSize() const
+    + {abstract} const void *getData() const
+    + {abstract} size_t setData(const void *data, size_t size)
+    + {abstract} void clear()
+    + {abstract} bool isValid() const
+}
+
+interface b12software::network::tcp::ITcpClient {
+    + {abstract} void connect(const HostInfos &infos)
+    + {abstract} void disconnect()
+    + {abstract} bool isConnected() const
+    + {abstract} const HostInfos &getHostInfos() const
+    + {abstract} const HostInfos &getSelfInfos() const
+    + {abstract} size_t send(const void *data, size_t size)
+    + {abstract} void send(const IPacket &packet)
+    + {abstract} size_t receive(void *data, size_t size)
+    + {abstract} void receive(IPacket &packet)
+    + {abstract} size_t getAvailableBytesSize() const
+}
+
+interface b12software::network::tcp::ITcpServer {
+    + {abstract} void bind(int port)
+    + {abstract} void unbind()
+    + {abstract} void disconnect(int clientId)
+    + {abstract} void sendToAll(const void *data, size_t size)
+    + {abstract} void sendToAll(const IPacket &packet)
+    + {abstract} void sendToClient(int clientId, const void *data, size_t size)
+    + {abstract} void sendToClient(int clientId, const IPacket &packet)
+    + {abstract} void sendToClients(const std::vector<int> &clientIds, const void *data, size_t size)
+    + {abstract} void sendToClients(const std::vector<int> &clientIds, const IPacket &packet)
+    + {abstract} void sendExceptClients(const std::vector<int> &exceptIds, const void *data, size_t size)
+    + {abstract} void sendExceptClients(const std::vector<int> &exceptIds, const IPacket &packet)
+    + {abstract} std::vector<int> getConnectedClientIds()
+    + {abstract} std::vector<int> getNewConnectedClientIds()
+    + {abstract} std::vector<int> getDisconnectedClientIds()
+    + {abstract} std::weak_ptr<ITcpClient> getClientById(int clientId)
+}
+
+class b12software::network::asio::AsioNetworkManager {
+    + AsioNetworkManager()
+    + ~AsioNetworkManager()
+    - {static} void networkingThreadFunc(AsioNetworkManager *manager)
+    - boost::asio::io_context _ioContext
+    - boost::asio::io_context::work *_worker
+    - std::vector<std::shared_ptr<udp::IUdpSocket>> _udpSockets
+    - std::vector<std::shared_ptr<tcp::ITcpClient>> _tcpClients
+    - std::vector<std::shared_ptr<tcp::ITcpServer>> _tcpServers
+    - std::thread _networkThread
+    - bool _started
+}
+
+class b12software::network::asio::AsioUdpSocket {
+    + AsioUdpSocket(boost::asio::io_context &context)
+    + ~AsioUdpSocket()
+    - void startReceiving()
+    - void sendHandler(const std::shared_ptr<udp::Datagram> &message, const boost::system::error_code &error, size_t byteTransferred)
+    - void receiveHandler(const std::shared_ptr<std::array<char, maxReceiveDatagramSize>> &array, const std::shared_ptr<AsioUdpSocket::endpoint> &endpoint, const boost::system::error_code &error, size_t byteReceived)
+    - boost::asio::io_context &_context
+    - socket _socket
+    - containers::ThreadSafeQueue<udp::Datagram> _datagrams
+    - HostInfos _defaultHost
+    - {static} static constexpr size_t maxReceiveDatagramSize
+}
+
+note left
+using socket = boost::asio::ip::udp::socket;
+using endpoint = boost::asio::ip::udp::endpoint;
+end note
+
+class b12software::network::asio::AsioTcpServer {
+    + AsioTcpServer(boost::asio::io_context &context)
+    + ~AsioTcpServer()
+    - void recomputeDisconnected()
+    - void startAccept()
+    - void handleAccept(boost::shared_ptr<AsioTcpClient> client, const boost::system::error_code& error)
+    - boost::asio::io_context &_context
+    - acceptor _acceptor
+    - std::map<int, std::shared_ptr<AsioTcpClient>> _clients
+    - mutex _clientMapMutex
+    - mutex _idVectorMutex
+    - std::vector<int> _newIds
+    - std::queue<int> _freeIds
+    - std::vector<int> _disconnectedIds
+    - int _maxId
+}
+
+note left
+using acceptor = boost::asio::ip::tcp::acceptor;
+using endpoint = boost::asio::ip::tcp::endpoint;
+using mutex = std::recursive_mutex;
+using lock = std::scoped_lock<mutex>;
+end note
+
+class b12software::network::asio::AsioTcpClient {
+    + AsioTcpClient(boost::asio::io_context &context)
+    + ~AsioTcpClient()
+    + socket &getSocket()
+    + void recompute()
+    - void startReceive()
+    - void handleConnect(const boost::system::error_code &error, boost::asio::ip::tcp::resolver::iterator endpointIterator)
+    - void handleSend(const std::shared_ptr<byte[]> &message, const boost::system::error_code &error, size_t byteTransferred)
+    - void handleReceive(const std::shared_ptr<byte[]> &message, const boost::system::error_code &error, size_t byteTransferred)
+    - {static} constexpr size_t bufferSizeInBytes
+    - boost::asio::io_context &_context
+    - socket _socket
+    - HostInfos _distantInfos
+    - HostInfos _selfInfos
+    - containers::ThreadSafeCircularBuffer _buffer
+}
+
+note left
+using socket = boost::asio::ip::tcp::socket;
+using endpoint = boost::asio::ip::tcp::endpoint;
+using byte = unsigned char;
+end note
+
+'-Rtype datagram
+
+class rtype::network::RTypeDatagram {
+    + RTypeDatagram()
+    + RTypeDatagram(const RTypeDatagram &other)
+    + RTypeDatagram(const Datagram &other)
+    + RTypeDatagram(const HostInfos &destination)
+    + RTypeDatagram(const void *data, size_t size)
+    + RTypeDatagram(const HostInfos &destination, const void *data, size_t size)
+    + ~RTypeDatagram()
+    + RTypeDatagram &operator=(const RTypeDatagram &rhs)
+    + RTypeDatagram &operator=(const Datagram &rhs)
+    + void initSingleOpCodeDatagram(RTypeDatagramType type)
+    + void init100ConnectDatagram(const std::string &username)
+    + void init111RoomListDatagram(const std::vector<RTypeDatagramRoom> &rooms)
+    + void init112CreateRoomDatagram(const RTypeDatagramRoom &room)
+    + void init116JoinRoomDatagram(const RTypeDatagramRoom &room)
+    + void init117RoomJoinedDatagram(const std::vector<std::string> &users)
+    + void init200ActionDatagram(const RTypeDatagramAction &action)
+    + void init210DisplayDatagram(const RTypeDatagramDisplay &entity)
+    + void init220LivingDatagram(const RTypeDatagramLiving &data)
+    + void init230ChargeDatagram(unsigned char charge)
+    + void init240ScoreDatagram(const RTypeDatagramScore &score)
+    + void init250EndGameDatagram(const RTypeDatagramScore &score)
+    + unsigned short getType() const
+    + void extract100ConnectDatagram(std::string &username)
+    + void extract111RoomListDatagram(std::vector<RTypeDatagramRoom> &rooms)
+    + void extract112CreateRoomDatagram(RTypeDatagramRoom &room)
+    + void extract116JoinRoomDatagram(RTypeDatagramRoom &room)
+    + void extract117RoomJoinedDatagram(std::vector<std::string> &users)
+    + void extract200ActionDatagram(RTypeDatagramAction &action)
+    + void extract210DisplayDatagram(RTypeDatagramDisplay &entity)
+    + void extract220LivingDatagram(RTypeDatagramLiving &data)
+    + void extract230ChargeDatagram(unsigned char &charge)
+    + void extract240ScoreDatagram(RTypeDatagramScore &score)
+    + void extract250EndGameDatagram(RTypeDatagramScore &score)
+}
+
+class rtype::network::RTypeDatagramAction << (S, orchid) >> {
+    + bool shot
+    + bool up
+    + bool down
+    + bool left
+    + bool right
+}
+
+class rtype::network::RTypeDatagramDisplay::Vector2 << (S, orchid) >> {
+    + int x
+    + int y
+}
+
+class rtype::network::RTypeDatagramDisplay::Vector3 << (S, orchid) >> {
+    + int x
+    + int y
+    + int z
+}
+
+class rtype::network::RTypeDatagramDisplay << (S, orchid) >> {
+    + uint64_t entityId
+    + Vector3 position
+    + Vector2 rotation
+    + Vector2 scale
+    + uint32_t type
+}
+
+class rtype::network::RTypeDatagramLiving << (S, orchid) >> {
+    + uint64_t entityId
+    + int life
+}
+
+class rtype::network::RTypeDatagramRoom << (S, orchid) >> {
+    + std::string name
+    + unsigned char capacity
+    + unsigned char slotUsed
+    + bool hasPassword
+    + std::string password
+}
+
+class rtype::network::RTypeDatagramScore << (S, orchid) >> {
+    + unsigned int p1Score
+    + unsigned int p2Score
+    + unsigned int p3Score
+    + unsigned int p4Score
+}
+
+enum rtype::network::RTypeDatagramType {
+    T_100_CONNECT = 100
+    T_101_CONNECTED = 101
+    T_102_PING = 102
+    T_103_PONG = 103
+    T_104_DISCONNECT = 104
+    T_105_DISCONNECTED = 105
+    T_110_GET_ROOMS = 110
+    T_111_ROOM_LIST = 111
+    T_112_CREATE_ROOM = 112
+    T_113_ROOM_CREATED = 113
+    T_114_QUIT_ROOM = 114
+    T_115_ROOM_QUITTED = 115
+    T_116_JOIN_ROOM = 116
+    T_117_ROOM_JOINED = 117
+    T_200_ACTION = 200
+    T_210_DISPLAY = 210
+    T_220_LIVING = 220
+    T_230_CHARGE = 230
+    T_240_SCORE = 240
+    T_250_END_GAME = 250
+    T_260_GAME_ENDED = 260
+    T_300_UNKNOWN_PACKET = 300
+    T_301_INVALID_PACKET = 301
+    T_302_INVALID_PARAM = 302
+    T_303_USERNAME_ALREADY_USED = 303
+    T_304_ROOM_NAME_ALREADY_USED = 304
+    T_305_NOT_IN_A_ROOM = 305
+    T_306_UNKNOWN_ROOM = 306
+    T_307_INVALID_PASSWORD = 307
+    T_308_ROOM_FULL = 308
+}
+
+'Extension
+
+'-Exceptions
+
+std::exception <|-- b12software::exception::B12SoftwareException
+
+b12software::exception::B12SoftwareException <|-- b12software::exception::CircularBufferException
+b12software::exception::CircularBufferException <|-- b12software::exception::NotEnoughDataInCircularBufferException
+
+b12software::exception::B12SoftwareException <|-- b12software::exception::NetworkException
+
+b12software::exception::B12SoftwareException <|-- b12software::exception::NullPointerException
+
+'-Containers
+b12software::containers::CircularBuffer <|-- b12software::containers::ThreadSafeCircularBuffer
+
+'-Logger
+
+b12software::logger::ILogger <|- b12software::logger::StandardLogger
+
+'-Network
+
+b12software::network::INetworkManager <|-- b12software::network::asio::AsioNetworkManager
+b12software::network::udp::IUdpSocket <|-- b12software::network::asio::AsioUdpSocket
+b12software::network::tcp::ITcpClient <|-- b12software::network::asio::AsioTcpClient
+b12software::network::tcp::ITcpServer <|-- b12software::network::asio::AsioTcpServer
+
+'-Rtype datagram
+
+b12software::network::udp::Datagram <|-- rtype::network::RTypeDatagram
 
 @enduml
