@@ -46,10 +46,19 @@ run-tests:
 rfc:
   stage: docs
   script:
-    - cd docs
-    - ./generate_rfc.sh
-    - cat rfc69420
+    - ./scripts/generate_rfc.sh
+    - cat docs/rfc69420
   artifacts:
     paths:
       - docs/rfc69420
       - docs/rfc69420.html
+
+uml:
+  stage: docs
+  before_script:
+    - dnf -y install plantuml graphviz
+  script:
+    - plantuml rtype.puml
+  artifacts:
+    paths:
+      - rtype.png
