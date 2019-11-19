@@ -1,7 +1,7 @@
 #ifndef _I_COMPONENT_HPP_
 #define _I_COMPONENT_HPP_
 
-#include "ecs/Version/Version.hpp"
+#include "../Version/Version.hpp"
 #include <iostream>
 
 /*!
