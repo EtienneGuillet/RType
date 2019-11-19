@@ -5,8 +5,8 @@ file(
         ${PROJECT_SOURCE_DIR}/server/sources/*.hpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
-        ${PROJECT_SOURCE_DIR}/server/tests/*.cpp
-        ${PROJECT_SOURCE_DIR}/server/tests/*.hpp
+        ${PROJECT_SOURCE_DIR}/commons/tests/*.cpp
+        ${PROJECT_SOURCE_DIR}/commons/tests/*.hpp
         *.cpp
         *.hpp
 )
