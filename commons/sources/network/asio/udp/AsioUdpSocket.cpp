@@ -7,7 +7,6 @@
 
 /* Created the 26/09/2019 at 11:42 by julian.frabel@epitech.eu */
 
-#include <boost/bind.hpp>
 #include "logger/DefaultLogger.hpp"
 #include "AsioUdpSocket.hpp"
 #include "exception/NetworkException.hpp"
@@ -78,7 +77,7 @@ void b12software::network::asio::AsioUdpSocket::send(const b12software::network:
     _socket.async_send_to(
         boost::asio::buffer(message->getData(), message->getDatagramSize()),
         sendTo,
-        boost::bind(&AsioUdpSocket::sendHandler, this, message, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+        std::bind(&AsioUdpSocket::sendHandler, this, message, std::placeholders::_1, std::placeholders::_2)
     );
 }
 
@@ -114,7 +113,7 @@ void b12software::network::asio::AsioUdpSocket::startReceiving()
     _socket.async_receive_from(
         boost::asio::buffer(*buffer),
         *endp,
-        boost::bind(&AsioUdpSocket::receiveHandler, this, buffer, endp, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+        std::bind(&AsioUdpSocket::receiveHandler, this, buffer, endp, std::placeholders::_1, std::placeholders::_2)
     );
 }
 
