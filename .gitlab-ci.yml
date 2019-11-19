@@ -5,7 +5,7 @@ stages:
   - test
   - docs
 
-conan-remotes: &conan-remotes |
+before_script:
   - conan remote add conan-center https://bintray.com/conan/conan-center
   - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
   - conan remote add epitech https://api.bintray.com/conan/epitech/public-conan
@@ -13,7 +13,6 @@ conan-remotes: &conan-remotes |
 build-binaries-linux:
   stage: build
   script:
-    - *conan-remotes
     - mkdir build
     - cd build
     - conan install .. --build missing
@@ -23,7 +22,6 @@ build-binaries-linux:
 run-tests:
   stage: test
   script:
-    - *conan-remotes
     - mkdir build
     - cd build
     - conan install .. --build missing
@@ -40,3 +38,4 @@ rfc:
   artifacts:
     paths:
       - ./docs/rfc69420
+      - ./docs/rfc69420.html
