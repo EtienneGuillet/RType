@@ -67,4 +67,10 @@ namespace ecs {
     };
 } /* ecs */
 
+#else
+
+namespace ecs {
+    class IWorld;
+}
+
 #endif /* _I_WORLD_HPP_ */

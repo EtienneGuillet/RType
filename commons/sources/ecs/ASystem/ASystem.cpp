@@ -1,21 +1,21 @@
 #include "ecs/ASystem/ASystem.hpp"
 
-ASystem::ASystem()
+ecs::ASystem::ASystem()
 {
-    this.isRunning = false;
+    _isRunning = false;
 }
 
-bool ASystem::isRunning()
+bool ecs::ASystem::isRunning() const
 {
-    return this.isRunning;
+    return _isRunning;
 }
 
-void ASystem::start()
+void ecs::ASystem::start()
 {
-    this.isRunning = true;
+    _isRunning = true;
 }
 
-void ASystem::stop()
+void ecs::ASystem::stop()
 {
-    this.isRunning = false;
+    _isRunning = false;
 }

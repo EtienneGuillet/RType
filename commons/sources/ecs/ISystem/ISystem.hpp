@@ -1,7 +1,7 @@
 #ifndef _I_SYSTEM_HPP_
 #define _I_SYSTEM_HPP_
 
-#include "ecs/IWordl/IWorld.hpp"
+#include "ecs/IWorld/IWorld.hpp"
 #include "ecs/Version/Version.hpp"
 #include <iostream>
 #include <vector>
@@ -20,6 +20,10 @@ namespace ecs {
     class ISystem
     {
     public:
+        /*!
+         * @brief dtor
+         */
+        virtual ~ISystem() = default;
 
         /*!
          * @brief Run the system main functionality.
@@ -57,5 +61,11 @@ namespace ecs {
         virtual std::vector<Version> getRequiredComponents() = 0;
     };
 } /* ecs */
+
+#else
+
+namespace ecs {
+    class ISystem;
+}
 
 #endif /* _I_SYSTEM_HPP_ */

@@ -17,6 +17,10 @@ namespace ecs {
      */
     class IEntity {
     public:
+        /*!
+         * @brief dtor
+         */
+        virtual ~IEntity() = default;
 
         /*!
          * @brief Return the component asked as a string parameter.
@@ -54,5 +58,11 @@ namespace ecs {
         virtual const std::shared_ptr<IComponent> &removeComponent(const Version &version) = 0;
     };
 } /* ecs */
+
+#else
+
+namespace ecs {
+    class IEntity;
+}
 
 #endif /* _I_ENTITY_HPP_ */

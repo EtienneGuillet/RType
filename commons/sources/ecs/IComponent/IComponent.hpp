@@ -25,13 +25,21 @@ namespace ecs {
         /*!
          * @brief Get the parameter value, the parameter speed would return a int or a float for instance.
          */
-        template <typename T> virtual T &getParam(const std::string &type) const = 0;
+        template <typename T>
+        virtual T &getParam(const std::string &type) const = 0;
 
         /*!
          * @brief Assign a new value to a parameter.
          */
-        template <typename T> virtual void setParam(const std::string &type, T &value) = 0;
+        template <typename T>
+        virtual void setParam(const std::string &type, T &value) = 0;
     };
 } /* ecs */
+
+#else
+
+namespace ecs {
+    class IComponent;
+}
 
 #endif /* _I_COMPONENT_HPP_ */

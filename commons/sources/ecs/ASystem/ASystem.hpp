@@ -1,7 +1,7 @@
 #ifndef _A_SYSTEM_HPP_
 #define _A_SYSTEM_HPP_
 
-#include "ecs/IWord/IWorld.hpp"
+#include "ecs/IWorld/IWorld.hpp"
 #include <iostream>
 #include <vector>
 
@@ -21,7 +21,7 @@ namespace ecs {
         /*!
          * @brief Ctor of the class ASystem.
          */
-        virtual ASystem();
+        ASystem();
 
         /*!
          * @brief Dtor of the class ASystem.
@@ -45,7 +45,7 @@ namespace ecs {
 
     private:
 
-        bool isRunning;
+        bool _isRunning;
     };
 } /* ecs */
 
