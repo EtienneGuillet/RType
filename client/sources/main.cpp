@@ -8,32 +8,43 @@
 #include <ecs/IECS/IECS.hpp>
 #include <memory>
 #include <ecs/DLLoader/DLLoader.hpp>
+#include <ecs/IECS/ECS.hpp>
 #include <logger/DefaultLogger.hpp>
 #include <logger/StandardLogger.hpp>
+#include <chrono>
 
-/* Created the 07/11/2019 at 18:00 by julian.frabel@epitech.eu */
-
-<<<<<<< HEAD
-#include "logger/DefaultLogger.hpp"
-
-int main()
+int main(int ac, char **av)
 {
-    std::cout << "Loading default logger..." << std::endl;
-    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>());
-    std::cout << "Default logger loaded!" << std::endl;
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 
+    if (ac != 3) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelInfo, "./r-type_client path_to_example_entity path_to_example_system\n");
+        return 1;
+    }
 
-    std::unique_ptr<IECS> ecs = new ECS();
-    std::unique_ptr<IWorld> world = ecs.createWorld();
+    ecs::DLLoader exampleEntityLoader(av[1]);
+    ecs::DLLoader exampleSystemLoader(av[2]);
 
+    auto exampleEntityAPI = exampleEntityLoader.loadAPI<ecs::IEntityAPI>("entryPointEntityAPI");
+    auto exampleSystemAPI = exampleSystemLoader.loadAPI<ecs::ISystemAPI>("entryPointSystemAPI");
+
+    auto exampleEntity = exampleEntityAPI->createNewEntity();
+    auto exampleSystem = exampleSystemAPI->createNewSystem();
+
+    auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
+    auto world = ecs->createWorld();
+
+    world->addSystem(exampleSystem);
+    world->pushEntity(exampleEntity);
 
     auto start = std::chrono::system_clock::now();
-    auto end = std::chrono::system_clock::now();
-    while () {
-        end = std::chrono_system_clock::now();
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() < 1000) {
-            start = std::chrono_system_clock::now();
-            world.tick();
+    auto end = start;
+    while (1) {
+        end = std::chrono::system_clock::now();
+        auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        if (deltaTime < 1000) {
+            start = std::chrono::system_clock::now();
+            world->tick(deltaTime);
         }
     }
     return 0;
