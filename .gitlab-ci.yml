@@ -17,6 +17,7 @@ build-binaries-linux:
     paths:
       - /root/.conan/data/
   script:
+    - rm -rf build
     - mkdir build
     - cd build
     - conan install .. --build missing
@@ -34,6 +35,7 @@ run-tests:
     paths:
       - /root/.conan/data/
   script:
+    - rm -rf build
     - mkdir build
     - cd build
     - conan install .. --build missing
