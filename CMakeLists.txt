@@ -30,8 +30,8 @@ file(
 file(
         GLOB_RECURSE
         RTYPE_SOURCES_COMMON
-        ${PROJECT_SOURCE_DIR}/commons/*.cpp
-        ${PROJECT_SOURCE_DIR}/commons/*.hpp
+        ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
+        ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
 )
 
 file(
@@ -39,8 +39,8 @@ file(
         RTYPE_SOURCES_CLIENT_TESTS
         ${PROJECT_SOURCE_DIR}/client/sources/*.cpp
         ${PROJECT_SOURCE_DIR}/client/sources/*.hpp
-        ${PROJECT_SOURCE_DIR}/commons/*.cpp
-        ${PROJECT_SOURCE_DIR}/commons/*.hpp
+        ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
+        ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
         ${PROJECT_SOURCE_DIR}/client/tests/*.cpp
         ${PROJECT_SOURCE_DIR}/client/tests/*.hpp
 )
@@ -51,8 +51,8 @@ file(
         RTYPE_SOURCES_SERVER_TESTS
         ${PROJECT_SOURCE_DIR}/server/sources/*.cpp
         ${PROJECT_SOURCE_DIR}/server/sources/*.hpp
-        ${PROJECT_SOURCE_DIR}/commons/*.cpp
-        ${PROJECT_SOURCE_DIR}/commons/*.hpp
+        ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
+        ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
         ${PROJECT_SOURCE_DIR}/server/tests/*.cpp
         ${PROJECT_SOURCE_DIR}/server/tests/*.hpp
 )
@@ -62,7 +62,7 @@ add_executable(r-type_client ${RTYPE_SOURCES_CLIENT} ${RTYPE_SOURCES_COMMON})
 target_include_directories(
         r-type_client PUBLIC
         ${CMAKE_INCLUDE_PATH}
-        ${PROJECT_SOURCE_DIR}/commons
+        ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/client/sources
 )
 target_link_libraries(
@@ -74,7 +74,7 @@ add_executable(r-type_server ${RTYPE_SOURCES_SERVER} ${RTYPE_SOURCES_COMMON})
 target_include_directories(
         r-type_server PUBLIC
         ${CMAKE_INCLUDE_PATH}
-        ${PROJECT_SOURCE_DIR}/commons
+        ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/server/sources
 )
 target_link_libraries(
@@ -86,7 +86,7 @@ add_executable(tests_client ${RTYPE_SOURCES_CLIENT_TESTS})
 target_include_directories(
         tests_client PUBLIC
         ${CMAKE_INCLUDE_PATH}
-        ${PROJECT_SOURCE_DIR}/commons
+        ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/client/sources
         ${PROJECT_SOURCE_DIR}/client/tests
 )
@@ -100,7 +100,7 @@ add_executable(tests_server ${RTYPE_SOURCES_SERVER_TESTS})
 target_include_directories(
         tests_server PUBLIC
         ${CMAKE_INCLUDE_PATH}
-        ${PROJECT_SOURCE_DIR}/commons
+        ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/server/sources
         ${PROJECT_SOURCE_DIR}/server/tests
 )
