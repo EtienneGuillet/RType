@@ -19,7 +19,16 @@ namespace ecs {
     {
     public:
 
+        /*!
+         * @brief Ctor of the class ASystem.
+         */
+        virtual ASystem();
+
+        /*!
+         * @brief Dtor of the class ASystem.
+         */
         virtual ~ASystem() = default;
+
         /*!
          * @brief Return true or false whether the system is running or not.
          */
