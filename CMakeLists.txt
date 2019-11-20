@@ -23,7 +23,7 @@ file(
 add_subdirectory(server)
 add_subdirectory(client)
 
-add_custom_target(tests_run COMMAND tests_common COMMAND tests_client COMMAND tests_server COMMAND tests_example_entity COMMAND tests_example_server)
+add_custom_target(tests_run COMMAND tests_common COMMAND tests_client COMMAND tests_server COMMAND tests_example_entity COMMAND tests_example_system)
 
 file(GLOB BUILD_DEPENDENCY "build_dependency/*")
 file(COPY ${BUILD_DEPENDENCY} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
