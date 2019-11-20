@@ -463,10 +463,14 @@ class ecs::DLLoader {
     - HandlerType _instance
 }
 
-class ecs::DLLoader  {
+class ecs::DLLoaderException  {
     + DLLoaderException(const std::string &msg, const std::string &where)
     - std::string _what
     - std::string _where
+}
+
+class ecs::ECSException {
+    + ECSException(const std::string &what, const std::string &where)
 }
 
 interface ecs::IComponent {
@@ -551,6 +555,52 @@ class ecs::Version {
     - std::vector<int> _versions
 }
 
+class ecs::IDGenerator {
+    + IDGenerator()
+    + IDGenerator(const IDGenerator &other)
+    + ~IDGenerator()
+    + IDGenerator &operator=(const IDGenerator &rhs)
+    + int generateNewID()
+    + void freeId(int id)
+    - int _maxID
+    - std::queue<int> _freeIds
+}
+
+class ecs::ECS {
+    + ECS()
+    + ~ECS()
+    - std::vector<std::shared_ptr<ISystemAPI>> _systemsAPI
+    - std::vector<std::shared_ptr<IEntityAPI>> _entitysAPI
+}
+
+class ecs::Entity {
+    + Entity(const std::string &name)
+    + ~Entity()
+    - {static} IDGenerator Generator
+    - int _id
+    - std::string _name
+    - std::vector<std::shared_ptr<IComponent>> _components
+}
+
+class ecs::World {
+    + World()
+    + ~World()
+    - std::vector<std::shared_ptr<IEntity>> _entities
+    - std::vector<std::shared_ptr<ISystem>> _systems
+}
+
 ecs::ISystem <|-down- ecs::ASystem: Inheritance
+
+std::exception <|-- ecs::DLLoaderException
+
+b12software::exception::B12SoftwareException <|-- ecs::ECSException
+
+ecs::IECS <|-- ecs::ECS
+
+ecs::IEntity <|-- ecs::Entity
+
+ecs::IWorld <|-- ecs::World
+
+std::enable_shared_from_this <|-- ecs::World
 
 @enduml
