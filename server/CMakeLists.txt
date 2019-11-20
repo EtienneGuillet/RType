@@ -9,7 +9,6 @@ add_executable(r-type_server ${RTYPE_SOURCES_SERVER} ${RTYPE_SOURCES_COMMON})
 
 target_include_directories(
         r-type_server PUBLIC
-        ${CMAKE_INCLUDE_PATH}
         ${PROJECT_SOURCE_DIR}/commons/sources
         sources
 )

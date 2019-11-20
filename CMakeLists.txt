@@ -20,6 +20,8 @@ file(
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
 )
 
+include_directories(SYSTEM ${CMAKE_INCLUDE_PATH})
+
 add_subdirectory(server)
 add_subdirectory(client)
 

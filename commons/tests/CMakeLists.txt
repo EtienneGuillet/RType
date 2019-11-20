@@ -11,7 +11,6 @@ add_executable(tests_common ${RTYPE_SOURCES_COMMON_TESTS})
 
 target_include_directories(
         tests_common PUBLIC
-        ${CMAKE_INCLUDE_PATH}
         ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/commons/tests
 )

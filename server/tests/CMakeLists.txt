@@ -15,7 +15,6 @@ add_executable(tests_server ${RTYPE_SOURCES_SERVER_TESTS})
 
 target_include_directories(
         tests_server PUBLIC
-        ${CMAKE_INCLUDE_PATH}
         ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/server/sources
         ${PROJECT_SOURCE_DIR}/server/tests
