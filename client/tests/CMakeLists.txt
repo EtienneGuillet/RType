@@ -5,8 +5,6 @@ file(
         ${PROJECT_SOURCE_DIR}/client/sources/*.hpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
-        ${PROJECT_SOURCE_DIR}/commons/tests/*.cpp
-        ${PROJECT_SOURCE_DIR}/commons/tests/*.hpp
         *.cpp
         *.hpp
 )
@@ -27,5 +25,6 @@ target_link_libraries(
         tests_client
         criterion
         dl
+        gcov
         ${CONAN_LIBS}
 )
