@@ -13,7 +13,6 @@ add_executable(tests_example_entity ${RTYPE_SOURCES_EXAMPLE_ENTITY_TESTS})
 
 target_include_directories(
         tests_example_entity PUBLIC
-        ${CMAKE_INCLUDE_PATH}
         ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/client/sources
         ${PROJECT_SOURCE_DIR}/client/tests
