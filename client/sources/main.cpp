@@ -39,24 +39,15 @@ int main(int ac, char **av)
     ecs::DLLoader exampleEntityLoader(av[1]);
     ecs::DLLoader exampleSystemLoader(av[2]);
 
-    auto exampleEntityAPI = exampleEntityLoader.loadAPI<ecs::IEntityAPI>("entryPointEntityAPI");
-    auto exampleSystemAPI = exampleSystemLoader.loadAPI<ecs::ISystemAPI>("entryPointSystemAPI");
-
-    auto exampleEntity = exampleEntityAPI->createNewEntity();
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "ExampleEntity loaded");
-    auto exampleEntity2 = exampleEntityAPI->createNewEntity();
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "ExampleEntity loaded");
-    auto exampleSystem = exampleSystemAPI->createNewSystem();
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "ExampleSystem loaded");
-
     auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
+    ecs->learnEntity(exampleEntityLoader.loadAPI<ecs::IEntityAPI>("entryPointEntityAPI"));
+    ecs->learnSystem(exampleSystemLoader.loadAPI<ecs::ISystemAPI>("entryPointSystemAPI"));
     auto world = ecs->createWorld();
 
-    world->addSystem(exampleSystem);
-    exampleSystem->setWorld(world);
-    exampleSystem->start();
-    world->pushEntity(exampleEntity);
-    world->pushEntity(exampleEntity2);
+    auto exampleSystem = world->addSystem(ecs->createSystemFromAPI(ecs::Version("System_Example")));
+    exampleSystem.lock()->start();
+    world->pushEntity(ecs->createEntityFromAPI(ecs::Version("Entity_Example")));
+    world->pushEntity(ecs->createEntityFromAPI(ecs::Version("Entity_Example")));
 
     auto start = std::chrono::system_clock::now();
     auto end = start;

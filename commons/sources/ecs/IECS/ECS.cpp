@@ -26,7 +26,7 @@ std::shared_ptr<ecs::IWorld> ecs::ECS::createWorld()
     return std::shared_ptr<IWorld>(new World());
 }
 
-std::shared_ptr<ecs::IEntity> ecs::ECS::createEntity(const ecs::Version &version)
+std::shared_ptr<ecs::IEntity> ecs::ECS::createEntityFromAPI(const ecs::Version &version)
 {
     for (auto &entityAPI : _entitysAPI) {
         if (entityAPI->getVersion() >= version) {
@@ -34,6 +34,16 @@ std::shared_ptr<ecs::IEntity> ecs::ECS::createEntity(const ecs::Version &version
         }
     }
     return std::shared_ptr<IEntity>();
+}
+
+std::shared_ptr<ecs::ISystem> ecs::ECS::createSystemFromAPI(const ecs::Version &version)
+{
+    for (auto &systemAPI : _systemsAPI) {
+        if (systemAPI->getVersion() >= version) {
+            return systemAPI->createNewSystem();
+        }
+    }
+    return std::shared_ptr<ISystem>();
 }
 
 bool ecs::ECS::knowSystem(const ecs::Version &version)

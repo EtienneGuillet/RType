@@ -478,7 +478,8 @@ interface ecs::IComponent {
 interface ecs::IECS {
     + {abstract} ~IECS() = default
     + {abstract} std::shared_ptr<IWorld> createWorld()
-    + {abstract} std::shared_ptr<IEntity> createEntity(const Version &version)
+    + {abstract} std::shared_ptr<IEntity> createEntityFromAPI(const Version &version)
+    + {abstract} std::shared_ptr<ISystem> createSystemFromAPI(const Version &version)
     + {abstract} bool knowSystem(const Version &version)
     + {abstract} bool knowEntity(const Version &version)
     + {abstract} bool knowSystems(const std::vector<Version> &versions)
@@ -526,11 +527,11 @@ interface ecs::ISystemAPI {
 interface ecs::IWorld {
     + {abstract} ~IWorld() = default
     + {abstract} tick(long deltatime)
-    + {abstract} void pushEntity(const std::shared_ptr<IEntity> &entity)
+    + {abstract} std::weak_ptr<IEntity> pushEntity(const std::shared_ptr<IEntity> &entity)
     + {abstract} std::shared_ptr<IEntity> popEntity(int id)
     + {abstract} std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components)
     + {abstract} void applyToEach(const std::vector<Version> &componentTypes, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply)
-    + {abstract} void addSystem(const std::shared_ptr<ISystem> &system)
+    + {abstract} std::weak_ptr<ISystem> addSystem(const std::shared_ptr<ISystem> &system)
     + {abstract} void removeSystem(const Version &system)
     + {abstract} std::weak_ptr<ISystem> getSystem(const Version &system)
 }

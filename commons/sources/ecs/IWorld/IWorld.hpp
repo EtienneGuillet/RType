@@ -36,7 +36,7 @@ namespace ecs {
          * @brief Add a new entity to the world.
          * @param entity the entity to add
          */
-        virtual void pushEntity(const std::shared_ptr<IEntity> &entity) = 0;
+        virtual std::weak_ptr<IEntity> pushEntity(const std::shared_ptr<IEntity> &entity) = 0;
 
         /*!
          * @brief Remove a entity from the world.
@@ -63,7 +63,7 @@ namespace ecs {
          * @brief Add a new system to the world.
          * @param system the system to add.
          */
-        virtual void addSystem(const std::shared_ptr<ISystem> &system) = 0;
+        virtual std::weak_ptr<ISystem> addSystem(const std::shared_ptr<ISystem> &system) = 0;
 
         /*!
          * @brief Remove a system from the world.

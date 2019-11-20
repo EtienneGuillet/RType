@@ -8,6 +8,7 @@
 /* Created the 19/11/2019 at 21:56 by julian.frabel@epitech.eu */
 
 #include <logger/DefaultLogger.hpp>
+#include <ecs/exceptions/ECSException.hpp>
 #include "World.hpp"
 
 ecs::World::World()
@@ -29,9 +30,12 @@ void ecs::World::tick(long deltatime)
     }
 }
 
-void ecs::World::pushEntity(const std::shared_ptr<IEntity> &entity)
+std::weak_ptr<ecs::IEntity> ecs::World::pushEntity(const std::shared_ptr<IEntity> &entity)
 {
-    _entities.emplace_back(entity);
+    if (!entity) {
+        throw ECSException("Can not add an invalid entity", WHERE);
+    }
+    return _entities.emplace_back(entity);
 }
 
 std::shared_ptr<ecs::IEntity> ecs::World::popEntity(int id)
@@ -67,9 +71,14 @@ void ecs::World::applyToEach(const std::vector<Version> &componentTypes, std::fu
     }
 }
 
-void ecs::World::addSystem(const std::shared_ptr<ISystem> &system)
+std::weak_ptr<ecs::ISystem> ecs::World::addSystem(const std::shared_ptr<ISystem> &system)
 {
-    _systems.emplace_back(system);
+    if (!system) {
+        throw ECSException("Can not add an invalid system", WHERE);
+    }
+    auto newSystem = _systems.emplace_back(system);
+    newSystem->setWorld(weak_from_this());
+    return newSystem;
 }
 
 void ecs::World::removeSystem(const ecs::Version &system)

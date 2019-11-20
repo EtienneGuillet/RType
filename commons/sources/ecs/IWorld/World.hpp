@@ -22,7 +22,7 @@ namespace ecs {
      * @class World
      * @brief A class that represent an ecs world
      */
-    class World : public IWorld {
+    class World : public IWorld, public std::enable_shared_from_this<World> {
     public:
         /*!
          * @brief ctor
@@ -46,11 +46,11 @@ namespace ecs {
 
     public:
         void tick(long deltatime) override;
-        void pushEntity(const std::shared_ptr<IEntity> &entity) override;
+        std::weak_ptr<IEntity> pushEntity(const std::shared_ptr<IEntity> &entity) override;
         std::shared_ptr<IEntity> popEntity(int id) override;
         [[nodiscard]] std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components) const override;
         void applyToEach(const std::vector<Version> &componentTypes, std::function<void(std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply) override;
-        void addSystem(const std::shared_ptr<ISystem> &system) override;
+        std::weak_ptr<ISystem> addSystem(const std::shared_ptr<ISystem> &system) override;
         void removeSystem(const Version &system) override;
         std::weak_ptr<ISystem> getSystem(const Version &system) override;
 
