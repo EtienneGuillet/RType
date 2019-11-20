@@ -9,13 +9,12 @@ const ecs::Version &ExampleSystem::getType() const {
 }
 
 void ExampleSystem::tick([[maybe_unused]] long deltatime) {
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[ExampleSystem] Tick");
+    std::cout << "[ExampleSystem] Tick" << std::endl;
     auto world = _world.lock();
 
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[ExampleSystem] Apply to each");
     world->applyToEach({IntComponent::Version}, [] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         auto intComponent = std::dynamic_pointer_cast<IntComponent>(components.front().lock());
 
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[ExampleSystem] " + std::to_string(intComponent->operator++()));
+        std::cout << "[ExampleSystem] " << std::to_string(intComponent->operator++()) << std::endl;
     });
 }

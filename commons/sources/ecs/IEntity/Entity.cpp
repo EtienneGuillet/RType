@@ -65,9 +65,11 @@ std::weak_ptr<ecs::IComponent> ecs::Entity::getComponent(const ecs::Version &com
 std::vector<std::weak_ptr<ecs::IComponent>> ecs::Entity::getComponents(const std::vector<Version> &componentTypes)
 {
     std::vector<std::weak_ptr<IComponent>> result;
+
     for (auto &componentType : componentTypes) {
         auto component = getComponent(componentType);
         if (!component.lock()) {
+            std::cout << "Composant invalide" << std::endl;
             return std::vector<std::weak_ptr<IComponent>>();
         }
         result.push_back(component);
