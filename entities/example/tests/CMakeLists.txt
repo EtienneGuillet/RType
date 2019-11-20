@@ -25,3 +25,5 @@ target_link_libraries(
         gcov
         ${CONAN_LIBS}
 )
+
+add_test(NAME example_entity COMMAND tests_example_entity)

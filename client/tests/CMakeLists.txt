@@ -27,3 +27,5 @@ target_link_libraries(
         gcov
         ${CONAN_LIBS}
 )
+
+add_test(NAME client COMMAND tests_client)

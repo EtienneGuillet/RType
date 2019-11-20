@@ -1,5 +1,5 @@
 project(R-Type)
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 set(CMAKE_CXX_STANDARD 17)
 
 if (UNIX)
@@ -13,6 +13,8 @@ if (APPLE)
     set(CMAKE_INSTALL_RPATH "@executable_path/../lib")
 endif (APPLE)
 
+enable_testing()
+
 file(
         GLOB_RECURSE
         RTYPE_SOURCES_COMMON
@@ -25,11 +27,11 @@ include_directories(SYSTEM ${CMAKE_INCLUDE_PATH})
 add_subdirectory(server)
 add_subdirectory(client)
 
-add_custom_target(tests_run COMMAND tests_common COMMAND tests_client COMMAND tests_server COMMAND tests_example_entity COMMAND tests_example_system)
-
 file(GLOB BUILD_DEPENDENCY "build_dependency/*")
 file(COPY ${BUILD_DEPENDENCY} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 add_subdirectory(systems)
 add_subdirectory(entities)
 add_subdirectory(commons)
+
+add_custom_target(tests_run ctest --verbose)
