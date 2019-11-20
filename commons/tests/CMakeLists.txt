@@ -23,3 +23,4 @@ target_link_libraries(
 )
 
 add_test(NAME common COMMAND tests_common)
+add_dependencies(${TESTS_RULE} tests_common)

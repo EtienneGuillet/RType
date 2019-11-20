@@ -30,3 +30,4 @@ target_link_libraries(
 )
 
 add_test(NAME server COMMAND tests_server)
+add_dependencies(${TESTS_RULE} tests_server)

@@ -29,3 +29,4 @@ target_link_libraries(
 )
 
 add_test(NAME client COMMAND tests_client)
+add_dependencies(${TESTS_RULE} tests_client)

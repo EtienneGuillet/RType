@@ -27,3 +27,4 @@ target_link_libraries(
 )
 
 add_test(NAME example_entity COMMAND tests_example_entity)
+add_dependencies(${TESTS_RULE} tests_example_entity)
