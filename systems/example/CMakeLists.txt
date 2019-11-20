@@ -12,3 +12,5 @@ target_include_directories(
         ${CMAKE_INCLUDE_PATH}
         ${PROJECT_SOURCE_DIR}/commons/sources
 )
+
+add_subdirectory(tests)
