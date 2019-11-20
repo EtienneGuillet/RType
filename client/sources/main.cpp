@@ -29,16 +29,21 @@ int main(int ac, char **av)
     auto exampleSystemAPI = exampleSystemLoader.loadAPI<ecs::ISystemAPI>("entryPointSystemAPI");
 
     auto exampleEntity = exampleEntityAPI->createNewEntity();
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "ExampleEntity loaded");
     auto exampleSystem = exampleSystemAPI->createNewSystem();
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "ExampleSystem loaded");
 
     auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
     auto world = ecs->createWorld();
 
     world->addSystem(exampleSystem);
+    exampleSystem->setWorld(world);
+    exampleSystem->start();
     world->pushEntity(exampleEntity);
 
     auto start = std::chrono::system_clock::now();
     auto end = start;
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Starting world");
     while (1) {
         end = std::chrono::system_clock::now();
         auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();

@@ -7,6 +7,7 @@
 
 /* Created the 19/11/2019 at 21:56 by julian.frabel@epitech.eu */
 
+#include <logger/DefaultLogger.hpp>
 #include "World.hpp"
 
 ecs::World::World()
@@ -23,6 +24,7 @@ ecs::World::~World()
 void ecs::World::tick(long deltatime)
 {
     for (auto &system : _systems) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[World] Tick");
         system->tick(deltatime);
     }
 }

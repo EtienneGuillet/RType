@@ -25,3 +25,9 @@ const ecs::Version& IntComponent::getVersion() const
 {
     return IntComponent::Version;
 }
+
+int IntComponent::operator++() {
+    _value++;
+
+    return _value;
+}

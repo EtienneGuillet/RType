@@ -15,6 +15,7 @@
 class IntComponent : public ecs::IComponent {
 
     public:
+        static const ecs::Version Version;
 
         IntComponent(int value);
         ~IntComponent() override = default;
@@ -22,10 +23,11 @@ class IntComponent : public ecs::IComponent {
         void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
         const ecs::Version &getVersion() const override;
 
+        int operator++();
+
     private:
 
     std::weak_ptr<ecs::IEntity> _entity;
-    static const ecs::Version Version;
     int _value;
 
 };
