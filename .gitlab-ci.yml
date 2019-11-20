@@ -40,7 +40,6 @@ run-tests:
     - cd build
     - conan install .. --build missing
     - cmake .. -G "Unix Makefiles"
-    - cmake --build . --config Release
     - make tests_run
 
 rfc:
