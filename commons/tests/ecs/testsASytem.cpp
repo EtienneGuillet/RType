@@ -8,31 +8,25 @@
 #include <criterion/criterion.h>
 #include "ecs/ASystem/ASystem.hpp"
 
+static ecs::Version version_static("", 0, 0, 0, 0);
+
 class TestASystem : public ecs::ASystem {
 
     public:
 
     TestASystem() = default;
-    ~TestASystem() = default;
+    ~TestASystem() override = default;
 
     void tick(long deltatime) override
     {
+        deltatime = deltatime;
     }
 
     const ecs::Version &getType() const override
     {
-        ecs::Version version("test");
-
-        return version;
+        return version_static;
     }
 };
-
-
-static void init()
-{}
-
-static void fini()
-{}
 
 Test(ASystem, Asystem_create)
 {
