@@ -2,7 +2,7 @@ file(
         GLOB_RECURSE
         RTYPE_SOURCES_SYSTEM_EXAMPLE
         ${RTYPE_SOURCES_COMMON}
-        *.cpp
+        sources/*.cpp
 )
 
 add_library(example_system SHARED ${RTYPE_SOURCES_SYSTEM_EXAMPLE})

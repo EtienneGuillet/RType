@@ -15,8 +15,14 @@ target_include_directories(
 
 target_link_libraries(
         r-type_client
-        dl
         ${CONAN_LIBS}
 )
+
+if (UNIX)
+	target_link_libraries(
+		r-type_client
+		dl
+	)
+endif (UNIX)
 
 add_subdirectory(tests)

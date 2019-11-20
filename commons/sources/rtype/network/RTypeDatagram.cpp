@@ -113,7 +113,7 @@ void rtype::network::RTypeDatagram::init100ConnectDatagram(const std::string &us
 
     auto wType = HTONS(type);
     std::memcpy(buff.get(), &wType, sizeof(type));
-    std::memcpy(reinterpret_cast<void *>(reinterpret_cast<intptr_t>(buff.get()) + sizeof(type)), &username[0], std::min(maxUsernameSize, username.size()));
+    std::memcpy(reinterpret_cast<void *>(reinterpret_cast<intptr_t>(buff.get()) + sizeof(type)), &username[0], (std::min)(maxUsernameSize, username.size()));
 
     this->setData(buff.get(), sizeof(type) + maxUsernameSize);
 }
@@ -136,7 +136,7 @@ void rtype::network::RTypeDatagram::init111RoomListDatagram(const std::vector<RT
     std::memcpy(reinterpret_cast<void *>(wPtr), &nbRoom, sizeof(nbRoom));
     wPtr += sizeof(nbRoom);
     for (auto &room : rooms) {
-        std::memcpy(reinterpret_cast<void *>(wPtr), &room.name[0], std::min(room.name.size(), maxRoomNameSize));
+        std::memcpy(reinterpret_cast<void *>(wPtr), &room.name[0], (std::min)(room.name.size(), maxRoomNameSize));
         wPtr += maxRoomNameSize;
         char hasPassword = room.hasPassword ? 1 : 0;
         std::memcpy(reinterpret_cast<void *>(wPtr), &hasPassword, sizeof(hasPassword));
@@ -164,7 +164,7 @@ void rtype::network::RTypeDatagram::init112CreateRoomDatagram(const rtype::netwo
     intptr_t wPtr = reinterpret_cast<intptr_t>(buff.get());
     std::memcpy(reinterpret_cast<void *>(wPtr), &wType, sizeof(type));
     wPtr += sizeof(type);
-    std::memcpy(reinterpret_cast<void *>(wPtr), &room.name[0], std::min(room.name.size(), maxRoomNameSize));
+    std::memcpy(reinterpret_cast<void *>(wPtr), &room.name[0], (std::min)(room.name.size(), maxRoomNameSize));
     wPtr += maxRoomNameSize;
     std::memcpy(reinterpret_cast<void *>(wPtr), &room.capacity, sizeof(room.capacity));
     wPtr += sizeof(room.capacity);
@@ -190,7 +190,7 @@ void rtype::network::RTypeDatagram::init116JoinRoomDatagram(const rtype::network
     intptr_t wPtr = reinterpret_cast<intptr_t>(buff.get());
     std::memcpy(reinterpret_cast<void *>(wPtr), &wType, sizeof(type));
     wPtr += sizeof(type);
-    std::memcpy(reinterpret_cast<void *>(wPtr), &room.name[0], std::min(room.name.size(), maxRoomNameSize));
+    std::memcpy(reinterpret_cast<void *>(wPtr), &room.name[0], (std::min)(room.name.size(), maxRoomNameSize));
     wPtr += maxRoomNameSize;
     auto wPasswordSize = HTONL(passwordSize);
     std::memcpy(reinterpret_cast<void *>(wPtr), &wPasswordSize, sizeof(wPasswordSize));
@@ -217,7 +217,7 @@ void rtype::network::RTypeDatagram::init117RoomJoinedDatagram(const std::vector<
     std::memcpy(reinterpret_cast<void *>(wPtr), &nbUser, sizeof(nbUser));
     wPtr += sizeof(nbUser);
     for (auto &user : users) {
-        std::memcpy(reinterpret_cast<void *>(wPtr), &user[0], std::min(maxUsernameSize, user.size()));
+        std::memcpy(reinterpret_cast<void *>(wPtr), &user[0], (std::min)(maxUsernameSize, user.size()));
         wPtr += maxUsernameSize;
     }
 
