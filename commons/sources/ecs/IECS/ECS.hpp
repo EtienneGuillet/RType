@@ -31,7 +31,8 @@ namespace ecs {
 
     public:
         std::shared_ptr<IWorld> createWorld() override;
-        std::shared_ptr<IEntity> createEntity(const Version &version) override;
+        std::shared_ptr<IEntity> createEntityFromAPI(const Version &version) override;
+        std::shared_ptr<ISystem> createSystemFromAPI(const Version &version) override;
         bool knowSystem(const Version &version) override;
         bool knowEntity(const Version &version) override;
         bool knowSystems(const std::vector<Version> &versions) override;

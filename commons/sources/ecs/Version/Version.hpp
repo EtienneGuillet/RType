@@ -25,7 +25,7 @@ namespace ecs {
          * @param julianVersion Version id of Julian.
          * @param etienneVersion Version id of Etienne.  
          */
-        Version(const std::string &type, int lilianVersion, int titouanVersion, int julianVersion, int etienneVersion);
+        Version(const std::string &type, int lilianVersion = 0, int titouanVersion = 0, int julianVersion = 0, int etienneVersion = 0);
 
         /*!
          * @brief Dtor.
