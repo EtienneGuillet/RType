@@ -5,11 +5,12 @@
 #include <ecs/IEntityAPI/IEntityAPI.hpp>
 
 class ExampleEntityAPI : public ecs::IEntityAPI {
+public:
     const ecs::Version &getVersion() const override;
 
     std::shared_ptr<ecs::IEntity> createNewEntity() const override;
 
-private:
+public:
     static const ecs::Version Version;
 };
 

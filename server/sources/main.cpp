@@ -7,6 +7,7 @@
 
 /* Created the 07/11/2019 at 18:05 by julian.frabel@epitech.eu */
 
+#include <csignal>
 #include <iostream>
 #include <memory>
 #include "logger/DefaultLogger.hpp"
@@ -14,22 +15,20 @@
 #include "network/INetworkManager.hpp"
 #include "network/asio/AsioNetworkManager.hpp"
 
-bool running = true;
+namespace {
+    volatile std::sig_atomic_t gSignalStatus;
+}
 
 void signalHandler(int s)
 {
     std::cout << "Caught signal " << s << std::endl;
-    running = false;
+    gSignalStatus = s;
 }
 
 int main()
 {
     std::cout << "Setting up signal handler..." << std::endl;
-    struct sigaction sigIntHandler;
-    sigIntHandler.sa_handler = signalHandler;
-    sigemptyset(&sigIntHandler.sa_mask);
-    sigIntHandler.sa_flags = 0;
-    sigaction(SIGINT, &sigIntHandler, NULL);
+    std::signal(SIGINT, signalHandler);
     std::cout << "Signal handler set!" << std::endl;
 
     std::cout << "Loading default logger..." << std::endl;
@@ -50,7 +49,7 @@ int main()
 
     std::cout << "Starting app" << std::endl;
 
-    while (running) {
+    while (gSignalStatus == 0) {
         if (udpSocket.lock()->hasPendingDatagrams()) {
             std::cout << "Got datagram:" << std::endl;
             auto dg = udpSocket.lock()->receive();

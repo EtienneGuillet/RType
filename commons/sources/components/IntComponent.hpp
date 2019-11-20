@@ -14,18 +14,18 @@
 
 class IntComponent : public ecs::IComponent {
 
-    public:
-        static const ecs::Version Version;
+public:
+    static const ecs::Version Version;
 
-        IntComponent(int value);
-        ~IntComponent() override = default;
+    IntComponent(int value);
+    ~IntComponent() override = default;
 
-        void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
-        const ecs::Version &getVersion() const override;
+    void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
+    const ecs::Version &getVersion() const override;
 
-        int operator++();
+    int operator++();
 
-    private:
+private:
 
     std::weak_ptr<ecs::IEntity> _entity;
     int _value;

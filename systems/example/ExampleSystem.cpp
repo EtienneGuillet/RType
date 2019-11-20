@@ -8,8 +8,8 @@ const ecs::Version &ExampleSystem::getType() const {
     return ExampleSystem::Version;
 }
 
-void ExampleSystem::tick([[maybe_unused]] long deltatime) {
-    std::cout << "[ExampleSystem] Tick" << std::endl;
+void ExampleSystem::tick(long deltatime) {
+    std::cout << "[ExampleSystem] Tick (dt=" << deltatime << ")" << std::endl;
     auto world = _world.lock();
 
     world->applyToEach({IntComponent::Version}, [] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {

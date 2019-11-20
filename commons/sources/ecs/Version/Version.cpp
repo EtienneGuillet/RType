@@ -20,7 +20,7 @@ namespace ecs {
         if (rhs.getType() != getType())
             return false;
         for (size_t i = 0; i < compare.size() && i < _versions.size(); i++) {
-            if (_versions[i] < compare[i])
+            if (_versions[i] >= compare[i])
                 return false;
         }
         return true;
@@ -47,13 +47,12 @@ namespace ecs {
     bool Version::operator==(const Version &rhs) const {
         if (rhs.getType() != getType())
             return false;
-        return _type == rhs._type &&
-               _versions == rhs._versions;
+        return _type == rhs._type && _versions == rhs._versions;
     }
 
     bool Version::operator!=(const Version &rhs) const {
         if (rhs.getType() != getType())
-            return false;
+            return true;
         return !(rhs == *this);
     }
 

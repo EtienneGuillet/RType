@@ -5,8 +5,11 @@
 #include "ecs/Version/Version.hpp"
 
 class ExampleSystem : public ecs::ASystem {
+public:
     virtual const ecs::Version &getType() const override;
     virtual void tick(long deltatime) override;
+
+public:
     static const ecs::Version Version;
 };
 

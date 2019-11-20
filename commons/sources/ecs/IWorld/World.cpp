@@ -24,7 +24,7 @@ ecs::World::~World()
 void ecs::World::tick(long deltatime)
 {
     for (auto &system : _systems) {
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[World] Tick");
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[World] Tick (dt=" + std::to_string(deltatime) + ")");
         system->tick(deltatime);
     }
 }
