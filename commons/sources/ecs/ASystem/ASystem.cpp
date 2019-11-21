@@ -1,8 +1,8 @@
 #include "ecs/ASystem/ASystem.hpp"
 
 ecs::ASystem::ASystem()
+: _isRunning(false)
 {
-    _isRunning = false;
 }
 
 bool ecs::ASystem::isRunning() const
@@ -18,4 +18,9 @@ void ecs::ASystem::start()
 void ecs::ASystem::stop()
 {
     _isRunning = false;
+}
+
+void ecs::ASystem::setWorld(const std::weak_ptr<IWorld> &world)
+{
+    _world = world;
 }

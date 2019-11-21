@@ -36,10 +36,17 @@ namespace ecs {
 
         /*!
          * @brief Create a new IEntity and returns it.
-         * @param version The entity created.
+         * @param version The IEntityAPI version to create from.
          * @return The entity created.
          */
-        virtual std::shared_ptr<IEntity> createEntity(const Version &version) = 0;
+        virtual std::shared_ptr<IEntity> createEntityFromAPI(const Version &version) = 0;
+
+        /*!
+         * @brief Create a new ISystem and returns it.
+         * @param version The ISystemAPI version to create from
+         * @return the system created
+         */
+        virtual std::shared_ptr<ISystem> createSystemFromAPI(const Version &version) = 0;
 
         /*!
          * @brief Return true or false whether the ecs have the system.
@@ -86,14 +93,14 @@ namespace ecs {
          * @param version the system to be forget.
          * @return Shared pointer of the system's API just forgot.
          */
-        virtual std::shared_ptr<ISystemAPI> &forgetSystem(const Version &version) = 0;
+        virtual std::shared_ptr<ISystemAPI> forgetSystem(const Version &version) = 0;
 
         /*!
          * @brief Make the ecs forget the entity.
          * @param version the entity to be forget.
          * @return Shared pointer of the entity's API just forgot.
          */
-        virtual std::shared_ptr<IEntity> &forgetEntity(const Version &version) = 0;
+        virtual std::shared_ptr<IEntityAPI> forgetEntity(const Version &version) = 0;
     };
 } /* ecs */
 

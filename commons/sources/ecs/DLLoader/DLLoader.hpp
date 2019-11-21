@@ -82,19 +82,19 @@ namespace ecs {
         std::shared_ptr<API> loadAPI(const std::string &entryPoint) const
         {
 #if defined(LINUX)
-            using EntryFunc = std::shared_ptr<API> (*)();
+            using EntryFunc = API *(*)();
             EntryFunc entry = reinterpret_cast<EntryFunc>(dlsym(_instance, entryPoint.c_str()));
             if (entry == nullptr) {
                 throw DLLoaderException(dlerror(), WHERE);
             }
-            return (*entry)();
+            return std::shared_ptr<API>((*entry)());
 #else
-            using EntryFunc = std::shared_ptr<API> (__cdecl *)();
+            using EntryFunc = API *(*)();
             EntryFunc entry = reinterpret_cast<EntryFunc>(GetProcAddress(_instance, entryPoint.c_str()));
             if (entry == NULL) {
                 throw DLLoaderException("Failed to find function '" + entryPoint + "'", WHERE);
             }
-            return (entry)();
+            return std::shared_ptr<API>((entry)());
 #endif
         }
 

@@ -5,8 +5,6 @@ file(
         ${PROJECT_SOURCE_DIR}/server/sources/*.hpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
-        ${PROJECT_SOURCE_DIR}/commons/tests/*.cpp
-        ${PROJECT_SOURCE_DIR}/commons/tests/*.hpp
         *.cpp
         *.hpp
 )
@@ -17,7 +15,6 @@ add_executable(tests_server ${RTYPE_SOURCES_SERVER_TESTS})
 
 target_include_directories(
         tests_server PUBLIC
-        ${CMAKE_INCLUDE_PATH}
         ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/server/sources
         ${PROJECT_SOURCE_DIR}/server/tests
@@ -27,5 +24,10 @@ target_include_directories(
 target_link_libraries(
         tests_server
         criterion
+        dl
+        gcov
         ${CONAN_LIBS}
 )
+
+add_test(NAME server COMMAND tests_server)
+add_dependencies(${TESTS_RULE} tests_server)

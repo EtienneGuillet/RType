@@ -1,32 +1,30 @@
 file(
         GLOB_RECURSE
-        RTYPE_SOURCES_CLIENT_TESTS
-        ${PROJECT_SOURCE_DIR}/client/sources/*.cpp
-        ${PROJECT_SOURCE_DIR}/client/sources/*.hpp
+        RTYPE_SOURCES_EXAMPLE_ENTITY_TESTS
         ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
+        ${PROJECT_SOURCE_DIR}/entities/example/*.cpp
+        ${PROJECT_SOURCE_DIR}/entities/example/*.hpp
         *.cpp
         *.hpp
 )
 
-list(REMOVE_ITEM RTYPE_SOURCES_CLIENT_TESTS "${PROJECT_SOURCE_DIR}/client/sources/main.cpp")
-
-add_executable(tests_client ${RTYPE_SOURCES_CLIENT_TESTS})
+add_executable(tests_example_entity ${RTYPE_SOURCES_EXAMPLE_ENTITY_TESTS})
 
 target_include_directories(
-        tests_client PUBLIC
+        tests_example_entity PUBLIC
         ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/client/sources
         ${PROJECT_SOURCE_DIR}/client/tests
         ${PROJECT_SOURCE_DIR}/commons/tests
 )
 target_link_libraries(
-        tests_client
+        tests_example_entity
         criterion
         dl
         gcov
         ${CONAN_LIBS}
 )
 
-add_test(NAME client COMMAND tests_client)
-add_dependencies(${TESTS_RULE} tests_client)
+add_test(NAME example_entity COMMAND tests_example_entity)
+add_dependencies(${TESTS_RULE} tests_example_entity)

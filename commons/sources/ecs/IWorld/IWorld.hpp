@@ -24,7 +24,7 @@ namespace ecs {
         /*!
          * @brief Dtor of the class IWord.
          */
-        virtual ~IWorld() = 0;
+        virtual ~IWorld() = default;
 
         /*!
          * @brief Run all the system in the world.
@@ -36,7 +36,7 @@ namespace ecs {
          * @brief Add a new entity to the world.
          * @param entity the entity to add
          */
-        virtual void pushEntity(const std::shared_ptr<IEntity> &entity) = 0;
+        virtual std::weak_ptr<IEntity> pushEntity(const std::shared_ptr<IEntity> &entity) = 0;
 
         /*!
          * @brief Remove a entity from the world.
@@ -57,13 +57,13 @@ namespace ecs {
          * @param components the set of components.
          * @param toApply the function to apply.
          */
-        virtual void applyToEach(const std::vector<Version> &components, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply) = 0;
+        virtual void applyToEach(const std::vector<Version> &componentTypes, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply) = 0;
 
         /*!
          * @brief Add a new system to the world.
          * @param system the system to add.
          */
-        virtual void addSystem(const std::shared_ptr<ISystem> &system) = 0;
+        virtual std::weak_ptr<ISystem> addSystem(const std::shared_ptr<ISystem> &system) = 0;
 
         /*!
          * @brief Remove a system from the world.

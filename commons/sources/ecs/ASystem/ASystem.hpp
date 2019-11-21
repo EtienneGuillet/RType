@@ -44,9 +44,12 @@ namespace ecs {
          */
         virtual void stop();
 
-    private:
+        void setWorld(const std::weak_ptr<IWorld> &world) override;
 
+    private:
         bool _isRunning;
+    protected:
+        std::weak_ptr<IWorld> _world;
     };
 } /* ecs */
 

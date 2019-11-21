@@ -22,7 +22,7 @@ namespace ecs {
         /*!
          * @brief Dtor of the class IComponent.
          */
-        virtual ~IComponent() = 0;
+        virtual ~IComponent() = default;
 
         /*!
          * @brief Set the parent entity.
