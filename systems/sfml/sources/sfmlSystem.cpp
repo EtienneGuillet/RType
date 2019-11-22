@@ -37,30 +37,26 @@ void SfmlSystem::tick(long deltatime)
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
         }
-        if (event.type == sf::Event::KeyPressed) {
-            switch (event.key.code) {
-            case sf::Keyboard::Z :
-                _inputs[Z] = true;
-                break;
-            case sf::Keyboard::Q :
-                _inputs[Q] = true;
-                break;
-            case sf::Keyboard::S :
-                _inputs[S] = true;
-                break;
-            case sf::Keyboard::D :
-                _inputs[D] = true;
-                break;
-            case sf::Keyboard::Space :
-                _inputs[SPACE] = true;
-                break;
-            case sf::Keyboard::Escape :
-                _inputs[ESCAPE] = true;
-                break;
-            case sf::Keyboard::Enter :
-                _inputs[ENTER] = true;
-                break;
-            }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z) {
+            _inputs[Z] = true;
+        }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Q) {
+            _inputs[Q] = true;
+        }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S) {
+            _inputs[S] = true;
+        }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::D) {
+            _inputs[D] = true;
+        }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
+            _inputs[SPACE] = true;
+        }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+            _inputs[ESCAPE] = true;
+        }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
+            _inputs[ENTER] = true;
         }
     }
 }
