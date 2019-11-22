@@ -10,6 +10,18 @@
 
 #include "ecs/ASystem/ASystem.hpp"
 #include <SFML/Window.hpp>
+#include <map>
+#include <logger/DefaultLogger.hpp>
+
+enum Keys {
+    Z,
+    Q,
+    S,
+    D,
+    SPACE,
+    ESCAPE,
+    ENTER
+};
 
 class SfmlSystem : public ecs::ASystem {
 
@@ -25,6 +37,7 @@ class SfmlSystem : public ecs::ASystem {
 
     private:
 
+    std::map<Keys, bool> _inputs;
     sf::Clock _clock;
     sf::Window _window;
 };
