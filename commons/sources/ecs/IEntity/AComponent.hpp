@@ -4,7 +4,7 @@
 #include <ecs/IComponent/IComponent.hpp>
 
 namespace ecs {
-    class AComponent : ecs::IComponent {
+    class AComponent : public ecs::IComponent {
     public:
         void setEntity(const std::weak_ptr<IEntity> &entity) override;
         const std::weak_ptr<IEntity> &getEntity() override;
