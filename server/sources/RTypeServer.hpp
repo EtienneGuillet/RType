@@ -10,6 +10,9 @@
 #ifndef R_TYPE_RTYPESERVER_HPP
 #define R_TYPE_RTYPESERVER_HPP
 
+#include <map>
+#include "rtype/network/RTypeDatagramType.hpp"
+#include "rtype/network/RTypeDatagram.hpp"
 #include "network/INetworkManager.hpp"
 
 /*!
@@ -52,6 +55,22 @@ namespace rtype {
          * @brief Run a frame of the server
          */
         void run();
+
+    private:
+        using ProtocolMapType = std::map<unsigned short, void (RTypeServer::*)(rtype::network::RTypeDatagram)>;
+        static const ProtocolMapType protocolMap; /*!< A map used to handle incoming datagram*/
+
+    private:
+        /*!
+         * @brief A handler called when a ping packet is received
+         * @param dg the received datagram
+         */
+        void protocol102PingDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief Default handler called when an unknown datagram type comes in
+         * @param dg the received datagram
+         */
+        void unknownDatagramHandler(rtype::network::RTypeDatagram dg);
 
     private:
         std::unique_ptr<b12software::network::INetworkManager> _networkManager; /*!< The network manager of this server */

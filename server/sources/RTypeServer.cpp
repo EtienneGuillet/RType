@@ -7,11 +7,15 @@
 
 /* Created the 21/11/2019 at 17:59 by julian.frabel@epitech.eu */
 
-#include <exception/NetworkException.hpp>
-#include <logger/DefaultLogger.hpp>
 #include "RTypeServer.hpp"
+#include "exception/NetworkException.hpp"
+#include "logger/DefaultLogger.hpp"
 #include "network/asio/AsioNetworkManager.hpp"
 #include "exception/RTypeServerException.hpp"
+
+const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
+    {rtype::network::T_102_PING, &rtype::RTypeServer::protocol102PingDatagramHandler}
+};
 
 rtype::RTypeServer::RTypeServer(unsigned short port)
     : _networkManager(std::make_unique<b12software::network::asio::AsioNetworkManager>()),
@@ -41,10 +45,27 @@ void rtype::RTypeServer::run()
 {
     auto locketSocket = _socket.lock();
     if (locketSocket->hasPendingDatagrams()) {
-        auto dg = locketSocket->receive();
-
-        std::string debugMessage = "Received datagram from " + dg.getHostInfos().host + ":" + std::to_string(dg.getHostInfos().port);
-        debugMessage += " message (" + std::to_string(dg.getDatagramSize()) + " bytes) [" + std::string(reinterpret_cast<const char *>(dg.getData()), dg.getDatagramSize()) + "]";
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, debugMessage);
+        rtype::network::RTypeDatagram dg = locketSocket->receive();
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Received datagram from " + dg.getHostInfos().host + ":" + std::to_string(dg.getHostInfos().port) + "(" + std::to_string(dg.getDatagramSize()) + " bytes)");
+        auto it = protocolMap.find(dg.getType());
+        if (it != protocolMap.end()) {
+            (this->*(it->second))(dg);
+        } else {
+            unknownDatagramHandler(dg);
+        }
     }
+}
+
+void rtype::RTypeServer::protocol102PingDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    rtype::network::RTypeDatagram response(dg.getHostInfos());
+    response.initSingleOpCodeDatagram(rtype::network::T_103_PONG);
+    _socket.lock()->send(response);
+}
+
+void rtype::RTypeServer::unknownDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    rtype::network::RTypeDatagram response(dg.getHostInfos());
+    response.initSingleOpCodeDatagram(rtype::network::T_300_UNKNOWN_PACKET);
+    _socket.lock()->send(response);
 }
