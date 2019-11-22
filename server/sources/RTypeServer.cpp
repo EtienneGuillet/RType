@@ -14,7 +14,36 @@
 #include "exception/RTypeServerException.hpp"
 
 const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
-    {rtype::network::T_102_PING, &rtype::RTypeServer::protocol102PingDatagramHandler}
+    {rtype::network::T_100_CONNECT, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_101_CONNECTED, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_102_PING, &rtype::RTypeServer::protocol102PingDatagramHandler},
+    {rtype::network::T_103_PONG, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_104_DISCONNECT, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_105_DISCONNECTED, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_110_GET_ROOMS, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_111_ROOM_LIST, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_112_CREATE_ROOM, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_113_ROOM_CREATED, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_114_QUIT_ROOM, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_115_ROOM_QUITTED, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_116_JOIN_ROOM, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_117_ROOM_JOINED, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_200_ACTION, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_210_DISPLAY, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_220_LIVING, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_230_CHARGE, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_240_SCORE, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_250_END_GAME, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_260_GAME_ENDED, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_300_UNKNOWN_PACKET, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_301_INVALID_PACKET, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_302_INVALID_PARAM, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_303_USERNAME_ALREADY_USED, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_304_ROOM_NAME_ALREADY_USED, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_305_NOT_IN_A_ROOM, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_306_UNKNOWN_ROOM, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_307_INVALID_PASSWORD, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_308_ROOM_FULL, &rtype::RTypeServer::invalidDatagramHandler},
 };
 
 rtype::RTypeServer::RTypeServer(unsigned short port)
@@ -67,5 +96,12 @@ void rtype::RTypeServer::unknownDatagramHandler(rtype::network::RTypeDatagram dg
 {
     rtype::network::RTypeDatagram response(dg.getHostInfos());
     response.initSingleOpCodeDatagram(rtype::network::T_300_UNKNOWN_PACKET);
+    _socket.lock()->send(response);
+}
+
+void rtype::RTypeServer::invalidDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    rtype::network::RTypeDatagram response(dg.getHostInfos());
+    response.initSingleOpCodeDatagram(rtype::network::T_301_INVALID_PACKET);
     _socket.lock()->send(response);
 }

@@ -26,7 +26,7 @@ namespace {
     }
 }
 
-int runMain(const rtype::Configuration &config)
+void runMain(const rtype::Configuration &config)
 {
     unsigned short port = config.getPort();
     auto server = std::make_unique<rtype::RTypeServer>(port);

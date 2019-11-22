@@ -71,6 +71,11 @@ namespace rtype {
          * @param dg the received datagram
          */
         void unknownDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief Send an invalid datagram to the client
+         * @param dg the received datagram
+         */
+        void invalidDatagramHandler(rtype::network::RTypeDatagram dg);
 
     private:
         std::unique_ptr<b12software::network::INetworkManager> _networkManager; /*!< The network manager of this server */
