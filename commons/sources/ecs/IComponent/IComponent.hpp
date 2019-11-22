@@ -31,6 +31,12 @@ namespace ecs {
         virtual void setEntity(const std::weak_ptr<IEntity> &entity) = 0;
 
         /*!
+         * @brief Get the parent entity.
+         * @return The parent entity.
+         */
+        virtual const std::weak_ptr<IEntity> &getEntity() = 0;
+
+        /*!
          * @brief Get a component version
          * @return the Version asked.
          */
