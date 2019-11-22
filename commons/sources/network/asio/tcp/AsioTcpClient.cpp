@@ -121,7 +121,7 @@ void b12software::network::asio::AsioTcpClient::handleConnect(const boost::syste
                                                         boost::asio::ip::tcp::resolver::iterator endpointIterator)
 {
     if (error == boost::asio::error::operation_aborted) {
-        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioTcpClient] Operation aborted (this is due to an async operation still beeing queued while socket is closing.");
+        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioTcpClient] Operation aborted (this is due to an async operation still beeing queued while socket is closing).");
         return;
     }
     if (!error) {
@@ -140,7 +140,7 @@ void b12software::network::asio::AsioTcpClient::handleSend([[maybe_unused]]const
                                                      [[maybe_unused]]size_t byteTransferred)
 {
     if (error == boost::asio::error::operation_aborted) {
-        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioTcpClient] Operation aborted (this is due to an async operation still beeing queued while socket is closing.");
+        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioTcpClient] Operation aborted (this is due to an async operation still beeing queued while socket is closing).");
         return;
     }
     if (!error) {
@@ -156,7 +156,7 @@ void b12software::network::asio::AsioTcpClient::handleReceive(const std::shared_
                                                         size_t byteTransferred)
 {
     if (error == boost::asio::error::operation_aborted) {
-        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioTcpClient] Operation aborted (this is due to an async operation still beeing queued while socket is closing.");
+        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioTcpClient] Operation aborted (this is due to an async operation still beeing queued while socket is closing).");
         return;
     }
     if (!error) {

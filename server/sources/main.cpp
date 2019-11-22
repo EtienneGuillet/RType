@@ -8,57 +8,64 @@
 /* Created the 07/11/2019 at 18:05 by julian.frabel@epitech.eu */
 
 #include <csignal>
-#include <iostream>
+#include <thread>
 #include <memory>
+#include <iostream>
+#include "config/Configuration.hpp"
+#include "exception/B12SoftwareException.hpp"
 #include "logger/DefaultLogger.hpp"
 #include "logger/StandardLogger.hpp"
-#include "network/INetworkManager.hpp"
-#include "network/asio/AsioNetworkManager.hpp"
+#include "RTypeServer.hpp"
 
 namespace {
     volatile std::sig_atomic_t gSignalStatus;
+
+    void signalHandler(int s)
+    {
+        gSignalStatus = s;
+    }
 }
 
-void signalHandler(int s)
+int runMain(const rtype::Configuration &config)
 {
-    std::cout << "Caught signal " << s << std::endl;
-    gSignalStatus = s;
-}
-
-int main()
-{
-    std::cout << "Setting up signal handler..." << std::endl;
-    std::signal(SIGINT, signalHandler);
-    std::cout << "Signal handler set!" << std::endl;
-
-    std::cout << "Loading default logger..." << std::endl;
-    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>());
-    std::cout << "Default logger loaded!" << std::endl;
-
-    std::cout << "Creating manager..." << std::endl;
-    std::unique_ptr<b12software::network::INetworkManager> manager = std::make_unique<b12software::network::asio::AsioNetworkManager>();
-    std::cout << "Manager created!" << std::endl;
-    std::cout << "Starting manager..." << std::endl;
-    manager->start();
-    std::cout << "Manager started" << std::endl;
-
-    std::cout << "Creating udp socket..." << std::endl;
-    auto udpSocket = manager->createNewUdpSocket();
-    udpSocket.lock()->bind(54321);
-    std::cout << "Udp socket created!" << std::endl;
-
-    std::cout << "Starting app" << std::endl;
+    unsigned short port = config.getPort();
+    auto server = std::make_unique<rtype::RTypeServer>(port);
 
     while (gSignalStatus == 0) {
-        if (udpSocket.lock()->hasPendingDatagrams()) {
-            std::cout << "Got datagram:" << std::endl;
-            auto dg = udpSocket.lock()->receive();
-            std::cout << "Host: " << dg.getHostInfos().host << ":" << dg.getHostInfos().port << std::endl;
-            std::cout << "Message[" << dg.getDatagramSize() << "]: " << reinterpret_cast<const char *>(dg.getData()) << std::endl;
-        }
+        server->run();
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
+}
 
-    std::cout << "Shutting down gracefully" << std::endl;
+int main(int ac, char **av)
+{
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
+    std::signal(SIGINT, signalHandler);
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Logger and signal handler set");
+
+    rtype::Configuration config(ac, av);
+    if (config.hasError()) {
+        config.displayErrors();
+        config.displayHelp(true);
+        return 84;
+    } else if (config.shouldDisplayHelp()) {
+        config.displayHelp();
+        return 0;
+    }
+
+    try {
+        runMain(config);
+    } catch (b12software::exception::B12SoftwareException &e) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelFatal, e.what());
+        return 84;
+    } catch (std::exception &e) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelFatal, e.what());
+        return 84;
+    } catch (...) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelFatal, "An unknown error occurred.");
+        return 84;
+    }
+
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Exit gracefully");
     return 0;
 }
