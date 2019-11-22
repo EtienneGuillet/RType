@@ -40,7 +40,7 @@ namespace ecs {
          * @brief Get a component version
          * @return the Version asked.
          */
-        virtual const Version &getVersion() const = 0;
+        [[no_discard]] virtual const Version &getVersion() const = 0;
     };
 } /* ecs */
 
