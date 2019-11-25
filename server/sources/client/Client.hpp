@@ -10,6 +10,9 @@
 #ifndef R_TYPE_CLIENT_HPP
 #define R_TYPE_CLIENT_HPP
 
+#include <chrono>
+#include <map>
+#include "rtype/network/RTypeDatagramType.hpp"
 #include "ClientState.hpp"
 #include "network/HostInfos.hpp"
 
@@ -23,6 +26,12 @@ namespace rtype {
      * @brief A class that represent a network connection
      */
     class Client {
+    public:
+        using Clock = std::chrono::high_resolution_clock;
+        using Duration = Clock::duration;
+        using TimePoint = Clock::time_point;
+        static constexpr TimePoint epoch = TimePoint();
+
     public:
         /*!
          * @brief ctor
@@ -51,6 +60,19 @@ namespace rtype {
          * @return *this
          */
         Client &operator=(const Client &rhs) = default;
+
+        /*!
+         * @brief Equality operator
+         * @param rhs The client to compare to
+         * @return true if host and username are the same false otherwise
+         */
+        bool operator==(const Client &rhs) const;
+        /*!
+         * @brief Inequality operator
+         * @param rhs The client to compare to
+         * @return false if host and username are the same true otherwise
+         */
+        bool operator!=(const Client &rhs) const;
 
     public:
         /*!
@@ -86,10 +108,36 @@ namespace rtype {
          */
         void setClientState(ClientState state);
 
+        /*!
+         * @brief get the last time_point this client was reached
+         * @return the last time point this client was reached
+         */
+        const TimePoint &getLastReached() const;
+        /*!
+         * @brief Set the time point for this client
+         * @param lastReached the new time point to set
+         */
+        void setLastReached(const TimePoint &lastReached);
+
+        /*!
+         * @brief get the clock for this client for a datagram type
+         * @param type the type of datagram
+         * @return the last time point for this datagram type (epoch if none)
+         */
+        const TimePoint &getClock(rtype::network::RTypeDatagramType type) const;
+        /*!
+         * @brief Set the time point clock for this datagram type
+         * @param type the type of datagram
+         * @param clock the new time point to set
+         */
+        void setClock(rtype::network::RTypeDatagramType type, const TimePoint &clock);
+
     private:
         b12software::network::HostInfos _host; /*!< The host of the client */
         std::string _username; /*!< The username of the client */
         ClientState _state; /*!< The internal state of the client */
+        TimePoint _lastReached; /*!< The last time this client was reached */
+        std::map<rtype::network::RTypeDatagramType, TimePoint> _clocks; /*!< Internal clocks for this client */
     };
 }
 

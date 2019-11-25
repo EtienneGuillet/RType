@@ -59,8 +59,22 @@ namespace rtype {
         void run();
 
     private:
+        /*!
+         * @brief Handle incomming datagrams
+         */
+        void handleDatagrams();
+        /*!
+         * @brief Disconnect useless clients
+         */
+        void handleLiveness();
+
+    private:
         using ProtocolMapType = std::map<unsigned short, void (RTypeServer::*)(rtype::network::RTypeDatagram)>;
         static const ProtocolMapType protocolMap; /*!< A map used to handle incoming datagram*/
+
+        static constexpr Client::Clock::duration lostConnectionDuration = std::chrono::milliseconds(2500);
+        static constexpr Client::Clock::duration forceDisconnectDuration = std::chrono::milliseconds(5000);
+        static constexpr Client::Clock::duration timeBetweenDatagramsDuration = std::chrono::milliseconds(50);
 
     private:
         /*!
@@ -69,6 +83,24 @@ namespace rtype {
          * @return 0 if it's valid, 1 if invalid username, 2 if username already taken
          */
         int isInvalidUsername(const std::string &username);
+
+        /*!
+         * @brief Add a new client to this server
+         * @param client the client to add
+         */
+        void addNewClient(const Client &client);
+
+        /*!
+         * @brief Update the fact that the client is alive for this host
+         * @param host The host of the alive client
+         */
+        void updateClientLiveness(const b12software::network::HostInfos &host);
+
+        /*!
+         * @brief Disconnect a client
+         * @param client The client to disconnect
+         */
+        void disconnectClient(const Client &client);
 
     private:
         /*!
@@ -91,6 +123,11 @@ namespace rtype {
          * @param dg the received datagram
          */
         void invalidDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that does nothing
+         * @param dg the received datagram
+         */
+        void emptyDatagramHandler(rtype::network::RTypeDatagram dg);
 
     private:
         std::unique_ptr<b12software::network::INetworkManager> _networkManager; /*!< The network manager of this server */
