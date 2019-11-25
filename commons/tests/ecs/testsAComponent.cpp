@@ -32,5 +32,5 @@ Test(AComponent, setEntity)
     entity->addComponent(component);
     component->setEntity(ptr);
 
-//    cr_assert_eq(ptr, component->getEntity());
+    cr_assert_eq(ptr.lock(), component->getEntity().lock());
 }
