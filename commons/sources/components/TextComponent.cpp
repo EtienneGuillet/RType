@@ -8,6 +8,7 @@
 #include "TextComponent.hpp"
 
 namespace rtype {
+
     const ecs::Version TextComponent::Version = ecs::Version("TextComponent", 0,
         0, 0, 1);
 

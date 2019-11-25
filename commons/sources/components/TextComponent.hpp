@@ -13,6 +13,7 @@
 #include <SFML/Graphics.hpp>
 
 namespace rtype {
+    
     class TextComponent : public ecs::IComponent {
 
         public:
