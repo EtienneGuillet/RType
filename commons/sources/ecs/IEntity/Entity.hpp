@@ -56,6 +56,8 @@ namespace ecs {
         std::vector<std::weak_ptr<IComponent>> getComponents(const std::vector<Version> &componentTypes) override;
         std::shared_ptr<IComponent> removeComponent(const Version &version) override;
 
+        bool operator ==(const Entity &rhs) const;
+        bool operator !=(const Entity &rhs) const;
     private:
         static IDGenerator Generator; /*!< A static generator used to create ids for entities */
 
