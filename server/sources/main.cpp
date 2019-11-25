@@ -65,10 +65,13 @@ int main()
     auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
 
     for (const auto &entry : fs::directory_iterator(entitiesFolder)) {
-        std::cout << entry.path() << std::endl;
+        auto loader = entities.emplace_back(entry.path());
+        ecs->learnEntity(loader.loadAPI<ecs::IEntityAPI>("entryPointEntityAPI"));
     }
+
     for (const auto &entry : fs::directory_iterator(systemsFolder)) {
-        std::cout << entry.path() << std::endl;
+        auto loader = systems.emplace_back(entry.path());
+        ecs->learnSystem(loader.loadAPI<ecs::ISystemAPI>("entryPointSystemAPI"));
     }
 
     while (gSignalStatus == 0) {

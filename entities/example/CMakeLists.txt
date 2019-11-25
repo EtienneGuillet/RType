@@ -13,8 +13,8 @@ target_include_directories(
 )
 
 add_custom_command(TARGET example_entity POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:example_system> ${SERVER_ENTITIES_FOLDER}
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:example_system> ${CLIENT_ENTITIES_FOLDER}
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:example_entity> ${SERVER_ENTITIES_FOLDER}
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:example_entity> ${CLIENT_ENTITIES_FOLDER}
         )
 
 add_subdirectory(tests)
