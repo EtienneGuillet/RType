@@ -476,7 +476,31 @@ class ecs::ECSException {
 interface ecs::IComponent {
     + {abstract} ~IComponent() = default
     + {abstract} setEntity(const std::weak_ptr<IEntity> &entity)
+    + {abstract} std::weak_ptr<IEntity> &getEntity() const
     + {abstract} const Version &getVersion() const
+}
+
+abstract ecs::AComponent {
+    + setEntity(const std::weak_ptr<IEntity> &entity)
+    + std::weak_ptr<IEntity> &getEntity() const
+
+    - std::weak_ptr<IEntity> _entity
+}
+
+class ecs::TransformComponent {
+    + TransformComponent(const Vector3 &position, const Vector2 &rotation, const Vector2 &scale)
+    + TransformComponent(const TransformComponent &other)
+    + TransformComponent &operator=(const TransformComponent &rhs)
+    + const Vector3 &getPosition() const
+    + void setPosition(const Vector3 &position)
+    + const Vector2 &getRotation() const
+    + void setRotation(const Vector2 &rotation)
+    + const Vector2 &getScale() const
+    + void setScale(const Vector2 &scale)
+
+    - Vector3 _position
+    - Vector2 _rotation
+    - Vector2 _scale
 }
 
 interface ecs::IECS {
@@ -596,6 +620,10 @@ std::exception <|-- ecs::DLLoaderException
 b12software::exception::B12SoftwareException <|-- ecs::ECSException
 
 ecs::IECS <|-- ecs::ECS
+
+ecs::IComponent <|-- ecs::AComponent
+
+ecs::AComponent <|-- ecs::TransformComponent
 
 ecs::IEntity <|-- ecs::Entity
 

@@ -34,7 +34,7 @@ namespace ecs {
          * @brief Get the parent entity.
          * @return The parent entity.
          */
-        virtual const std::weak_ptr<IEntity> &getEntity() = 0;
+        virtual std::weak_ptr<IEntity> &getEntity() const = 0;
 
         /*!
          * @brief Get a component version
