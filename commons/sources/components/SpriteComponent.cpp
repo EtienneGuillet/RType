@@ -11,37 +11,9 @@ namespace rtype {
 
     const ecs::Version SpriteComponent::Version = ecs::Version("SpriteComponent", 0, 0, 0, 1);
 
-    SpriteComponent::SpriteComponent(const sf::Texture &texture)
-        :_isRepeat(false)
+    SpriteComponent::SpriteComponent(const int assetId)
+        :_isRepeat(false), _isSpriteSet(false), _assetId(assetId)
     {
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "test SpriteComponent");
-
-        sf::Sprite sprite;
-
-        sprite.setTexture(texture);
-        _sprite = sprite;
-    }
-
-    SpriteComponent::SpriteComponent(const sf::Sprite &sprite)
-        :_sprite(sprite), _isRepeat(false)
-    {
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "test SpriteComponent");
-    }
-
-    SpriteComponent::SpriteComponent(const std::string &fontPath, const bool isRepeat, const sf::IntRect &rect)
-        :_isRepeat(isRepeat)
-    {
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "test SpriteComponent");
-
-        sf::Texture texture;
-
-        texture.loadFromFile(fontPath, rect);
-        if (isRepeat)
-            texture.setRepeated(isRepeat);
-
-        sf::Sprite sprite(texture);
-
-        _sprite = sprite;
     }
 
     void SpriteComponent::setEntity(const std::weak_ptr<ecs::IEntity> &entity)
@@ -85,6 +57,7 @@ namespace rtype {
     void SpriteComponent::setSprite(const sf::Sprite &sprite)
     {
         _sprite = sprite;
+        _isSpriteSet = true;
     }
 
     const sf::Texture &SpriteComponent::getTexture() const
@@ -95,5 +68,10 @@ namespace rtype {
     void SpriteComponent::setTexture(const sf::Texture &texture)
     {
         _sprite.setTexture(texture);
+    }
+
+    bool SpriteComponent::isSpriteSetted() const
+    {
+        return _isSpriteSet;
     }
 } /* rtype */

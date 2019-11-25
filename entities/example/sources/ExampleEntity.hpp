@@ -6,6 +6,7 @@
 class ExampleEntity : public ecs::Entity {
 public:
     ExampleEntity();
+private:
 };
 
 

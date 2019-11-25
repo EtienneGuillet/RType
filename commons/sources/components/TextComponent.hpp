@@ -13,15 +13,13 @@
 #include <SFML/Graphics.hpp>
 
 namespace rtype {
-    
+
     class TextComponent : public ecs::IComponent {
 
         public:
         static const ecs::Version Version;
 
-        TextComponent(const std::string &text, const sf::Font &font);
-
-        TextComponent(const std::string &text, const std::string &fontPath);
+        TextComponent(const int assetId, const std::string &string = "");
 
         ~TextComponent() override = default;
 
@@ -29,20 +27,24 @@ namespace rtype {
 
         const ecs::Version &getVersion() const override;
 
-        const std::string &getText() const;
+        const std::string &getString() const;
 
-        void setString(const std::string &text);
+        void setString(const std::string &string);
 
         const sf::Font &getFont() const;
 
         void setFont(const sf::Font &font);
 
-        void setFontFromFile(const std::string &font);
+        const sf::Text &getText() const;
+
+        void setText(const sf::Text &text);
 
         private:
         std::weak_ptr<ecs::IEntity> _entity;
-        std::string _text;
-        sf::Font _font;
+        sf::Text _text;
+        bool _fontIsSet;
+        std::string _string;
+        int _assetId;
     };
 }
 

@@ -27,25 +27,7 @@ namespace rtype {
     public:
         static const ecs::Version Version;
 
-        /*!
-         * @brief Ctor.
-         * @param texture Texture of the sprite
-         */
-        SpriteComponent(const sf::Texture &texture);
-
-        /*!
-         * @brief Ctor.
-         * @param sprite Sprite displayed
-         */
-        SpriteComponent(const sf::Sprite &sprite);
-
-        /*!
-         * @brief Ctor.
-         * @param fontPath String of the path to the texture file
-         * @param isRepeat Bool indicating of the image of the texture file should be repeated
-         * @param rect IntRect indicating the part of the texture displayed.
-         */
-        SpriteComponent(const std::string &fontPath, const bool isRepeat = false, const sf::IntRect &rect = sf::IntRect());
+        SpriteComponent(const int assetId);
 
         /*!
          * @brief Dtor.
@@ -98,10 +80,14 @@ namespace rtype {
          * @param texture Texture to set to the sprite
          */
         void setTexture(const sf::Texture &texture);
+
+        bool isSpriteSetted() const;
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         sf::Sprite _sprite; /*!< The sprite displayed */
         bool _isRepeat; /*!< The bool indicating of the texture of the sprite should be repeat or not */
+        bool _isSpriteSet;
+        int _assetId;
     };
 } /* r-type */
 

@@ -8,5 +8,5 @@ const ecs::Version &ExampleEntityAPI::getVersion() const {
 }
 
 std::shared_ptr<ecs::IEntity> ExampleEntityAPI::createNewEntity() const {
-    return std::shared_ptr<ecs::IEntity>(new ExampleEntity);
+    return std::shared_ptr<ecs::IEntity>(new ExampleEntity());
 }

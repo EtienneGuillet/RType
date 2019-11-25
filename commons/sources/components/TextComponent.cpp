@@ -12,25 +12,9 @@ namespace rtype {
     const ecs::Version TextComponent::Version = ecs::Version("TextComponent", 0,
         0, 0, 1);
 
-    TextComponent::TextComponent(const std::string &text, const sf::Font &font)
-        : _text(text), _font(font)
+    TextComponent::TextComponent(const int assetId, const std::string &string)
+        : _fontIsSet(false), _string(string), _assetId(assetId)
     {
-        // b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::to_string(_value));
-        b12software::logger::DefaultLogger::Log(
-            b12software::logger::LogLevelDebug, "test TextComponent");
-    }
-
-    TextComponent::TextComponent(const std::string &text,
-        const std::string &fontPath
-    ) : _text(text)
-    {
-        // b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::to_string(_value));
-        b12software::logger::DefaultLogger::Log(
-            b12software::logger::LogLevelDebug, "test TextComponent");
-
-        sf::Font font;
-        font.loadFromFile(fontPath);
-        _font = font;
     }
 
     void TextComponent::setEntity(const std::weak_ptr<ecs::IEntity> &entity)
@@ -43,28 +27,35 @@ namespace rtype {
         return TextComponent::Version;
     }
 
-    const std::string &TextComponent::getText() const
+    const std::string &TextComponent::getString() const
     {
-        return _text;
+        return _string;
     }
 
-    void TextComponent::setString(const std::string &text)
+    void TextComponent::setString(const std::string &string)
     {
-        _text = text;
+        _string = string;
+        _text.setString(_string);
     }
 
     const sf::Font &TextComponent::getFont() const
     {
-        return _font;
+        return (*_text.getFont());
     }
 
     void TextComponent::setFont(const sf::Font &font)
     {
-        _font = font;
+        _text.setFont(font);
+        _fontIsSet = true;
     }
 
-    void TextComponent::setFontFromFile(const std::string &fontPath)
+    const sf::Text &TextComponent::getText() const
     {
-        _font.loadFromFile(fontPath);
+        return _text;
+    }
+
+    void TextComponent::setText(const sf::Text &text)
+    {
+        _text = text;
     }
 }
