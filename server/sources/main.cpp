@@ -10,14 +10,25 @@
 #include <csignal>
 #include <iostream>
 #include <memory>
+#include <ecs/IWorld/IWorld.hpp>
+#include <ecs/IWorld/World.hpp>
+#include <ecs/DLLoader/DLLoader.hpp>
+#include <ecs/IECS/IECS.hpp>
+#include <ecs/IECS/ECS.hpp>
+#include <filesystem>
 #include "logger/DefaultLogger.hpp"
 #include "logger/StandardLogger.hpp"
 #include "network/INetworkManager.hpp"
 #include "network/asio/AsioNetworkManager.hpp"
 
+namespace fs = std::filesystem;
+
 namespace {
     volatile std::sig_atomic_t gSignalStatus;
 }
+
+static const std::string systemsFolder = "./server/systems";
+static const std::string entitiesFolder = "./server/entities";
 
 void signalHandler(int s)
 {
@@ -25,40 +36,42 @@ void signalHandler(int s)
     gSignalStatus = s;
 }
 
+std::unique_ptr<ecs::IECS> prepareGame(std::vector<ecs::DLLoader> &entities, std::vector<ecs::DLLoader> &systems)
+{
+    auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
+
+    return ecs;
+}
+
+void updateECS(std::shared_ptr<ecs::IWorld> &world)
+{
+    static auto start = std::chrono::system_clock::now();
+    static auto end = start;
+
+    end = std::chrono::system_clock::now();
+    auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    if (deltaTime >= 10) {
+        start = std::chrono::system_clock::now();
+        world->tick(deltaTime);
+    }
+}
+
 int main()
 {
-    std::cout << "Setting up signal handler..." << std::endl;
     std::signal(SIGINT, signalHandler);
-    std::cout << "Signal handler set!" << std::endl;
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 
-    std::cout << "Loading default logger..." << std::endl;
-    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>());
-    std::cout << "Default logger loaded!" << std::endl;
+    std::vector<ecs::DLLoader> entities, systems;
+    auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
 
-    std::cout << "Creating manager..." << std::endl;
-    std::unique_ptr<b12software::network::INetworkManager> manager = std::make_unique<b12software::network::asio::AsioNetworkManager>();
-    std::cout << "Manager created!" << std::endl;
-    std::cout << "Starting manager..." << std::endl;
-    manager->start();
-    std::cout << "Manager started" << std::endl;
-
-    std::cout << "Creating udp socket..." << std::endl;
-    auto udpSocket = manager->createNewUdpSocket();
-    udpSocket.lock()->bind(54321);
-    std::cout << "Udp socket created!" << std::endl;
-
-    std::cout << "Starting app" << std::endl;
-
-    while (gSignalStatus == 0) {
-        if (udpSocket.lock()->hasPendingDatagrams()) {
-            std::cout << "Got datagram:" << std::endl;
-            auto dg = udpSocket.lock()->receive();
-            std::cout << "Host: " << dg.getHostInfos().host << ":" << dg.getHostInfos().port << std::endl;
-            std::cout << "Message[" << dg.getDatagramSize() << "]: " << reinterpret_cast<const char *>(dg.getData()) << std::endl;
-        }
-        std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+    for (const auto &entry : fs::directory_iterator(entitiesFolder)) {
+        std::cout << entry.path() << std::endl;
+    }
+    for (const auto &entry : fs::directory_iterator(systemsFolder)) {
+        std::cout << entry.path() << std::endl;
     }
 
-    std::cout << "Shutting down gracefully" << std::endl;
+    while (gSignalStatus == 0) {
+    }
     return 0;
 }

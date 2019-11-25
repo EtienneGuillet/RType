@@ -28,6 +28,11 @@ include_directories(SYSTEM ${CMAKE_INCLUDE_PATH})
 
 add_custom_target(${TESTS_RULE} ctest --verbose)
 
+set(SERVER_ENTITIES_FOLDER ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/server/entities)
+set(SERVER_SYSTEMS_FOLDER ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/server/systems)
+set(CLIENT_ENTITIES_FOLDER ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/client/entities)
+set(CLIENT_SYSTEMS_FOLDER ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/client/systems)
+
 add_subdirectory(server)
 add_subdirectory(client)
 

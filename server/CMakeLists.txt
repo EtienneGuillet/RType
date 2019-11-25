@@ -5,9 +5,6 @@ file(
         sources/*.hpp
 )
 
-set(SERVER_ENTITIES_FOLDER ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/server/entities)
-set(SERVER_SYSTEMS_FOLDER ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/server/systems)
-
 add_executable(r-type_server ${RTYPE_SOURCES_SERVER} ${RTYPE_SOURCES_COMMON})
 
 target_include_directories(
