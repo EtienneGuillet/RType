@@ -12,28 +12,37 @@
 #include "logger/DefaultLogger.hpp"
 #include <SFML/Graphics.hpp>
 
+namespace rtype {
+    class TextComponent : public ecs::IComponent {
 
-class TextComponent : public ecs::IComponent {
+        public:
+        static const ecs::Version Version;
 
-public:
-    static const ecs::Version Version;
+        TextComponent(const std::string &text, const sf::Font &font);
 
-    TextComponent(const std::string &text, const sf::Font &font);
-    TextComponent(const std::string &text, const std::string &fontPath);
-    ~TextComponent() override = default;
+        TextComponent(const std::string &text, const std::string &fontPath);
 
-    void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
-    const ecs::Version &getVersion() const override;
+        ~TextComponent() override = default;
 
-    const std::string &getText() const;
-    void setString(const std::string &text);
-    const sf::Font &getFont() const;
-    void setFont(const sf::Font &font);
-    void setFontFromFile(const std::string &font);
-private:
-    std::weak_ptr<ecs::IEntity> _entity;
-    std::string _text;
-    sf::Font _font;
-};
+        void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
+
+        const ecs::Version &getVersion() const override;
+
+        const std::string &getText() const;
+
+        void setString(const std::string &text);
+
+        const sf::Font &getFont() const;
+
+        void setFont(const sf::Font &font);
+
+        void setFontFromFile(const std::string &font);
+
+        private:
+        std::weak_ptr<ecs::IEntity> _entity;
+        std::string _text;
+        sf::Font _font;
+    };
+}
 
 #endif // _TEXT_COMPONENT_HPP_
