@@ -12,8 +12,8 @@ namespace rtype {
     const ecs::Version TextComponent::Version = ecs::Version("TextComponent", 0,
         0, 0, 1);
 
-    TextComponent::TextComponent(const int assetId, const std::string &string)
-        : _fontIsSet(false), _string(string), _assetId(assetId)
+    TextComponent::TextComponent(const int fontId, const std::string &string)
+        : _fontIsSet(false), _string(string), _fontId(fontId)
     {
     }
 
@@ -58,4 +58,15 @@ namespace rtype {
     {
         _text = text;
     }
+
+    bool TextComponent::isFontSet() const
+    {
+        return _fontIsSet;
+    }
+
+    int TextComponent::getFontId() const
+    {
+        return _fontId;
+    }
 }
+

@@ -19,7 +19,7 @@ namespace rtype {
         public:
         static const ecs::Version Version;
 
-        TextComponent(const int assetId, const std::string &string = "");
+        TextComponent(const int fontId, const std::string &string = "");
 
         ~TextComponent() override = default;
 
@@ -37,6 +37,10 @@ namespace rtype {
 
         const sf::Text &getText() const;
 
+        bool isFontSet() const;
+
+        int getFontId() const;
+
         void setText(const sf::Text &text);
 
         private:
@@ -44,7 +48,7 @@ namespace rtype {
         sf::Text _text;
         bool _fontIsSet;
         std::string _string;
-        int _assetId;
+        int _fontId;
     };
 }
 

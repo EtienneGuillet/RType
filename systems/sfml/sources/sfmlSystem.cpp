@@ -21,6 +21,7 @@ void SfmlSystem::start()
     _window.create(sf::VideoMode(800, 600, 32), "R-Type");
     _window.setFramerateLimit(60);
     this->loadTextures();
+    this->loadFonts();
 }
 
 void SfmlSystem::loadTextures()
@@ -28,14 +29,30 @@ void SfmlSystem::loadTextures()
     std::string filename = "r-typesheet";
     std::string extension = ".gif";
 
-    for (int i = 1; i < NBR_TEXTURE; i++) {
+    for (int i = 0; i < NBR_TEXTURE; i++) {
         sf::Texture texture;
         std::string path;
         path.append(filename);
-        path.append(std::to_string(i));
+        path.append(std::to_string(i + 1));
         path.append(extension);
         texture.loadFromFile(path);
         _textures[i] = std::make_shared<sf::Texture>(texture);
+    }
+}
+
+void SfmlSystem::loadFonts()
+{
+    std::string filename = "r-typeFont";
+    std::string extension = ".ttf";
+
+    for (int i = 0; i < NBR_FONT; i++) {
+        sf::Font font;
+        std::string path;
+        path.append(filename);
+        path.append(std::to_string(i + 1));
+        path.append(extension);
+        font.loadFromFile(path);
+        _fonts[i] = std::make_shared<sf::Font>(font);
     }
 }
 
@@ -99,6 +116,7 @@ void SfmlSystem::renderEntities()
             _window.draw(spriteComponent->getSprite());
 
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[1].lock());
+
 
         });
     }

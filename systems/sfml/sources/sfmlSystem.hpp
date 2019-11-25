@@ -18,6 +18,7 @@
 #include <SFML/Graphics.hpp>
 
 #define NBR_TEXTURE 42
+#define NBR_FONT 1
 
 enum Keys {
     Z,
@@ -75,6 +76,7 @@ class SfmlSystem : public ecs::ASystem {
     private:
 
     void loadTextures();
+    void loadFonts();
     void renderEntities();
 
     static const ecs::Version Version;
@@ -82,6 +84,7 @@ class SfmlSystem : public ecs::ASystem {
     std::map<Keys, bool> _inputs;
     sf::Clock _clock;
     sf::RenderWindow _window;
+    std::map<int, std::shared_ptr<sf::Font>> _fonts;
     std::map<int, std::shared_ptr<sf::Texture>> _textures;
 };
 
