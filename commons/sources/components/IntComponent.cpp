@@ -7,26 +7,26 @@
 
 #include "IntComponent.hpp"
 
-const ecs::Version IntComponent::Version = ecs::Version("IntComponent", 0, 1, 0, 0);
+const ecs::Version rtype::IntComponent::Version = ecs::Version("IntComponent", 0, 1, 0, 0);
 
-IntComponent::IntComponent(int value)
+rtype::IntComponent::IntComponent(int value)
     : _value(value)
 {
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::to_string(_value));
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "test IntComponent");
 }
 
-void IntComponent::setEntity(const std::weak_ptr<ecs::IEntity> &entity)
+void rtype::IntComponent::setEntity(const std::weak_ptr<ecs::IEntity> &entity)
 {
     _entity = entity;
 }
 
-const ecs::Version& IntComponent::getVersion() const
+const ecs::Version& rtype::IntComponent::getVersion() const
 {
     return IntComponent::Version;
 }
 
-int IntComponent::operator++() {
+int rtype::IntComponent::operator++() {
     _value++;
 
     return _value;

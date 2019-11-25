@@ -11,25 +11,35 @@
 #include "ecs/IComponent/IComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 
+/*!
+ * @namespace ecs
+ * @brief Main namespace for all ecs related classes.
+ */
+namespace rtype {
 
-class IntComponent : public ecs::IComponent {
+    /*!
+     * @class IntComponent
+     * @brief This class is a component incrementing an int.
+     */
+    class IntComponent : public ecs::IComponent {
 
-public:
-    static const ecs::Version Version;
+    public:
+        static const ecs::Version Version;
 
-    IntComponent(int value);
-    ~IntComponent() override = default;
+        IntComponent(int value);
+        ~IntComponent() override = default;
 
-    void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
-    const ecs::Version &getVersion() const override;
+        void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
+        const ecs::Version &getVersion() const override;
 
-    int operator++();
+        int operator++();
 
-private:
+    private:
 
-    std::weak_ptr<ecs::IEntity> _entity;
-    int _value;
+        std::weak_ptr<ecs::IEntity> _entity;
+        int _value;
 
-};
+    };
+} /* rtype */
 
 #endif //R_TYPE_INTCOMPONENT_HPP

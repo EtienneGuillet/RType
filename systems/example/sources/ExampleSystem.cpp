@@ -12,8 +12,8 @@ void ExampleSystem::tick(long deltatime) {
     std::cout << "[ExampleSystem] Tick (dt=" << deltatime << ")" << std::endl;
     auto world = _world.lock();
 
-    world->applyToEach({IntComponent::Version}, [] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-        auto intComponent = std::dynamic_pointer_cast<IntComponent>(components.front().lock());
+    world->applyToEach({rtype::IntComponent::Version}, [] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        auto intComponent = std::dynamic_pointer_cast<rtype::IntComponent>(components.front().lock());
 
         std::cout << "[ExampleSystem] " << std::to_string(intComponent->operator++()) << std::endl;
     });

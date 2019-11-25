@@ -2,5 +2,5 @@
 #include <components/IntComponent.hpp>
 
 ExampleEntity::ExampleEntity() : Entity("ExampleEntity") {
-    addComponent(std::make_shared<IntComponent>(0));
+    addComponent(std::make_shared<rtype::IntComponent>(0));
 }
