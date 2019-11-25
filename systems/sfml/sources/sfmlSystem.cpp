@@ -5,7 +5,10 @@
 ** Created by tpautier,
 */
 
+#include <components/TextComponent.hpp>
 #include "sfmlSystem.hpp"
+
+const ecs::Version SfmlSystem::Version = ecs::Version("SfmlSystem", 0, 1, 0, 0);
 
 void SfmlSystem::start()
 {
@@ -18,6 +21,23 @@ void SfmlSystem::start()
     _inputs[ENTER] = false;
     _window.create(sf::VideoMode(800, 600, 32), "R-Type");
     _window.setFramerateLimit(60);
+    this->loadTextures();
+}
+
+void SfmlSystem::loadTextures()
+{
+    std::string filename = "r-typesheet";
+    std::string extension = ".gif";
+
+    for (int i = 1; i < NBR_TEXTURE; i++) {
+        sf::Texture texture;
+        std::string path;
+        path.append(filename);
+        path.append(std::to_string(i));
+        path.append(extension);
+        texture.loadFromFile(path);
+        _textures[i] = std::make_shared<sf::Texture>(texture);
+    }
 }
 
 void SfmlSystem::stop()
@@ -35,7 +55,8 @@ void SfmlSystem::tick(long deltatime)
             break;
         }
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-
+            _mouseInput.first = sf::Mouse::getPosition().x;
+            _mouseInput.second = sf::Mouse::getPosition().y;
         }
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z) {
             _inputs[Z] = true;
@@ -59,6 +80,20 @@ void SfmlSystem::tick(long deltatime)
             _inputs[ENTER] = true;
         }
     }
+    this->renderEntities();
+}
+
+void SfmlSystem::renderEntities()
+{
+    _window.clear(sf::Color::Black);
+    auto lockedWorld = _world.lock();
+    if (lockedWorld) {
+//        lockedWorld->applyToEach({rtype::SpriteComponent::getVersion(), rtype::TransformComponent::Version}, [] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+//            auto spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
+//
+//        });
+    }
+    _window.display();
 }
 
 bool SfmlSystem::isRunning() const
@@ -68,7 +103,5 @@ bool SfmlSystem::isRunning() const
 
 const ecs::Version& SfmlSystem::getType() const
 {
-    ecs::Version version("SfmlSystem", 0,1,0,0);
-
-    return version;
+    return Version;
 }
