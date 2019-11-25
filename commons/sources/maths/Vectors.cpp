@@ -118,34 +118,34 @@ b12software::maths::Vector2D b12software::maths::Vector2D::Reflection(const b12s
     return vec - normal * (d * 2.0f);
 }
 
-b12software::maths::Vector2D b12software::maths::operator+(const b12software::maths::Vector2D &lhs, const b12software::maths::Vector2D &rhs)
+b12software::maths::Vector2D b12software::maths::Vector2D::operator+(const b12software::maths::Vector2D &rhs) const
 {
-    return {lhs.x + rhs.x, lhs.y + rhs.y};
+    return {x + rhs.x, y + rhs.y};
 }
 
-b12software::maths::Vector2D b12software::maths::operator-(const b12software::maths::Vector2D &lhs, const b12software::maths::Vector2D &rhs)
+b12software::maths::Vector2D b12software::maths::Vector2D::operator-(const b12software::maths::Vector2D &rhs) const
 {
-    return {lhs.x - rhs.x, lhs.y - rhs.y};
+    return {x - rhs.x, y - rhs.y};
 }
 
-b12software::maths::Vector2D b12software::maths::operator*(const b12software::maths::Vector2D &lhs, const b12software::maths::Vector2D &rhs)
+b12software::maths::Vector2D b12software::maths::Vector2D::operator*(const b12software::maths::Vector2D &rhs) const
 {
-    return {lhs.x * rhs.x, lhs.y * rhs.y};
+    return {x * rhs.x, y * rhs.y};
 }
 
-b12software::maths::Vector2D b12software::maths::operator*(const b12software::maths::Vector2D &lhs, float rhs)
+b12software::maths::Vector2D b12software::maths::Vector2D::operator*(float rhs) const
 {
-    return {lhs.x * rhs, lhs.y * rhs};
+    return {x * rhs, y * rhs};
 }
 
-bool b12software::maths::operator==(const b12software::maths::Vector2D &lhs, const b12software::maths::Vector2D &rhs)
+bool b12software::maths::Vector2D::operator==(const b12software::maths::Vector2D &rhs) const
 {
-    return CMP(lhs.x, rhs.x) && CMP(lhs.y, rhs.y);
+    return CMP(x, rhs.x) && CMP(y, rhs.y);
 }
 
-bool b12software::maths::operator!=(const b12software::maths::Vector2D &lhs, const b12software::maths::Vector2D &rhs)
+bool b12software::maths::Vector2D::operator!=(const b12software::maths::Vector2D &rhs) const
 {
-    return !(lhs == rhs);
+    return !(*this == rhs);
 }
 
 /* ================================================================================================================ */
@@ -261,34 +261,35 @@ b12software::maths::Vector3D b12software::maths::Vector3D::Reflection(const b12s
     return vec - normal * (d * 2.0f);
 }
 
-b12software::maths::Vector3D b12software::maths::operator+(const b12software::maths::Vector3D &lhs, const b12software::maths::Vector3D &rhs)
+b12software::maths::Vector3D b12software::maths::Vector3D::operator+(const b12software::maths::Vector3D &rhs) const
 {
-    return {lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z};
+    return {x + rhs.x, y + rhs.y, z + rhs.z};
 }
 
-b12software::maths::Vector3D b12software::maths::operator-(const b12software::maths::Vector3D &lhs, const b12software::maths::Vector3D &rhs)
+b12software::maths::Vector3D b12software::maths::Vector3D::operator-(const b12software::maths::Vector3D &rhs) const
 {
-    return {lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z};
+    return {x - rhs.x, y - rhs.y, z - rhs.z};
 }
 
-b12software::maths::Vector3D b12software::maths::operator*(const b12software::maths::Vector3D &lhs, const b12software::maths::Vector3D &rhs)
+b12software::maths::Vector3D b12software::maths::Vector3D::operator*(const b12software::maths::Vector3D &rhs) const
 {
-    return {lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z};
+    return {x * rhs.x, y * rhs.y, z * rhs.z};
 }
 
-b12software::maths::Vector3D b12software::maths::operator*(const b12software::maths::Vector3D &lhs, float rhs)
+b12software::maths::Vector3D b12software::maths::Vector3D::operator*(float rhs) const
 {
-    return {lhs.x * rhs, lhs.y * rhs, lhs.z * rhs};
+    return {x * rhs, y * rhs, z * rhs};
 }
 
-bool b12software::maths::operator==(const b12software::maths::Vector3D &lhs, const b12software::maths::Vector3D &rhs)
+bool b12software::maths::Vector3D::operator==(const b12software::maths::Vector3D &rhs) const
+
 {
-    return CMP(lhs.x, rhs.x) && CMP(lhs.y, rhs.y) && CMP(lhs.z, rhs.z);
+    return CMP(x, rhs.x) && CMP(y, rhs.y) && CMP(z, rhs.z);
 }
 
-bool b12software::maths::operator!=(const b12software::maths::Vector3D &lhs, const b12software::maths::Vector3D &rhs)
+bool b12software::maths::Vector3D::operator!=(const b12software::maths::Vector3D &rhs) const
 {
-    return !(lhs == rhs);
+    return !(*this == rhs);
 }
 
 std::ostream &b12software::operator<<(std::ostream &s, const b12software::maths::Vector2D &vec)

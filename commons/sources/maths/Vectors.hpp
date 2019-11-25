@@ -56,14 +56,14 @@ namespace b12software {
             static Vector2D Project(const Vector2D &len, const Vector2D &dir);
             static Vector2D Perpendicular(const Vector2D &len, const Vector2D &dir);
             static Vector2D Reflection(const Vector2D &vec, const Vector2D &normal);
-        };
 
-        Vector2D operator+(const Vector2D &lhs, const Vector2D &rhs);
-        Vector2D operator-(const Vector2D &lhs, const Vector2D &rhs);
-        Vector2D operator*(const Vector2D &lhs, const Vector2D &rhs);
-        Vector2D operator*(const Vector2D &lhs, float rhs);
-        bool operator==(const Vector2D &lhs, const Vector2D &rhs);
-        bool operator!=(const Vector2D &lhs, const Vector2D &rhs);
+            Vector2D operator+(const Vector2D &rhs) const;
+            Vector2D operator-(const Vector2D &rhs) const;
+            Vector2D operator*(const Vector2D &rhs) const;
+            Vector2D operator*(float rhs) const;
+            bool operator==(const Vector2D &rhs) const;
+            bool operator!=(const Vector2D &rhs) const;
+        };
 
         struct Vector3D {
             union {
@@ -101,14 +101,14 @@ namespace b12software {
             static Vector3D Project(const Vector3D &len, const Vector3D &dir);
             static Vector3D Perpendicular(const Vector3D &len, const Vector3D &dir);
             static Vector3D Reflection(const Vector3D &vec, const Vector3D &normal);
-        };
 
-        Vector3D operator+(const Vector3D &lhs, const Vector3D &rhs);
-        Vector3D operator-(const Vector3D &lhs, const Vector3D &rhs);
-        Vector3D operator*(const Vector3D &lhs, const Vector3D &rhs);
-        Vector3D operator*(const Vector3D &lhs, float rhs);
-        bool operator==(const Vector3D &lhs, const Vector3D &rhs);
-        bool operator!=(const Vector3D &lhs, const Vector3D &rhs);
+            Vector3D operator+(const Vector3D &rhs) const;
+            Vector3D operator-(const Vector3D &rhs) const;
+            Vector3D operator*(const Vector3D &rhs) const;
+            Vector3D operator*(float rhs) const;
+            bool operator==(const Vector3D &rhs) const;
+            bool operator!=(const Vector3D &rhs) const;
+        };
     }
 
     std::ostream &operator<<(std::ostream &s, const maths::Vector2D &vec);
