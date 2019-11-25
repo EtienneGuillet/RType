@@ -60,14 +60,9 @@ namespace rtype {
         _isSpriteSet = true;
     }
 
-    const sf::Texture &SpriteComponent::getTexture() const
+    int SpriteComponent::getAssetId() const
     {
-        return (*_sprite.getTexture());
-    }
-
-    void SpriteComponent::setTexture(const sf::Texture &texture)
-    {
-        _sprite.setTexture(texture);
+        return _assetId;
     }
 
     bool SpriteComponent::isSpriteSetted() const

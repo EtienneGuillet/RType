@@ -34,41 +34,40 @@ class SfmlSystem : public ecs::ASystem {
     public:
 
     /*
-     * Ctor.
+     * @brief Ctor.
      */
     SfmlSystem() = default;
 
     /*
-     * Ctor.
+     * @brief Ctor.
      */
     ~SfmlSystem() override = default;
 
     /*
-     * Start a new window.
-     * Call loadTextures method.
+     * @brief Start a new window. Call loadTextures method.
      */
     void start() override;
 
     /*
-     * Stop the window.
+     * @brief Stop the window.
      */
     void stop() override;
 
     /*
-     * Check for potential Inputs, such as mouse click, or game related inputs.
+     * @brief Check for potential Inputs, such as mouse click, or game related inputs.
      * Also call renderEntities method.
      * @param deltatime time elapsed since the last call.
      */
     void tick(long deltatime) override;
 
     /*
-     * Check if the window is opened.
+     * @brief Check if the window is opened.
      * @return true if the window is open, false otherwise.
      */
     bool isRunning() const override;
 
     /*
-     * Inform the type of the system.
+     * @brief Inform the type of the system.
      * @return The type of the system.
      */
     const ecs::Version &getType() const override;

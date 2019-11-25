@@ -87,10 +87,19 @@ void SfmlSystem::renderEntities()
     _window.clear(sf::Color::Black);
     auto lockedWorld = _world.lock();
     if (lockedWorld) {
-        lockedWorld->applyToEach({rtype::SpriteComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
+        lockedWorld->applyToEach({rtype::SpriteComponent::Version, rtype::TextComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components[0].lock());
 
+            if (!spriteComponent->isSpriteSetted()) {
+                sf::Sprite sprite;
+                sprite.setTexture(
+                    _textures[spriteComponent->getAssetId()].operator*());
+                spriteComponent->setSprite(sprite);
+            }
             _window.draw(spriteComponent->getSprite());
+
+            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[1].lock());
+
         });
     }
 

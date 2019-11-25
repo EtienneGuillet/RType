@@ -71,15 +71,9 @@ namespace rtype {
         void setSprite(const sf::Sprite &sprite);
 
         /*!
-         * @brief Return the Texture of the sprite.
+         * @brief Get the asset number.
          */
-        const sf::Texture &getTexture() const;
-
-        /*!
-         * @brief Set the Texture of the sprite.
-         * @param texture Texture to set to the sprite
-         */
-        void setTexture(const sf::Texture &texture);
+        int getAssetId() const;
 
         bool isSpriteSetted() const;
     private:
