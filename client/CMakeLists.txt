@@ -5,6 +5,9 @@ file(
         sources/*.hpp
 )
 
+set(CLIENT_ENTITIES_FOLDER ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/client/entities)
+set(CLIENT_SYSTEMS_FOLDER ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/client/systems)
+
 add_executable(r-type_client ${RTYPE_SOURCES_CLIENT} ${RTYPE_SOURCES_COMMON})
 
 target_include_directories(
@@ -24,5 +27,8 @@ if (UNIX)
 		dl
 	)
 endif (UNIX)
+
+file(MAKE_DIRECTORY ${CLIENT_ENTITIES_FOLDER})
+file(MAKE_DIRECTORY ${CLIENT_SYSTEMS_FOLDER})
 
 add_subdirectory(tests)
