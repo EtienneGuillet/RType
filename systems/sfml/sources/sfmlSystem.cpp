@@ -5,7 +5,6 @@
 ** Created by tpautier,
 */
 
-#include <components/TextComponent.hpp>
 #include "sfmlSystem.hpp"
 
 const ecs::Version SfmlSystem::Version = ecs::Version("SfmlSystem", 0, 1, 0, 0);
@@ -88,11 +87,13 @@ void SfmlSystem::renderEntities()
     _window.clear(sf::Color::Black);
     auto lockedWorld = _world.lock();
     if (lockedWorld) {
-//        lockedWorld->applyToEach({rtype::SpriteComponent::getVersion(), rtype::TransformComponent::Version}, [] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-//            auto spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
-//
-//        });
+        lockedWorld->applyToEach({rtype::SpriteComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
+
+            _window.draw(spriteComponent->getSprite());
+        });
     }
+
     _window.display();
 }
 

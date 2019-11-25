@@ -10,7 +10,6 @@
 
 #include "ecs/ASystem/ASystem.hpp"
 #include "components/SpriteComponent.hpp"
-#include "components/ShapeComponent.hpp"
 #include "components/TextComponent.hpp"
 #include "components/TransformComponent.hpp"
 #include <SFML/Window.hpp>
