@@ -64,7 +64,7 @@ class b12software::containers::ThreadSafeCircularBuffer {
     + ThreadSafeCircularBuffer &operator=(const ThreadSafeCircularBuffer &rhs)
     + void lock()
     + void unlock()
-    + void tryLock()
+    + void try_lock()
     - ThreadSafeCircularBuffer(const ThreadSafeCircularBuffer &other, const std::lock_guard<std::recursive_mutex> &)
     - mutable std::recursive_mutex _mutex
 }
@@ -83,7 +83,7 @@ class b12software::containers::ThreadSafeQueue<T : queue elements type> {
     + void pop()
     + void lock()
     + void unlock()
-    + void trylock()
+    + void try_lock()
 
     - mutable std::recursive_mutex _mutex
     - std::condition_variable_any _variable

@@ -12,6 +12,7 @@
 #include <cstring>
 #include "RTypeDatagram.hpp"
 #include "rtype/exceptions/DatagramErrorException.hpp"
+#include "rtype/exceptions/DatagramMalformedException.hpp"
 
 rtype::network::RTypeDatagram::RTypeDatagram()
     : Datagram()
@@ -78,6 +79,8 @@ void rtype::network::RTypeDatagram::initSingleOpCodeDatagram(rtype::network::RTy
         T_103_PONG,
         T_104_DISCONNECT,
         T_105_DISCONNECTED,
+        T_107_OK_CLIENT_DISCONNECTED,
+        T_109_OK_NEW_CLIENT_CONNECTED,
         T_110_GET_ROOMS,
         T_113_ROOM_CREATED,
         T_114_QUIT_ROOM,
@@ -91,7 +94,8 @@ void rtype::network::RTypeDatagram::initSingleOpCodeDatagram(rtype::network::RTy
         T_305_NOT_IN_A_ROOM,
         T_306_UNKNOWN_ROOM,
         T_307_INVALID_PASSWORD,
-        T_308_ROOM_FULL
+        T_308_ROOM_FULL,
+        T_309_OPERATION_NOT_PERMITTED,
     };
     if (std::find(authorizedTypes.begin(), authorizedTypes.end(), type) == authorizedTypes.end()) {
         throw exceptions::DatagramErrorException("Datagram " + std::to_string(type) + " is not a valid type in a single op code datagram", WHERE);
@@ -106,6 +110,36 @@ void rtype::network::RTypeDatagram::initSingleOpCodeDatagram(rtype::network::RTy
 void rtype::network::RTypeDatagram::init100ConnectDatagram(const std::string &username)
 {
     RTypeDatagramType type = T_100_CONNECT;
+    constexpr size_t maxUsernameSize = 10;
+
+    auto buff = std::unique_ptr<byte[]>(new byte[sizeof(type) + maxUsernameSize]);
+    std::memset(buff.get(), 0, sizeof(type) + maxUsernameSize);
+
+    auto wType = HTONS(type);
+    std::memcpy(buff.get(), &wType, sizeof(type));
+    std::memcpy(reinterpret_cast<void *>(reinterpret_cast<intptr_t>(buff.get()) + sizeof(type)), &username[0], (std::min)(maxUsernameSize, username.size()));
+
+    this->setData(buff.get(), sizeof(type) + maxUsernameSize);
+}
+
+void rtype::network::RTypeDatagram::init106ClientDisconnectedDatagram(const std::string &username)
+{
+    RTypeDatagramType type = T_106_CLIENT_DISCONNECTED;
+    constexpr size_t maxUsernameSize = 10;
+
+    auto buff = std::unique_ptr<byte[]>(new byte[sizeof(type) + maxUsernameSize]);
+    std::memset(buff.get(), 0, sizeof(type) + maxUsernameSize);
+
+    auto wType = HTONS(type);
+    std::memcpy(buff.get(), &wType, sizeof(type));
+    std::memcpy(reinterpret_cast<void *>(reinterpret_cast<intptr_t>(buff.get()) + sizeof(type)), &username[0], (std::min)(maxUsernameSize, username.size()));
+
+    this->setData(buff.get(), sizeof(type) + maxUsernameSize);
+}
+
+void rtype::network::RTypeDatagram::init108NewClientConnectedDatagram(const std::string &username)
+{
+    RTypeDatagramType type = T_108_NEW_CLIENT_CONNECTED;
     constexpr size_t maxUsernameSize = 10;
 
     auto buff = std::unique_ptr<byte[]>(new byte[sizeof(type) + maxUsernameSize]);
@@ -401,7 +435,32 @@ void rtype::network::RTypeDatagram::extract100ConnectDatagram(std::string &usern
 
     if (getType() != type)
         throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+    if (getDatagramSize() != sizeof(type) + 10)
+        throw exceptions::DatagramMalformedException("This T_100_CONNECT packet malformed", WHERE);
+    auto wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    username = std::string(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), 10));
+}
 
+void rtype::network::RTypeDatagram::extract106ClientDisconnectedDatagram(std::string &username)
+{
+    RTypeDatagramType type = T_106_CLIENT_DISCONNECTED;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+    if (getDatagramSize() != sizeof(type) + 10)
+        throw exceptions::DatagramMalformedException("This T_106_CLIENT_DISCONNECTED packet malformed", WHERE);
+    auto wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    username = std::string(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), 10));
+}
+
+void rtype::network::RTypeDatagram::extract108NewClientConnectedDatagram(std::string &username)
+{
+    RTypeDatagramType type = T_108_NEW_CLIENT_CONNECTED;
+
+    if (getType() != type)
+        throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
+    if (getDatagramSize() != sizeof(type) + 10)
+        throw exceptions::DatagramMalformedException("This T_108_NEW_CLIENT_CONNECTED packet malformed", WHERE);
     auto wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
     username = std::string(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), 10));
 }
@@ -417,8 +476,12 @@ void rtype::network::RTypeDatagram::extract111RoomListDatagram(std::vector<RType
     rooms.clear();
 
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
+    if (getDatagramSize() < sizeof(type) + sizeof(uint32_t))
+        throw exceptions::DatagramMalformedException("This T_111_ROOM_LIST packet malformed", WHERE);
     auto nbRoom = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
     wPtr += sizeof(nbRoom);
+    if (getDatagramSize() != sizeof(type) + sizeof(uint32_t) + nbRoom * (maxRoomNameSize + sizeof(bool) + sizeof(const unsigned char) + sizeof(const unsigned char)))
+        throw exceptions::DatagramMalformedException("This T_111_ROOM_LIST packet malformed", WHERE);
     for (uint32_t i = 0; i < nbRoom; ++i) {
         std::string name(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), maxRoomNameSize));
         wPtr += maxRoomNameSize;
@@ -440,6 +503,8 @@ void rtype::network::RTypeDatagram::extract112CreateRoomDatagram(rtype::network:
     if (getType() != type)
         throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
 
+    if (getDatagramSize() < sizeof(type) + maxRoomNameSize + sizeof(unsigned char) + sizeof(uint32_t))
+        throw exceptions::DatagramMalformedException("This T_112_CREATE_ROOM packet malformed", WHERE);
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
     std::string name(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), maxRoomNameSize));
     wPtr += maxRoomNameSize;
@@ -447,6 +512,8 @@ void rtype::network::RTypeDatagram::extract112CreateRoomDatagram(rtype::network:
     wPtr += sizeof(capacity);
     uint32_t passwordSize = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
     wPtr += sizeof(passwordSize);
+    if (getDatagramSize() != sizeof(type) + maxRoomNameSize + sizeof(unsigned char) + sizeof(uint32_t) + passwordSize)
+        throw exceptions::DatagramMalformedException("This T_112_CREATE_ROOM packet malformed", WHERE);
     std::string password(reinterpret_cast<const char *>(wPtr), passwordSize);
     wPtr += passwordSize;
     room = {name, capacity, 0, passwordSize != 0, password};
@@ -460,11 +527,15 @@ void rtype::network::RTypeDatagram::extract116JoinRoomDatagram(rtype::network::R
     if (getType() != type)
         throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
 
+    if (getDatagramSize() < sizeof(type) + maxRoomNameSize + sizeof(uint32_t))
+        throw exceptions::DatagramMalformedException("This T_116_JOIN_ROOM packet malformed", WHERE);
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
     std::string name(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), maxRoomNameSize));
     wPtr += maxRoomNameSize;
     uint32_t passwordSize = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
     wPtr += sizeof(passwordSize);
+    if (getDatagramSize() != sizeof(type) + maxRoomNameSize + sizeof(uint32_t) + passwordSize)
+        throw exceptions::DatagramMalformedException("This T_116_JOIN_ROOM packet malformed", WHERE);
     std::string password(reinterpret_cast<const char *>(wPtr), passwordSize);
     wPtr += passwordSize;
     room = {name, 0, 0, passwordSize != 0, password};
@@ -481,8 +552,12 @@ void rtype::network::RTypeDatagram::extract117RoomJoinedDatagram(std::vector<std
     users.clear();
 
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
-    unsigned char nbUser = *reinterpret_cast<const uint32_t *>(wPtr);
+    if (getDatagramSize() < sizeof(type) + sizeof(unsigned char))
+        throw exceptions::DatagramMalformedException("This T_117_ROOM_JOINED packet malformed", WHERE);
+    unsigned char nbUser = *reinterpret_cast<const unsigned char *>(wPtr);
     wPtr += sizeof(nbUser);
+    if (getDatagramSize() != sizeof(type) + sizeof(unsigned char) + (maxUsernameSize * nbUser))
+        throw exceptions::DatagramMalformedException("This T_117_ROOM_JOINED packet malformed", WHERE);
     for (unsigned char i = 0; i < nbUser; ++i) {
         std::string name(reinterpret_cast<const char *>(wPtr), strnlen(reinterpret_cast<const char *>(wPtr), maxUsernameSize));
         wPtr += maxUsernameSize;
@@ -496,7 +571,8 @@ void rtype::network::RTypeDatagram::extract200ActionDatagram(rtype::network::RTy
 
     if (getType() != type)
         throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
-
+    if (getDatagramSize() != sizeof(type) + sizeof(bool) * 5)
+        throw exceptions::DatagramMalformedException("This T_200_ACTION packet malformed", WHERE);
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
     action.shot = *reinterpret_cast<const bool *>(wPtr);
     wPtr += sizeof(action.shot);
@@ -517,6 +593,8 @@ void rtype::network::RTypeDatagram::extract210DisplayDatagram(rtype::network::RT
     if (getType() != type)
         throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
 
+    if (getDatagramSize() != 42)
+        throw exceptions::DatagramMalformedException("This T_210_DISPLAY packet malformed", WHERE);
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
     entity.entityId = NTOHLL(*reinterpret_cast<const uint64_t *>(wPtr));
     wPtr += sizeof(entity.entityId);
@@ -544,6 +622,8 @@ void rtype::network::RTypeDatagram::extract220LivingDatagram(rtype::network::RTy
     if (getType() != type)
         throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
 
+    if (getDatagramSize() != 14)
+        throw exceptions::DatagramMalformedException("This T_220_LIVING packet malformed", WHERE);
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
     data.entityId = NTOHLL(*reinterpret_cast<const uint64_t *>(wPtr));
     wPtr += sizeof(data.entityId);
@@ -557,6 +637,8 @@ void rtype::network::RTypeDatagram::extract230ChargeDatagram(unsigned char &char
     if (getType() != type)
         throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
 
+    if (getDatagramSize() != 3)
+        throw exceptions::DatagramMalformedException("This T_230_CHARGE packet malformed", WHERE);
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
     charge = *reinterpret_cast<const unsigned char *>(wPtr);
 }
@@ -568,6 +650,8 @@ void rtype::network::RTypeDatagram::extract240ScoreDatagram(rtype::network::RTyp
     if (getType() != type)
         throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
 
+    if (getDatagramSize() != 18)
+        throw exceptions::DatagramMalformedException("This T_240_SCORE packet malformed", WHERE);
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
     score.p1Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
     wPtr += sizeof(score.p1Score);
@@ -585,6 +669,8 @@ void rtype::network::RTypeDatagram::extract250EndGameDatagram(rtype::network::RT
     if (getType() != type)
         throw exceptions::DatagramErrorException("This packet is not a " + std::to_string(type) + " packet", WHERE);
 
+    if (getDatagramSize() != 18)
+        throw exceptions::DatagramMalformedException("This T_250_END_GAME packet malformed", WHERE);
     intptr_t wPtr = reinterpret_cast<intptr_t>(getData()) + sizeof(type);
     score.p1Score = NTOHL(*reinterpret_cast<const uint32_t *>(wPtr));
     wPtr += sizeof(score.p1Score);

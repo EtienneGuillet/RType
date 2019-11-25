@@ -91,7 +91,7 @@ void b12software::containers::ThreadSafeCircularBuffer::unlock()
     _mutex.unlock();
 }
 
-void b12software::containers::ThreadSafeCircularBuffer::tryLock()
+void b12software::containers::ThreadSafeCircularBuffer::try_lock()
 {
     _mutex.try_lock();
 }

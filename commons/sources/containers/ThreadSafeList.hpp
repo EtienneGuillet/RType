@@ -137,7 +137,7 @@ namespace b12software {
             /*!
              * @brief Manually trylock a list
              */
-            void trylock();
+            void try_lock();
 
         private:
             mutable std::recursive_mutex _mutex; /*!< The internal mutex */
@@ -267,7 +267,7 @@ namespace b12software {
         }
 
         template<typename T>
-        void ThreadSafeList<T>::trylock()
+        void ThreadSafeList<T>::try_lock()
         {
             _mutex.try_lock();
         }
