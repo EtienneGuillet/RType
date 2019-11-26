@@ -32,7 +32,7 @@ const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
     {rtype::network::T_111_ROOM_LIST, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_112_CREATE_ROOM, &rtype::RTypeServer::protocol112CreateRoomsDatagramHandler},
     {rtype::network::T_113_ROOM_CREATED, &rtype::RTypeServer::invalidDatagramHandler},
-    {rtype::network::T_114_QUIT_ROOM, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_114_QUIT_ROOM, &rtype::RTypeServer::protocol114QuitRoomsDatagramHandler},
     {rtype::network::T_115_ROOM_QUITTED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_116_JOIN_ROOM, &rtype::RTypeServer::invalidDatagramHandler}, //todo
     {rtype::network::T_117_ROOM_JOINED, &rtype::RTypeServer::invalidDatagramHandler},
@@ -444,6 +444,20 @@ void rtype::RTypeServer::protocol112CreateRoomsDatagramHandler(rtype::network::R
         joinRoom(room.name, client);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][112] A new room was created '" + room.name + "'");
         break;
+    }
+    _socket.lock()->send(response);
+}
+
+void rtype::RTypeServer::protocol114QuitRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    network::RTypeDatagram response(dg.getHostInfos());
+    try {
+        exitRoom(getClientByHost(dg.getHostInfos()));
+        response.initSingleOpCodeDatagram(network::T_115_ROOM_QUITTED);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][114] Client is not in a room anymore");
+    } catch (exception::RTypeServerException &e) {
+        response.initSingleOpCodeDatagram(network::T_309_OPERATION_NOT_PERMITTED);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][114] Operation not permitted");
     }
     _socket.lock()->send(response);
 }
