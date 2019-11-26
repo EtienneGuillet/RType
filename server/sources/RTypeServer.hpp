@@ -78,6 +78,20 @@ namespace rtype {
 
     private:
         /*!
+         * @brief Get a client by his host
+         * @param host the host to search for
+         * @return The client with the host
+         * @throw RTypeServerException if the client is not found
+         */
+        Client &getClientByHost(const b12software::network::HostInfos &host);
+        /*!
+         * @brief Get a client by his name
+         * @param username the username to search for
+         * @return The client with the username searched
+         * @throw RTypeServerException if the client is not found
+         */
+        Client &getClientByUsername(const std::string &username);
+        /*!
          * @brief Check if a given username can be used
          * @param username the username to check
          * @return 0 if it's valid, 1 if invalid username, 2 if username already taken
@@ -104,15 +118,20 @@ namespace rtype {
 
     private:
         /*!
+         * @brief A handler called when a connect datagram is received
+         * @param dg the received datagram
+         */
+        void protocol100ConnectDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
          * @brief A handler called when a ping datagram is received
          * @param dg the received datagram
          */
         void protocol102PingDatagramHandler(rtype::network::RTypeDatagram dg);
         /*!
-         * @brief A handler called when a connect datagram is received
+         * @brief A handler called when a disconnect datagram is received
          * @param dg the received datagram
          */
-        void protocol100ConnectDatagramHandler(rtype::network::RTypeDatagram dg);
+        void protocol104DisconnectDatagramHandler(rtype::network::RTypeDatagram dg);
         /*!
          * @brief Default handler called when an unknown datagram type comes in
          * @param dg the received datagram

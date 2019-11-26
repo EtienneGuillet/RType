@@ -13,6 +13,7 @@
 #include <chrono>
 #include <map>
 #include "rtype/network/RTypeDatagramType.hpp"
+#include "rtype/network/RTypeDatagram.hpp"
 #include "ClientState.hpp"
 #include "network/HostInfos.hpp"
 
@@ -31,6 +32,7 @@ namespace rtype {
         using Duration = Clock::duration;
         using TimePoint = Clock::time_point;
         static constexpr TimePoint epoch = TimePoint();
+        static const rtype::network::RTypeDatagram defaultDg;
 
     public:
         /*!
@@ -132,12 +134,26 @@ namespace rtype {
          */
         void setClock(rtype::network::RTypeDatagramType type, const TimePoint &clock);
 
+        /*!
+         * @brief Get a datagram for a type
+         * @param type the type of datagram
+         * @return The datagram if exist an invalid datagram else
+         */
+        const rtype::network::RTypeDatagram &getDatagram(rtype::network::RTypeDatagramType type) const;
+        /*!
+         * @brief Set a datagram for a type
+         * @param type The type of datagram to set
+         * @param datagram The datagram to send
+         */
+        void setDatagram(rtype::network::RTypeDatagramType type, const rtype::network::RTypeDatagram &datagram);
+
     private:
         b12software::network::HostInfos _host; /*!< The host of the client */
         std::string _username; /*!< The username of the client */
         ClientState _state; /*!< The internal state of the client */
         TimePoint _lastReached; /*!< The last time this client was reached */
         std::map<rtype::network::RTypeDatagramType, TimePoint> _clocks; /*!< Internal clocks for this client */
+        std::map<rtype::network::RTypeDatagramType, rtype::network::RTypeDatagram> _datagrams; /*!< The datagrams to send unless a response is received*/
     };
 }
 

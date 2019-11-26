@@ -9,15 +9,17 @@
 
 #include "Client.hpp"
 
+const rtype::network::RTypeDatagram rtype::Client::defaultDg = rtype::network::RTypeDatagram();
+
 rtype::Client::Client()
-    : _host(b12software::network::emptyHost), _username(), _state(CS_IN_LOBBY), _lastReached(Clock::now()), _clocks()
+    : _host(b12software::network::emptyHost), _username(), _state(CS_IN_LOBBY), _lastReached(Clock::now()), _clocks(), _datagrams()
 {
 
 }
 
 rtype::Client::Client(const b12software::network::HostInfos &host, const std::string &username,
                       rtype::ClientState state)
-    : _host(host), _username(username), _state(state), _lastReached(Clock::now()), _clocks()
+    : _host(host), _username(username), _state(state), _lastReached(Clock::now()), _clocks(), _datagrams()
 {
 
 }
@@ -85,4 +87,18 @@ bool rtype::Client::operator==(const rtype::Client &rhs) const
 bool rtype::Client::operator!=(const rtype::Client &rhs) const
 {
     return !(rhs == *this);
+}
+
+const rtype::network::RTypeDatagram &rtype::Client::getDatagram(rtype::network::RTypeDatagramType type) const
+{
+    auto datagram = _datagrams.find(type);
+    if (datagram != _datagrams.end()) {
+        return datagram->second;
+    }
+    return defaultDg;
+}
+
+void rtype::Client::setDatagram(rtype::network::RTypeDatagramType type, const rtype::network::RTypeDatagram &datagram)
+{
+    _datagrams[type] = datagram;
 }

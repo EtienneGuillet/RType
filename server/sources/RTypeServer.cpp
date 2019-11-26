@@ -19,7 +19,7 @@ const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
     {rtype::network::T_101_CONNECTED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_102_PING, &rtype::RTypeServer::protocol102PingDatagramHandler},
     {rtype::network::T_103_PONG, &rtype::RTypeServer::emptyDatagramHandler},
-    {rtype::network::T_104_DISCONNECT, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_104_DISCONNECT, &rtype::RTypeServer::protocol104DisconnectDatagramHandler},
     {rtype::network::T_105_DISCONNECTED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_106_CLIENT_DISCONNECTED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_107_OK_CLIENT_DISCONNECTED, &rtype::RTypeServer::invalidDatagramHandler}, // todo
@@ -165,6 +165,9 @@ void rtype::RTypeServer::disconnectClient(const rtype::Client &client)
     _clients.remove_if([&client](const Client &elem) {
         if (client == elem) {
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER] Disconnected client " + static_cast<std::string>(elem.getHost()) + " " + elem.getUsername());
+            if (elem.getClientState() != CS_IN_LOBBY) {
+                //todo send 106 packet in a loop to other clients
+            }
             return true;
         }
         return false;
@@ -201,25 +204,62 @@ void rtype::RTypeServer::protocol100ConnectDatagramHandler(rtype::network::RType
     rtype::network::RTypeDatagram response(dg.getHostInfos());
     dg.extract100ConnectDatagram(username);
     int invalidUsernameCode = isInvalidUsername(username);
+    Client toAdd(dg.getHostInfos(), username);
     switch (invalidUsernameCode) {
     case 1:
         response.initSingleOpCodeDatagram(rtype::network::T_302_INVALID_PARAM);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][100] Invalid username '" + username + "'");
         break;
     case 2:
-        response.initSingleOpCodeDatagram(rtype::network::T_303_USERNAME_ALREADY_USED);
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][100] Already used username '" + username + "'");
+        if (getClientByUsername(username) == toAdd) {
+            response.initSingleOpCodeDatagram(rtype::network::T_101_CONNECTED);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][100] Re-sended OK to '" + username + "'");
+        } else {
+            response.initSingleOpCodeDatagram(rtype::network::T_303_USERNAME_ALREADY_USED);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][100] Already used username '" + username + "'");
+        }
         break;
     default:
         response.initSingleOpCodeDatagram(rtype::network::T_101_CONNECTED);
-        addNewClient(Client(dg.getHostInfos(), username));
+        addNewClient(toAdd);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][100] A new client connected with username '" + username + "'");
         break;
     }
     _socket.lock()->send(response);
 }
 
+void rtype::RTypeServer::protocol104DisconnectDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    try {
+        disconnectClient(getClientByHost(dg.getHostInfos()));
+    } catch (exception::RTypeServerException &e) {}
+    rtype::network::RTypeDatagram response(dg.getHostInfos());
+    response.initSingleOpCodeDatagram(rtype::network::T_105_DISCONNECTED);
+    _socket.lock()->send(response);
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][104] Send disconnected to client");
+}
+
 void rtype::RTypeServer::emptyDatagramHandler(rtype::network::RTypeDatagram dg)
 {
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][" + std::to_string(dg.getType()) + "] Empty handler");
+}
+
+rtype::Client &rtype::RTypeServer::getClientByHost(const b12software::network::HostInfos &host)
+{
+    std::scoped_lock lock(_clients);
+    for (auto &client : _clients) {
+        if (client.getHost() == host)
+            return client;
+    }
+    throw exception::RTypeServerException("Client " + static_cast<std::string>(host) + " not found", WHERE);
+}
+
+rtype::Client &rtype::RTypeServer::getClientByUsername(const std::string &username)
+{
+    std::scoped_lock lock(_clients);
+    for (auto &client : _clients) {
+        if (client.getUsername() == username)
+            return client;
+    }
+    throw exception::RTypeServerException("Client " + username + " not found", WHERE);
 }

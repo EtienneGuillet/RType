@@ -783,7 +783,6 @@
                         309 : Operation not permitted : 2 bytes
                         <vspace blankLines="2"/>
                         This datagram is sent in response to a
-                        disconnect datagram (<xref target="disconnect"/>),
                         get rooms datagram (<xref target="get-rooms"/>),
                         create room datagram (<xref target="create-room"/>),
                         quit room datagram (<xref target="quit-room"/>),

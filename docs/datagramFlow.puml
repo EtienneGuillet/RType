@@ -23,13 +23,11 @@ end
 
 == Disconnect ==
 Client -> Server : Datagram 104
-alt successful
-    Server -> Client : Datagram 105
-else client not logged
-    Server -> Client : Datagram 309
+Server -> Client : Datagram 105
+alt was in room
+    Server -> OtherClientsInRoom : Datagram 106
+    OtherClientsInRoom -> Server : Datagram 107
 end
-Server -> OtherClientsInRoom : Datagram 106
-OtherClientsInRoom -> Server : Datagram 107
 
 == Get room list ==
 Client -> Server : Datagram 110
