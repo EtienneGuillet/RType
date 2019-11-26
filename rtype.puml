@@ -443,6 +443,8 @@ enum rtype::network::RTypeDatagramType {
     T_240_SCORE = 240
     T_250_END_GAME = 250
     T_260_GAME_ENDED = 260
+    T_270_GAME_STARTING = 270
+    T_280_GAME_STARTED = 280
     T_300_UNKNOWN_PACKET = 300
     T_301_INVALID_PACKET = 301
     T_302_INVALID_PARAM = 302
@@ -652,18 +654,52 @@ class rtype::RTypeServer {
     + RTypeServer(unsigned short port = 54321)
     + ~RTypeServer()
     + void run()
+    - void handleDatagrams()
+    - void handleLiveness()
+    - void handleLooping()
+    - Client &getClientByHost(const b12software::network::HostInfos &host)
+    - Client &getClientByUsername(const std::string &username)
     - int isInvalidUsername(const std::string &username)
-    - void protocol102PingDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void addNewClient(const Client &client)
+    - void updateClientLiveness(const b12software::network::HostInfos &host)
+    - void disconnectClient(const Client &client)
+    - int isInvalidRoomName(const std::string &name)
+    - void createRoom(const std::string &name, unsigned char capacity, bool hasPassword, const std::string &password)
+    - void joinRoom(const std::string &roomName, Client &client, const std::string &password = "")
+    - void exitRoom(Client &client)
+    - void cleanRooms()
     - void protocol100ConnectDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol102PingDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol104DisconnectDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol107ClientDisconnectedDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol109NewClientConnectedDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol110GetRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol112CreateRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol114QuitRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol116JoinRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
     - void unknownDatagramHandler(rtype::network::RTypeDatagram dg)
     - void invalidDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void emptyDatagramHandler(rtype::network::RTypeDatagram dg)
     - std::unique_ptr<b12software::network::INetworkManager> _networkManager
     - std::weak_ptr<b12software::network::udp::IUdpSocket> _socket
     - b12software::containers::ThreadSafeList<rtype::Client> _clients
+    - std::list<std::shared_ptr<rtype::Room>> _rooms
 }
 
 class rtype::exception::RTypeServerException {
     + RTypeServerException(const std::string &what, const std::string &where)
+}
+
+class rtype::exception::RTypeUnknownRoomException {
+    + RTypeUnknownRoomException(const std::string &what, const std::string &where)
+}
+
+class rtype::exception::RTypeRoomAlreadyFullException {
+    + RTypeRoomAlreadyFullException(const std::string &what, const std::string &where)
+}
+
+class rtype::exception::RTypeInvalidPasswordException {
+    + RTypeInvalidPasswordException(const std::string &what, const std::string &where)
 }
 
 class rtype::Configuration {
@@ -688,15 +724,31 @@ class rtype::Client {
     + ~Client()
     + Client(const Client &other)
     + Client &operator=(const Client &rhs)
+    + bool operator==(const Client &rhs) const
+    + bool operator!=(const Client &rhs) const
     + void setHost(const b12software::network::HostInfos &host)
     + const b12software::network::HostInfos &getHost() const
     + const std::string &getUsername() const
     + void setUsername(const std::string &username)
     + ClientState getClientState() const
     + void setClientState(ClientState state)
+    + const TimePoint &getLastReached() const
+    + void setLastReached(const TimePoint &lastReached)
+    + const TimePoint &getClock(rtype::network::RTypeDatagramType type) const
+    + void setClock(rtype::network::RTypeDatagramType type, const TimePoint &clock)
+    + const rtype::network::RTypeDatagram &getDatagram(rtype::network::RTypeDatagramType type) const
+    + void setDatagram(rtype::network::RTypeDatagramType type, const rtype::network::RTypeDatagram &datagram)
+    + std::vector<rtype::network::RTypeDatagramType> getDatagramTypes() const
+    + const std::weak_ptr<rtype::Room> &getRoom() const
+    + void setRoom(const std::weak_ptr<rtype::Room> &room)
+    + void removeRoom()
     - b12software::network::HostInfos _host
     - std::string _username
     - ClientState _state
+    - TimePoint _lastReached
+    - std::map<rtype::network::RTypeDatagramType, TimePoint> _clocks
+    - std::map<rtype::network::RTypeDatagramType, rtype::network::RTypeDatagram> _datagrams
+    - std::weak_ptr<rtype::Room> _room
 }
 
 enum rtype::ClientState {
@@ -705,6 +757,37 @@ enum rtype::ClientState {
     CS_IN_GAME
 }
 
+class rtype::Room {
+    + Room()
+    + ~Room()
+    + const std::string &getName() const
+    + void setName(const std::string &name)
+    + unsigned char getCapacity() const
+    + void setCapacity(unsigned char capacity)
+    + unsigned char getSlotUsed() const
+    + void setSlotUsed(unsigned char slotUsed)
+    + bool hasPassword() const
+    + void setHasPassword(bool hasPassword)
+    + const std::string &getPassword() const
+    + void setPassword(const std::string &password)
+    + bool isGameRunning() const
+    + void setGameRunning(bool gameRunning)
+    + void addClient(Client &client)
+    + void removeClient(const Client &client)
+    + void applyToClients(std::function<void(Client &)> func)
+    - std::string _name
+    - unsigned char _capacity
+    - unsigned char _slotUsed
+    - bool _hasPassword
+    - std::string _password
+    - bool _gameRunning
+    - std::vector<std::reference_wrapper<Client>> _clients
+}
+
 b12software::exception::B12SoftwareException <|-- rtype::exception::RTypeServerException
+
+rtype::exception::RTypeServerException <|-- rtype::exception::RTypeInvalidPasswordException
+rtype::exception::RTypeServerException <|-- rtype::exception::RTypeRoomAlreadyFullException
+rtype::exception::RTypeServerException <|-- rtype::exception::RTypeUnknownRoomException
 
 @enduml
