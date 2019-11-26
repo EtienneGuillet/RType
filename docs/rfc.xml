@@ -631,6 +631,38 @@
                         <c>2 bytes</c>
                     </texttable>
                 </section>
+
+                <section anchor="game-starting" title="Game Starting">
+                    <t>
+                        270 : Game Starting : 2 bytes
+                        This datagram is sent continuously by the server until a
+                        <xref target="ok-game-started"/>
+                        datagram has been received.
+                    </t>
+
+                    <texttable>
+                        <preamble>Game Starting</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ok-game-started" title="OK Game Started">
+                    <t>
+                        280 : OK Game Started: 2 bytes
+                        <vspace blankLines="2"/>
+                        This datagram is sent by the client to inform the server that a Game Starting datagram
+                        (<xref target="game-starting"/>) has been received.
+                    </t>
+
+                    <texttable>
+                        <preamble>OK Game Started</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
             </section>
 
             <section anchor="errors" title="Errors">

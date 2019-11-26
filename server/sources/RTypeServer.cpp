@@ -7,6 +7,9 @@
 
 /* Created the 21/11/2019 at 17:59 by julian.frabel@epitech.eu */
 
+#include <exception/RTypeUnknownRoomException.hpp>
+#include <exception/RTypeRoomAlreadyFullException.hpp>
+#include <exception/RTypeInvalidPasswordException.hpp>
 #include "RTypeServer.hpp"
 #include "exception/NetworkException.hpp"
 #include "logger/DefaultLogger.hpp"
@@ -22,9 +25,9 @@ const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
     {rtype::network::T_104_DISCONNECT, &rtype::RTypeServer::protocol104DisconnectDatagramHandler},
     {rtype::network::T_105_DISCONNECTED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_106_CLIENT_DISCONNECTED, &rtype::RTypeServer::invalidDatagramHandler},
-    {rtype::network::T_107_OK_CLIENT_DISCONNECTED, &rtype::RTypeServer::invalidDatagramHandler}, // todo
+    {rtype::network::T_107_OK_CLIENT_DISCONNECTED, &rtype::RTypeServer::protocol107ClientDisconnectedDatagramHandler},
     {rtype::network::T_108_NEW_CLIENT_CONNECTED, &rtype::RTypeServer::invalidDatagramHandler},
-    {rtype::network::T_109_OK_NEW_CLIENT_CONNECTED, &rtype::RTypeServer::invalidDatagramHandler}, // todo
+    {rtype::network::T_109_OK_NEW_CLIENT_CONNECTED, &rtype::RTypeServer::protocol109NewClientConnectedDatagramHandler},
     {rtype::network::T_110_GET_ROOMS, &rtype::RTypeServer::invalidDatagramHandler}, //todo
     {rtype::network::T_111_ROOM_LIST, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_112_CREATE_ROOM, &rtype::RTypeServer::invalidDatagramHandler}, //todo
@@ -40,7 +43,8 @@ const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
     {rtype::network::T_240_SCORE, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_250_END_GAME, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_260_GAME_ENDED, &rtype::RTypeServer::invalidDatagramHandler}, //todo
-    {rtype::network::T_300_UNKNOWN_PACKET, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_270_GAME_STARTING, &rtype::RTypeServer::invalidDatagramHandler},
+    {rtype::network::T_280_GAME_STARTED, &rtype::RTypeServer::invalidDatagramHandler}, //todo
     {rtype::network::T_301_INVALID_PACKET, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_302_INVALID_PARAM, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_303_USERNAME_ALREADY_USED, &rtype::RTypeServer::invalidDatagramHandler},
@@ -55,7 +59,8 @@ const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
 rtype::RTypeServer::RTypeServer(unsigned short port)
     : _networkManager(std::make_unique<b12software::network::asio::AsioNetworkManager>()),
       _socket(),
-      _clients()
+      _clients(),
+      _rooms()
 {
     if (!_networkManager)
         throw rtype::exception::RTypeServerException("Failed to initialize network manager", WHERE);
@@ -81,6 +86,8 @@ void rtype::RTypeServer::run()
 {
     handleDatagrams();
     handleLiveness();
+    handleLooping();
+    cleanRooms();
 }
 
 void rtype::RTypeServer::handleDatagrams()
@@ -130,6 +137,24 @@ void rtype::RTypeServer::handleLiveness()
     }
 }
 
+void rtype::RTypeServer::handleLooping()
+{
+    auto locketSocket = _socket.lock();
+    if (!locketSocket)
+        return;
+    std::scoped_lock lock(_clients);
+    auto now = Client::Clock::now();
+    for (auto &client : _clients) {
+        auto types = client.getDatagramTypes();
+        for (auto &type : types) {
+            if (now - client.getClock(type) >= timeBetweenDatagramsDuration) {
+                locketSocket->send(client.getDatagram(type));
+                client.setClock(type, now);
+            }
+        }
+    }
+}
+
 int rtype::RTypeServer::isInvalidUsername(const std::string &username)
 {
     if (username.empty())
@@ -162,12 +187,10 @@ void rtype::RTypeServer::updateClientLiveness(const b12software::network::HostIn
 void rtype::RTypeServer::disconnectClient(const rtype::Client &client)
 {
     std::scoped_lock lock(_clients);
-    _clients.remove_if([&client](const Client &elem) {
+    _clients.remove_if([this, &client](const Client &elem) {
         if (client == elem) {
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER] Disconnected client " + static_cast<std::string>(elem.getHost()) + " " + elem.getUsername());
-            if (elem.getClientState() != CS_IN_LOBBY) {
-                //todo send 106 packet in a loop to other clients
-            }
+            exitRoom(getClientByHost(elem.getHost()));
             return true;
         }
         return false;
@@ -262,4 +285,97 @@ rtype::Client &rtype::RTypeServer::getClientByUsername(const std::string &userna
             return client;
     }
     throw exception::RTypeServerException("Client " + username + " not found", WHERE);
+}
+
+void rtype::RTypeServer::createRoom(const std::string &name, unsigned char capacity, bool hasPassword,
+                                    const std::string &password)
+{
+    if (capacity <= 0)
+        throw exception::RTypeServerException("Invalid capacity", WHERE);
+    std::shared_ptr<Room> newRoom = std::make_shared<Room>();
+    newRoom->setCapacity(capacity);
+    newRoom->setGameRunning(false);
+    newRoom->setHasPassword(hasPassword);
+    newRoom->setName(name);
+    newRoom->setPassword(password);
+    newRoom->setSlotUsed(0);
+    _rooms.push_back(newRoom);
+}
+
+void rtype::RTypeServer::joinRoom(const std::string &roomName, rtype::Client &client, const std::string &password)
+{
+    for (auto &room : _rooms) {
+        if (room->getName() == roomName) {
+            if (room->isGameRunning() || room->getSlotUsed() == room->getCapacity())
+                throw exception::RTypeRoomAlreadyFullException("Room " + roomName + " is not joinable", WHERE);
+            if (room->hasPassword() && room->getPassword() != password)
+                throw exception::RTypeInvalidPasswordException("Invalid password", WHERE);
+            room->applyToClients([client](Client &c) {
+                network::RTypeDatagram datagram(c.getHost());
+                datagram.init108NewClientConnectedDatagram(client.getUsername());
+                c.setDatagram(rtype::network::T_108_NEW_CLIENT_CONNECTED, datagram);
+            });
+            room->addClient(client);
+            client.setRoom(room);
+            client.setClientState(CS_IN_ROOM);
+            return;
+        }
+    }
+    throw exception::RTypeUnknownRoomException("Room " + roomName + " not found", WHERE);
+}
+
+void rtype::RTypeServer::exitRoom(rtype::Client &client)
+{
+    if (client.getClientState() != CS_IN_LOBBY) {
+        auto room = client.getRoom().lock();
+        if (room) {
+            room->removeClient(client);
+            room->applyToClients([client](Client &c) {
+                network::RTypeDatagram datagram(c.getHost());
+                datagram.init106ClientDisconnectedDatagram(client.getUsername());
+                c.setDatagram(rtype::network::T_106_CLIENT_DISCONNECTED, datagram);
+            });
+        }
+        client.removeRoom();
+        client.setClientState(CS_IN_LOBBY);
+    }
+}
+
+void rtype::RTypeServer::cleanRooms()
+{
+    _rooms.remove_if([](const std::shared_ptr<Room> &elem) {
+        if (elem->getSlotUsed() == 0) {
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER] Cleaning room " + elem->getName());
+            return true;
+        }
+        return false;
+    });
+}
+
+int rtype::RTypeServer::isInvalidRoomName(const std::string &name)
+{
+    if (name.empty())
+        return 1;
+    for (auto &room : _rooms) {
+        if (room->getName() == name) {
+            return 2;
+        }
+    }
+    return 0;
+}
+
+void rtype::RTypeServer::protocol107ClientDisconnectedDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    try {
+        Client &client = getClientByHost(dg.getHostInfos());
+        client.setDatagram(network::T_106_CLIENT_DISCONNECTED, Client::defaultDg);
+    } catch (exception::RTypeServerException &e) {}
+}
+
+void rtype::RTypeServer::protocol109NewClientConnectedDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    try {
+        Client &client = getClientByHost(dg.getHostInfos());
+        client.setDatagram(network::T_108_NEW_CLIENT_CONNECTED, Client::defaultDg);
+    } catch (exception::RTypeServerException &e) {}
 }

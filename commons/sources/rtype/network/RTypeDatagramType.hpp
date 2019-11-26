@@ -51,6 +51,8 @@ namespace rtype {
             T_240_SCORE = 240,
             T_250_END_GAME = 250,
             T_260_GAME_ENDED = 260,
+            T_270_GAME_STARTING = 270,
+            T_280_GAME_STARTED = 280,
             T_300_UNKNOWN_PACKET = 300,
             T_301_INVALID_PACKET = 301,
             T_302_INVALID_PARAM = 302,

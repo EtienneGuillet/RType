@@ -86,6 +86,8 @@ void rtype::network::RTypeDatagram::initSingleOpCodeDatagram(rtype::network::RTy
         T_114_QUIT_ROOM,
         T_115_ROOM_QUITTED,
         T_260_GAME_ENDED,
+        T_270_GAME_STARTING,
+        T_280_GAME_STARTED,
         T_300_UNKNOWN_PACKET,
         T_301_INVALID_PACKET,
         T_302_INVALID_PARAM,

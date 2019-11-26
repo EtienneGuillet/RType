@@ -12,10 +12,12 @@
 
 #include <chrono>
 #include <map>
+#include <memory>
 #include "rtype/network/RTypeDatagramType.hpp"
 #include "rtype/network/RTypeDatagram.hpp"
 #include "ClientState.hpp"
 #include "network/HostInfos.hpp"
+#include "room/Room.hpp"
 
 /*!
  * @namespace rtype
@@ -146,6 +148,25 @@ namespace rtype {
          * @param datagram The datagram to send
          */
         void setDatagram(rtype::network::RTypeDatagramType type, const rtype::network::RTypeDatagram &datagram);
+        /*!
+         * @brief Get the types of datagram that are looping
+         * @return the types of datagrams that are looping
+         */
+        std::vector<rtype::network::RTypeDatagramType> getDatagramTypes() const;
+        /*!
+         * @brief Get the room this client is in
+         * @return The room of this client
+         */
+        const std::weak_ptr<rtype::Room> &getRoom() const;
+        /*!
+         * @brief Set the room of this client
+         * @param room The room this client is now in
+         */
+        void setRoom(const std::weak_ptr<rtype::Room> &room);
+        /*!
+         * @brief Set the room of the user to none
+         */
+        void removeRoom();
 
     private:
         b12software::network::HostInfos _host; /*!< The host of the client */
@@ -154,7 +175,14 @@ namespace rtype {
         TimePoint _lastReached; /*!< The last time this client was reached */
         std::map<rtype::network::RTypeDatagramType, TimePoint> _clocks; /*!< Internal clocks for this client */
         std::map<rtype::network::RTypeDatagramType, rtype::network::RTypeDatagram> _datagrams; /*!< The datagrams to send unless a response is received*/
+        std::weak_ptr<rtype::Room> _room; /*!< The room this client is in */
     };
+}
+
+#else
+
+namespace rtype {
+    class Client;
 }
 
 #endif //R_TYPE_CLIENT_HPP

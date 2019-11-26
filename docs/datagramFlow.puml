@@ -79,6 +79,10 @@ end
 Server -> OtherClientsInRoom : Datagram 108
 OtherClientsInRoom -> Server : Datagram 109
 
+== Start game ==
+Server -> Client : Datagram 270
+Client -> Server : Datagram 280
+
 == End game ==
 Server -> Client : Datagram 250
 Client -> Server : Datagram 260

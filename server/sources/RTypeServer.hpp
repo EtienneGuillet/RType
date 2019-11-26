@@ -67,6 +67,10 @@ namespace rtype {
          * @brief Disconnect useless clients
          */
         void handleLiveness();
+        /*!
+         * @brief Send looping datagrams to clients
+         */
+        void handleLooping();
 
     private:
         using ProtocolMapType = std::map<unsigned short, void (RTypeServer::*)(rtype::network::RTypeDatagram)>;
@@ -116,6 +120,40 @@ namespace rtype {
          */
         void disconnectClient(const Client &client);
 
+        /*!
+         * @brief Check if a given room name can be used
+         * @param name the room name to check
+         * @return 0 if it's valid, 1 if invalid name, 2 if name already taken
+         */
+        int isInvalidRoomName(const std::string &name);
+        /*!
+         * @brief Create a new room
+         * @param name Name of the room
+         * @param capacity capacity of the room
+         * @param hasPassword does this room require a password
+         * @param password the password of the room
+         */
+        void createRoom(const std::string &name, unsigned char capacity, bool hasPassword, const std::string &password);
+
+        /*!
+         * @brief Make a client join an existing room
+         * @param roomName the name of the room to join
+         * @param client The client that join this room
+         * @param password The password to use to join this room
+         */
+        void joinRoom(const std::string &roomName, Client &client, const std::string &password = "");
+
+        /*!
+         * @brief Make a user exit the room he is in
+         * @param client The client that exit his room
+         */
+        void exitRoom(Client &client);
+
+        /*!
+         * @brief Clean empty rooms by destroying them
+         */
+        void cleanRooms();
+
     private:
         /*!
          * @brief A handler called when a connect datagram is received
@@ -132,6 +170,16 @@ namespace rtype {
          * @param dg the received datagram
          */
         void protocol104DisconnectDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler called when a client disconnected datagram is received
+         * @param dg the received datagram
+         */
+        void protocol107ClientDisconnectedDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler called when a new client connected datagram is received
+         * @param dg the received datagram
+         */
+        void protocol109NewClientConnectedDatagramHandler(rtype::network::RTypeDatagram dg);
         /*!
          * @brief Default handler called when an unknown datagram type comes in
          * @param dg the received datagram
@@ -153,6 +201,7 @@ namespace rtype {
         std::weak_ptr<b12software::network::udp::IUdpSocket> _socket; /*!< This server udp socket */
 
         b12software::containers::ThreadSafeList<rtype::Client> _clients; /*!< Connected clients */
+        std::list<std::shared_ptr<rtype::Room>> _rooms; /*!< Existing rooms */
     };
 }
 
