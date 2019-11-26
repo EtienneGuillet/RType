@@ -100,13 +100,13 @@ void rtype::Room::addClient(rtype::Client &client)
 
 void rtype::Room::removeClient(const rtype::Client &client)
 {
-    std::remove_if(_clients.begin(), _clients.end(), [this, &client](const std::reference_wrapper<Client> &elem) {
+    _clients.erase(std::remove_if(_clients.begin(), _clients.end(), [this, client](const std::reference_wrapper<Client> &elem) {
         if (elem.get() == client) {
             _slotUsed--;
             return true;
         }
         return false;
-    });
+    }));
 }
 
 void rtype::Room::applyToClients(std::function<void(Client & )> func)

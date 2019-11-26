@@ -187,10 +187,14 @@ void rtype::RTypeServer::updateClientLiveness(const b12software::network::HostIn
 void rtype::RTypeServer::disconnectClient(const rtype::Client &client)
 {
     std::scoped_lock lock(_clients);
-    _clients.remove_if([this, &client](const Client &elem) {
+    for (auto &elem : _clients) {
+        if (elem == client) {
+            exitRoom(elem);
+        }
+    }
+    _clients.remove_if([client](const Client &elem) {
         if (client == elem) {
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER] Disconnected client " + static_cast<std::string>(elem.getHost()) + " " + elem.getUsername());
-            exitRoom(getClientByHost(elem.getHost()));
             return true;
         }
         return false;
@@ -254,7 +258,8 @@ void rtype::RTypeServer::protocol100ConnectDatagramHandler(rtype::network::RType
 void rtype::RTypeServer::protocol104DisconnectDatagramHandler(rtype::network::RTypeDatagram dg)
 {
     try {
-        disconnectClient(getClientByHost(dg.getHostInfos()));
+        auto &client = getClientByHost(dg.getHostInfos());
+        disconnectClient(client);
     } catch (exception::RTypeServerException &e) {}
     rtype::network::RTypeDatagram response(dg.getHostInfos());
     response.initSingleOpCodeDatagram(rtype::network::T_105_DISCONNECTED);
@@ -481,15 +486,15 @@ void rtype::RTypeServer::protocol116JoinRoomsDatagramHandler(rtype::network::RTy
         if (!lockedRoom) {
             joinRoom(room.name, client, room.password);
             std::vector<std::string> users;
-            client.getRoom().lock()->applyToClients([&users](Client &client) {
-                users.push_back(client.getUsername());
+            client.getRoom().lock()->applyToClients([&users](Client &elem) {
+                users.push_back(elem.getUsername());
             });
             response.init117RoomJoinedDatagram(users);
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room joined " + room.name);
         } else if (lockedRoom->getName() == room.name) {
             std::vector<std::string> users;
-            client.getRoom().lock()->applyToClients([&users](Client &client) {
-                users.push_back(client.getUsername());
+            client.getRoom().lock()->applyToClients([&users](Client &elem) {
+                users.push_back(elem.getUsername());
             });
             response.init117RoomJoinedDatagram(users);
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room joined " + room.name);
@@ -497,8 +502,8 @@ void rtype::RTypeServer::protocol116JoinRoomsDatagramHandler(rtype::network::RTy
             exitRoom(client);
             joinRoom(room.name, client, room.password);
             std::vector<std::string> users;
-            client.getRoom().lock()->applyToClients([&users](Client &client) {
-                users.push_back(client.getUsername());
+            client.getRoom().lock()->applyToClients([&users](Client &elem) {
+                users.push_back(elem.getUsername());
             });
             response.init117RoomJoinedDatagram(users);
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room joined " + room.name);

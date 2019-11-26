@@ -18,7 +18,7 @@ static void connect(const b12software::network::HostInfos &serverHost, const std
     do {
         dg.init100ConnectDatagram(username);
         socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_101_CONNECTED) {
             std::cout << "Connected" << std::endl;
@@ -36,7 +36,7 @@ static void disconnect(const b12software::network::HostInfos &serverHost, const 
     do {
         dg.initSingleOpCodeDatagram(rtype::network::T_104_DISCONNECT);
         socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_105_DISCONNECTED) {
             std::cout << "Disconnected" << std::endl;
@@ -54,7 +54,7 @@ static void getRooms(const b12software::network::HostInfos &serverHost, const st
     do {
         dg.initSingleOpCodeDatagram(rtype::network::T_110_GET_ROOMS);
         socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_111_ROOM_LIST) {
             std::vector<rtype::network::RTypeDatagramRoom> rooms;
@@ -77,7 +77,7 @@ static void createRoom(const b12software::network::HostInfos &serverHost, const 
         rtype::network::RTypeDatagramRoom room = {"Room1", 3, 0, true, "password"};
         dg.init112CreateRoomDatagram(room);
         socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_113_ROOM_CREATED) {
             std::cout << "Room created" << std::endl;
@@ -96,10 +96,16 @@ static void joinRoom(const b12software::network::HostInfos &serverHost, const st
         rtype::network::RTypeDatagramRoom room = {"Room1", 3, 0, true, "password"};
         dg.init116JoinRoomDatagram(room);
         socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_117_ROOM_JOINED) {
-            std::cout << "Room joined" << std::endl;
+            std::cout << "Room joined and is containing";
+            std::vector<std::string> users;
+            response.extract117RoomJoinedDatagram(users);
+            for (auto &user : users) {
+                std::cout << " " << user;
+            }
+            std::cout << std::endl;
             break;
         } else if (response.isValid()) {
             std::cout << "CODE " << response.getType() << std::endl;
@@ -114,7 +120,7 @@ static void quitRoom(const b12software::network::HostInfos &serverHost, const st
     do {
         dg.initSingleOpCodeDatagram(rtype::network::T_114_QUIT_ROOM);
         socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_115_ROOM_QUITTED) {
             std::cout << "Room quited" << std::endl;
