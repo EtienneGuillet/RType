@@ -44,7 +44,7 @@ int main(int ac, char **av)
     ecs->learnSystem(exampleSystemLoader.loadAPI<ecs::ISystemAPI>("entryPointSystemAPI"));
     auto world = ecs->createWorld();
 
-    auto exampleSystem = world->addSystem(ecs->createSystemFromAPI(ecs::Version("System_Example")));
+    auto exampleSystem = world->addSystem(ecs->createSystemFromAPI(ecs::Version("System_Sfml")));
     exampleSystem.lock()->start();
     world->pushEntity(ecs->createEntityFromAPI(ecs::Version("Entity_Example")));
     world->pushEntity(ecs->createEntityFromAPI(ecs::Version("Entity_Example")));

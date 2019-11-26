@@ -1,27 +1,27 @@
-/*
-** EPITECH PROJECT, 2022
-** sfmlSystem.cpp
-** File description:
-** Created by tpautier,
-*/
-
 #include "sfmlSystem.hpp"
+#include "exception/SfmlSystemException.hpp"
+#include <logger/DefaultLogger.hpp>
+#include <logger/StandardLogger.hpp>
 
-const ecs::Version SfmlSystem::Version = ecs::Version("SfmlSystem", 0, 1, 0, 0);
+const ecs::Version SfmlSystem::Version = ecs::Version("System_Sfml", 0, 1, 0, 0);
 
 void SfmlSystem::start()
 {
-    _inputs[Z] = false;
-    _inputs[Q] = false;
-    _inputs[S] = false;
-    _inputs[D] = false;
-    _inputs[SPACE] = false;
-    _inputs[ESCAPE] = false;
-    _inputs[ENTER] = false;
-    _window.create(sf::VideoMode(800, 600, 32), "R-Type");
-    _window.setFramerateLimit(60);
-    this->loadTextures();
-    this->loadFonts();
+    try {
+        _inputs[Z] = false;
+        _inputs[Q] = false;
+        _inputs[S] = false;
+        _inputs[D] = false;
+        _inputs[SPACE] = false;
+        _inputs[ESCAPE] = false;
+        _inputs[ENTER] = false;
+        _window.create(sf::VideoMode(800, 600, 32), "R-Type");
+        _window.setFramerateLimit(60);
+        this->loadTextures();
+        this->loadFonts();
+    } catch (SfmlSystemException &e) {
+        std::cerr << e.what() << e.where() << std::endl;
+    }
 }
 
 void SfmlSystem::loadTextures()
@@ -29,13 +29,18 @@ void SfmlSystem::loadTextures()
     std::string filename = "r-typesheet";
     std::string extension = ".gif";
 
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
+
     for (int i = 0; i < NBR_TEXTURE; i++) {
         sf::Texture texture;
         std::string path;
+        path.append(PATH_TO_ASSETS);
         path.append(filename);
         path.append(std::to_string(i + 1));
         path.append(extension);
-        texture.loadFromFile(path);
+        if (!texture.loadFromFile(path)) {
+            throw SfmlSystemException("Texture didn't load, file " + path + " not found.", WHERE);
+        }
         _textures[i] = std::make_shared<sf::Texture>(texture);
     }
 }
@@ -48,10 +53,13 @@ void SfmlSystem::loadFonts()
     for (int i = 0; i < NBR_FONT; i++) {
         sf::Font font;
         std::string path;
+        path.append(PATH_TO_ASSETS);
         path.append(filename);
         path.append(std::to_string(i + 1));
         path.append(extension);
-        font.loadFromFile(path);
+        if (font.loadFromFile(path)) {
+            throw SfmlSystemException("Font didn't load, file not found.", WHERE);
+        }
         _fonts[i] = std::make_shared<sf::Font>(font);
     }
 }
@@ -64,39 +72,44 @@ void SfmlSystem::stop()
 void SfmlSystem::tick(long deltatime)
 {
     sf::Event event;
+    (void)deltatime;
 
-    while (_window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-            stop();
-            break;
+    try {
+        while (_window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                stop();
+                break;
+            }
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                _mouseInput.first = sf::Mouse::getPosition().x;
+                _mouseInput.second = sf::Mouse::getPosition().y;
+            }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z) {
+                _inputs[Z] = true;
+            }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Q) {
+                _inputs[Q] = true;
+            }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S) {
+                _inputs[S] = true;
+            }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::D) {
+                _inputs[D] = true;
+            }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
+                _inputs[SPACE] = true;
+            }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                _inputs[ESCAPE] = true;
+            }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
+                _inputs[ENTER] = true;
+            }
         }
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-            _mouseInput.first = sf::Mouse::getPosition().x;
-            _mouseInput.second = sf::Mouse::getPosition().y;
-        }
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z) {
-            _inputs[Z] = true;
-        }
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Q) {
-            _inputs[Q] = true;
-        }
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S) {
-            _inputs[S] = true;
-        }
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::D) {
-            _inputs[D] = true;
-        }
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
-            _inputs[SPACE] = true;
-        }
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-            _inputs[ESCAPE] = true;
-        }
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
-            _inputs[ENTER] = true;
-        }
-    }
     this->renderEntities();
+    } catch (SfmlSystemException &e) {
+        std::cerr << e.what() << e.where() << std::endl;
+    }
 }
 
 void SfmlSystem::renderEntities()
@@ -104,23 +117,32 @@ void SfmlSystem::renderEntities()
     _window.clear(sf::Color::Black);
     auto lockedWorld = _world.lock();
     if (lockedWorld) {
-        lockedWorld->applyToEach({rtype::SpriteComponent::Version, rtype::TextComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        lockedWorld->applyToEach({rtype::SpriteComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components[0].lock());
-
+            (void)entity;
             if (!spriteComponent->isSpriteSetted()) {
                 sf::Sprite sprite;
-                sprite.setTexture(
-                    _textures[spriteComponent->getAssetId()].operator*());
+                auto it = _textures.find(spriteComponent->getAssetId());
+                if (it == _textures.end())
+                    return;
+                sprite.setTexture(*(it->second));
                 spriteComponent->setSprite(sprite);
             }
             _window.draw(spriteComponent->getSprite());
-
-            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[1].lock());
-
-
+        });
+        lockedWorld->applyToEach({rtype::TextComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
+            (void)entity;
+            if (!textComponent->isFontSet()) {
+                sf::Text text;
+                auto it = _fonts.find(textComponent->getFontId());
+                if (it == _fonts.end())
+                    return;
+                text.setFont(*(_fonts[textComponent->getFontId()]));
+            }
+            _window.draw(textComponent->getText());
         });
     }
-
     _window.display();
 }
 

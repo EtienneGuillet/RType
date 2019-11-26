@@ -17,8 +17,9 @@
 #include <logger/DefaultLogger.hpp>
 #include <SFML/Graphics.hpp>
 
+#define PATH_TO_ASSETS "./bin/assets/"
 #define NBR_TEXTURE 42
-#define NBR_FONT 1
+#define NBR_FONT 0
 
 enum Keys {
     Z,

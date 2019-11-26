@@ -20,7 +20,7 @@ namespace ecs {
 
     /*!
      * @class ECSException
-     * @brief An exception from the ecs namespace
+     * @brief An exception from the sfml system.
      */
     class ECSException : public b12software::exception::B12SoftwareException {
     public:
