@@ -196,6 +196,11 @@ namespace rtype {
          */
         void protocol114QuitRoomsDatagramHandler(rtype::network::RTypeDatagram dg);
         /*!
+         * @brief A handler called when a join rooms datagram is received
+         * @param dg the received datagram
+         */
+        void protocol116JoinRoomsDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
          * @brief Default handler called when an unknown datagram type comes in
          * @param dg the received datagram
          */

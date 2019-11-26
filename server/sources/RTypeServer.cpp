@@ -34,7 +34,7 @@ const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
     {rtype::network::T_113_ROOM_CREATED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_114_QUIT_ROOM, &rtype::RTypeServer::protocol114QuitRoomsDatagramHandler},
     {rtype::network::T_115_ROOM_QUITTED, &rtype::RTypeServer::invalidDatagramHandler},
-    {rtype::network::T_116_JOIN_ROOM, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_116_JOIN_ROOM, &rtype::RTypeServer::protocol116JoinRoomsDatagramHandler},
     {rtype::network::T_117_ROOM_JOINED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_200_ACTION, &rtype::RTypeServer::invalidDatagramHandler}, //todo
     {rtype::network::T_210_DISPLAY, &rtype::RTypeServer::invalidDatagramHandler},
@@ -441,7 +441,7 @@ void rtype::RTypeServer::protocol112CreateRoomsDatagramHandler(rtype::network::R
     default:
         response.initSingleOpCodeDatagram(rtype::network::T_113_ROOM_CREATED);
         createRoom(room.name, room.capacity, room.hasPassword, room.password);
-        joinRoom(room.name, client);
+        joinRoom(room.name, client, room.password);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][112] A new room was created '" + room.name + "'");
         break;
     }
@@ -458,6 +458,42 @@ void rtype::RTypeServer::protocol114QuitRoomsDatagramHandler(rtype::network::RTy
     } catch (exception::RTypeServerException &e) {
         response.initSingleOpCodeDatagram(network::T_309_OPERATION_NOT_PERMITTED);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][114] Operation not permitted");
+    }
+    _socket.lock()->send(response);
+}
+
+void rtype::RTypeServer::protocol116JoinRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    network::RTypeDatagram response(dg.getHostInfos());
+    try {
+        getClientByHost(dg.getHostInfos());
+    } catch (exception::RTypeServerException &e) {
+        response.initSingleOpCodeDatagram(network::T_309_OPERATION_NOT_PERMITTED);
+        _socket.lock()->send(response);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][114] Operation not permitted");
+        return;
+    }
+    network::RTypeDatagramRoom room;
+    dg.extract116JoinRoomDatagram(room);
+    auto &client = getClientByHost(dg.getHostInfos());
+    auto lockedRoom = client.getRoom().lock();
+    try {
+        if (!lockedRoom) {
+            joinRoom(room.name, client, room.password);
+            response.initSingleOpCodeDatagram(network::T_117_ROOM_JOINED);
+        } else if (lockedRoom->getName() == room.name) {
+            response.initSingleOpCodeDatagram(network::T_117_ROOM_JOINED);
+        } else {
+            exitRoom(client);
+            joinRoom(room.name, client, room.password);
+            response.initSingleOpCodeDatagram(network::T_117_ROOM_JOINED);
+        }
+    } catch (exception::RTypeUnknownRoomException &e) {
+        response.initSingleOpCodeDatagram(network::T_306_UNKNOWN_ROOM);
+    } catch (exception::RTypeInvalidPasswordException &e) {
+        response.initSingleOpCodeDatagram(network::T_307_INVALID_PASSWORD);
+    } catch (exception::RTypeRoomAlreadyFullException &e) {
+        response.initSingleOpCodeDatagram(network::T_308_ROOM_FULL);
     }
     _socket.lock()->send(response);
 }
