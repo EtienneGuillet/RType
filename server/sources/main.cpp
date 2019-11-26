@@ -16,10 +16,12 @@
 #include <ecs/IECS/IECS.hpp>
 #include <ecs/IECS/ECS.hpp>
 #include <filesystem>
+#include <exception/B12SoftwareException.hpp>
+#include <map>
+#include <rtype/LibLoader/LibLoader.hpp>
 #include "logger/DefaultLogger.hpp"
 #include "logger/StandardLogger.hpp"
 #include "network/INetworkManager.hpp"
-#include "network/asio/AsioNetworkManager.hpp"
 
 namespace fs = std::filesystem;
 
@@ -27,23 +29,13 @@ namespace {
     volatile std::sig_atomic_t gSignalStatus;
 }
 
-static const std::string systemsFolder = "./server/systems";
-static const std::string entitiesFolder = "./server/entities";
-
 void signalHandler(int s)
 {
     std::cout << "Caught signal " << s << std::endl;
     gSignalStatus = s;
 }
 
-std::unique_ptr<ecs::IECS> prepareGame(std::vector<ecs::DLLoader> &entities, std::vector<ecs::DLLoader> &systems)
-{
-    auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
-
-    return ecs;
-}
-
-void updateECS(std::shared_ptr<ecs::IWorld> &world)
+void updateWorld(std::shared_ptr<ecs::IWorld> &world)
 {
     static auto start = std::chrono::system_clock::now();
     static auto end = start;
@@ -61,20 +53,13 @@ int main()
     std::signal(SIGINT, signalHandler);
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 
-    std::vector<ecs::DLLoader> entities, systems;
     auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
-
-    for (const auto &entry : fs::directory_iterator(entitiesFolder)) {
-        auto loader = entities.emplace_back(entry.path());
-        ecs->learnEntity(loader.loadAPI<ecs::IEntityAPI>("entryPointEntityAPI"));
-    }
-
-    for (const auto &entry : fs::directory_iterator(systemsFolder)) {
-        auto loader = systems.emplace_back(entry.path());
-        ecs->learnSystem(loader.loadAPI<ecs::ISystemAPI>("entryPointSystemAPI"));
-    }
+    auto world = ecs->createWorld();
+    auto libLoader = rtype::LibLoader(ecs, world, "./server");
 
     while (gSignalStatus == 0) {
+        libLoader.checkUpdates();
+        updateWorld(world);
     }
     return 0;
 }

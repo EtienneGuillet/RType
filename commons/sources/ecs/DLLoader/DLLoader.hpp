@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <memory>
+#include <fstream>
 #include "DLLoaderException.hpp"
+#include "exception/B12SoftwareException.hpp"
 
 #if defined(__linux__)
     #include <dlfcn.h>
@@ -58,6 +60,15 @@ namespace ecs {
             }
 #endif
         }
+
+        /*!
+         * @brief copy ctor deleted
+         */
+        DLLoader(DLLoader &) = delete;
+        /*!
+         * @brief copy ctor deleted
+         */
+        DLLoader &operator =(DLLoader &) = delete;
 
         /*!
          * @brief dtor
