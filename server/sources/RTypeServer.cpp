@@ -28,9 +28,9 @@ const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
     {rtype::network::T_107_OK_CLIENT_DISCONNECTED, &rtype::RTypeServer::protocol107ClientDisconnectedDatagramHandler},
     {rtype::network::T_108_NEW_CLIENT_CONNECTED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_109_OK_NEW_CLIENT_CONNECTED, &rtype::RTypeServer::protocol109NewClientConnectedDatagramHandler},
-    {rtype::network::T_110_GET_ROOMS, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_110_GET_ROOMS, &rtype::RTypeServer::protocol110GetRoomsDatagramHandler},
     {rtype::network::T_111_ROOM_LIST, &rtype::RTypeServer::invalidDatagramHandler},
-    {rtype::network::T_112_CREATE_ROOM, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_112_CREATE_ROOM, &rtype::RTypeServer::protocol112CreateRoomsDatagramHandler},
     {rtype::network::T_113_ROOM_CREATED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_114_QUIT_ROOM, &rtype::RTypeServer::invalidDatagramHandler}, //todo
     {rtype::network::T_115_ROOM_QUITTED, &rtype::RTypeServer::invalidDatagramHandler},
@@ -369,6 +369,7 @@ void rtype::RTypeServer::protocol107ClientDisconnectedDatagramHandler(rtype::net
     try {
         Client &client = getClientByHost(dg.getHostInfos());
         client.setDatagram(network::T_106_CLIENT_DISCONNECTED, Client::defaultDg);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][107] Received");
     } catch (exception::RTypeServerException &e) {}
 }
 
@@ -377,5 +378,72 @@ void rtype::RTypeServer::protocol109NewClientConnectedDatagramHandler(rtype::net
     try {
         Client &client = getClientByHost(dg.getHostInfos());
         client.setDatagram(network::T_108_NEW_CLIENT_CONNECTED, Client::defaultDg);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][109] Received");
     } catch (exception::RTypeServerException &e) {}
+}
+
+void rtype::RTypeServer::protocol110GetRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    network::RTypeDatagram response(dg.getHostInfos());
+    try {
+        getClientByHost(dg.getHostInfos());
+    } catch (exception::RTypeServerException &e) {
+        response.initSingleOpCodeDatagram(network::T_309_OPERATION_NOT_PERMITTED);
+        _socket.lock()->send(response);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][110] Operation not permitted");
+        return;
+    }
+    std::vector<rtype::network::RTypeDatagramRoom> dgRooms;
+    for (auto &room : _rooms) {
+        rtype::network::RTypeDatagramRoom dgRoom;
+        dgRoom.hasPassword = room->hasPassword();
+        dgRoom.capacity = room->getCapacity();
+        dgRoom.name = room->getName();
+        dgRoom.password = room->getPassword();
+        dgRoom.slotUsed = room->getSlotUsed();
+        dgRooms.push_back(dgRoom);
+    }
+    response.init111RoomListDatagram(dgRooms);
+    _socket.lock()->send(response);
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][110] List sent");
+}
+
+void rtype::RTypeServer::protocol112CreateRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    network::RTypeDatagram response(dg.getHostInfos());
+    try {
+        getClientByHost(dg.getHostInfos());
+    } catch (exception::RTypeServerException &e) {
+        response.initSingleOpCodeDatagram(network::T_309_OPERATION_NOT_PERMITTED);
+        _socket.lock()->send(response);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][112] Operation not permitted");
+        return;
+    }
+    auto &client = getClientByHost(dg.getHostInfos());
+    auto lockedRoom = client.getRoom().lock();
+    network::RTypeDatagramRoom room;
+    dg.extract112CreateRoomDatagram(room);
+    int invalidCode = isInvalidRoomName(room.name);
+    switch (invalidCode) {
+    case 1:
+        response.initSingleOpCodeDatagram(rtype::network::T_302_INVALID_PARAM);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][112] Invalid room name '" + room.name + "'");
+        break;
+    case 2:
+        if (lockedRoom && lockedRoom->getName() == room.name) {
+            response.initSingleOpCodeDatagram(rtype::network::T_113_ROOM_CREATED);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][112] Re-sended OK for room '" + room.name + "'");
+        } else {
+            response.initSingleOpCodeDatagram(rtype::network::T_304_ROOM_NAME_ALREADY_USED);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][112] Already used room name '" + room.name + "'");
+        }
+        break;
+    default:
+        response.initSingleOpCodeDatagram(rtype::network::T_113_ROOM_CREATED);
+        createRoom(room.name, room.capacity, room.hasPassword, room.password);
+        joinRoom(room.name, client);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][112] A new room was created '" + room.name + "'");
+        break;
+    }
+    _socket.lock()->send(response);
 }

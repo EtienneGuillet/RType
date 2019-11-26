@@ -181,6 +181,16 @@ namespace rtype {
          */
         void protocol109NewClientConnectedDatagramHandler(rtype::network::RTypeDatagram dg);
         /*!
+         * @brief A handler called when a get rooms datagram is received
+         * @param dg the received datagram
+         */
+        void protocol110GetRoomsDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler called when a get rooms datagram is received
+         * @param dg the received datagram
+         */
+        void protocol112CreateRoomsDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
          * @brief Default handler called when an unknown datagram type comes in
          * @param dg the received datagram
          */
