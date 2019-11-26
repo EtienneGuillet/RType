@@ -480,15 +480,27 @@ void rtype::RTypeServer::protocol116JoinRoomsDatagramHandler(rtype::network::RTy
     try {
         if (!lockedRoom) {
             joinRoom(room.name, client, room.password);
-            response.initSingleOpCodeDatagram(network::T_117_ROOM_JOINED);
+            std::vector<std::string> users;
+            client.getRoom().lock()->applyToClients([&users](Client &client) {
+                users.push_back(client.getUsername());
+            });
+            response.init117RoomJoinedDatagram(users);
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room joined " + room.name);
         } else if (lockedRoom->getName() == room.name) {
-            response.initSingleOpCodeDatagram(network::T_117_ROOM_JOINED);
+            std::vector<std::string> users;
+            client.getRoom().lock()->applyToClients([&users](Client &client) {
+                users.push_back(client.getUsername());
+            });
+            response.init117RoomJoinedDatagram(users);
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room joined " + room.name);
         } else {
             exitRoom(client);
             joinRoom(room.name, client, room.password);
-            response.initSingleOpCodeDatagram(network::T_117_ROOM_JOINED);
+            std::vector<std::string> users;
+            client.getRoom().lock()->applyToClients([&users](Client &client) {
+                users.push_back(client.getUsername());
+            });
+            response.init117RoomJoinedDatagram(users);
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room joined " + room.name);
         }
     } catch (exception::RTypeUnknownRoomException &e) {

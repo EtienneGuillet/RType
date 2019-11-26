@@ -11,18 +11,20 @@
 #include "rtype/network/RTypeDatagram.hpp"
 #include "network/asio/AsioNetworkManager.hpp"
 
-static void connect(const b12software::network::HostInfos &serverHost, const std::shared_ptr<b12software::network::udp::IUdpSocket> &socket)
+static void connect(const b12software::network::HostInfos &serverHost, const std::shared_ptr<b12software::network::udp::IUdpSocket> &socket, const std::string &username)
 {
     std::cout << "Connect sequence" << std::endl;
     rtype::network::RTypeDatagram dg(serverHost);
     do {
-        dg.init100ConnectDatagram("julian");
+        dg.init100ConnectDatagram(username);
         socket->send(dg);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_101_CONNECTED) {
             std::cout << "Connected" << std::endl;
             break;
+        } else if (response.isValid()) {
+            std::cout << "CODE " << response.getType() << std::endl;
         }
     } while (true);
 }
@@ -39,6 +41,8 @@ static void disconnect(const b12software::network::HostInfos &serverHost, const 
         if (response.isValid() && response.getType() == rtype::network::T_105_DISCONNECTED) {
             std::cout << "Disconnected" << std::endl;
             break;
+        } else if (response.isValid()) {
+            std::cout << "CODE " << response.getType() << std::endl;
         }
     } while (true);
 }
@@ -56,9 +60,11 @@ static void getRooms(const b12software::network::HostInfos &serverHost, const st
             std::vector<rtype::network::RTypeDatagramRoom> rooms;
             response.extract111RoomListDatagram(rooms);
             for (auto &room : rooms) {
-                std::cout << room.name << "(" << room.password << ") " << room.slotUsed << "/" << room.capacity << std::endl;
+                std::cout << room.name << "(" << room.hasPassword << ") " << static_cast<int>(room.slotUsed) << "/" << static_cast<int>(room.capacity) << std::endl;
             }
             break;
+        } else if (response.isValid()) {
+            std::cout << "CODE " << response.getType() << std::endl;
         }
     } while (true);
 }
@@ -76,6 +82,27 @@ static void createRoom(const b12software::network::HostInfos &serverHost, const 
         if (response.isValid() && response.getType() == rtype::network::T_113_ROOM_CREATED) {
             std::cout << "Room created" << std::endl;
             break;
+        } else if (response.isValid()) {
+            std::cout << "CODE " << response.getType() << std::endl;
+        }
+    } while (true);
+}
+
+static void joinRoom(const b12software::network::HostInfos &serverHost, const std::shared_ptr<b12software::network::udp::IUdpSocket> &socket)
+{
+    std::cout << "Join room sequence" << std::endl;
+    rtype::network::RTypeDatagram dg(serverHost);
+    do {
+        rtype::network::RTypeDatagramRoom room = {"Room1", 3, 0, true, "password"};
+        dg.init116JoinRoomDatagram(room);
+        socket->send(dg);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        rtype::network::RTypeDatagram response = socket->receive();
+        if (response.isValid() && response.getType() == rtype::network::T_117_ROOM_JOINED) {
+            std::cout << "Room joined" << std::endl;
+            break;
+        } else if (response.isValid()) {
+            std::cout << "CODE " << response.getType() << std::endl;
         }
     } while (true);
 }
@@ -92,6 +119,8 @@ static void quitRoom(const b12software::network::HostInfos &serverHost, const st
         if (response.isValid() && response.getType() == rtype::network::T_115_ROOM_QUITTED) {
             std::cout << "Room quited" << std::endl;
             break;
+        } else if (response.isValid()) {
+            std::cout << "CODE " << response.getType() << std::endl;
         }
     } while (true);
 }
@@ -100,20 +129,26 @@ int main()
 {
     std::unique_ptr<b12software::network::INetworkManager> networkManager(new b12software::network::asio::AsioNetworkManager());
     networkManager->start();
-    std::weak_ptr<b12software::network::udp::IUdpSocket> _socket = networkManager->createNewUdpSocket();
-    auto socket = _socket.lock();
-    if (!socket) {
+    std::weak_ptr<b12software::network::udp::IUdpSocket> _socket1 = networkManager->createNewUdpSocket();
+    std::weak_ptr<b12software::network::udp::IUdpSocket> _socket2 = networkManager->createNewUdpSocket();
+    auto socket1 = _socket1.lock();
+    auto socket2 = _socket2.lock();
+    if (!socket1 || !socket2) {
         std::cerr << "Socked couldn't be created" << std::endl;
         return 84;
     }
-    socket->bind(30001);
+    socket1->bind(30001);
+    socket2->bind(30002);
     b12software::network::HostInfos serverHost= {"0.0.0.0", 8080};
-    connect(serverHost, socket);
-    getRooms(serverHost, socket);
-    createRoom(serverHost, socket);
-    getRooms(serverHost, socket);
-    quitRoom(serverHost, socket);
-    getRooms(serverHost, socket);
-    disconnect(serverHost, socket);
+    connect(serverHost, socket1, "julian");
+    connect(serverHost, socket2, "julian2");
+    getRooms(serverHost, socket1);
+    createRoom(serverHost, socket1);
+    getRooms(serverHost, socket2);
+    joinRoom(serverHost, socket2);
+    getRooms(serverHost, socket1);
+    quitRoom(serverHost, socket1);
+    getRooms(serverHost, socket1);
+    disconnect(serverHost, socket1);
     return 0;
 }
