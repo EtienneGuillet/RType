@@ -60,6 +60,7 @@ rtype::network::RTypeDatagram &rtype::network::RTypeDatagram::operator=(const rt
 {
     if (this == &rhs)
         return *this;
+    Datagram::operator=(rhs);
     return *this;
 }
 
