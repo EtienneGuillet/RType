@@ -89,7 +89,9 @@ void rtype::Room::setGameRunning(bool gameRunning)
 
 void rtype::Room::addClient(rtype::Client &client)
 {
-    auto it = std::find(_clients.begin(), _clients.end(), client);
+    auto it = std::find_if(_clients.begin(), _clients.end(), [client](const auto &elem) {
+        return elem.get() == client;
+    });
     if (it == _clients.end()) {
         _clients.push_back(client);
         _slotUsed++;
@@ -101,7 +103,7 @@ void rtype::Room::removeClient(const rtype::Client &client)
     auto it = _clients.begin();
     while (it != _clients.end()) {
         auto next = it + 1;
-        if (*it == client) {
+        if ((*it).get() == client) {
             _clients.erase(it);
             _slotUsed--;
         }

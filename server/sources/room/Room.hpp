@@ -70,7 +70,7 @@ namespace rtype {
         bool _hasPassword; /*!< Does this room have a password */
         std::string _password; /*!< A password */
         bool _gameRunning; /*!< Is the game currently running */
-        std::vector<Client &> _clients; /*!< The connected clients to this room */
+        std::vector<std::reference_wrapper<Client>> _clients; /*!< The connected clients to this room */
     };
 }
 
