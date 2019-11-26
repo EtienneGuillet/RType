@@ -470,7 +470,7 @@ void rtype::RTypeServer::protocol116JoinRoomsDatagramHandler(rtype::network::RTy
     } catch (exception::RTypeServerException &e) {
         response.initSingleOpCodeDatagram(network::T_309_OPERATION_NOT_PERMITTED);
         _socket.lock()->send(response);
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][114] Operation not permitted");
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Operation not permitted");
         return;
     }
     network::RTypeDatagramRoom room;
@@ -481,19 +481,25 @@ void rtype::RTypeServer::protocol116JoinRoomsDatagramHandler(rtype::network::RTy
         if (!lockedRoom) {
             joinRoom(room.name, client, room.password);
             response.initSingleOpCodeDatagram(network::T_117_ROOM_JOINED);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room joined " + room.name);
         } else if (lockedRoom->getName() == room.name) {
             response.initSingleOpCodeDatagram(network::T_117_ROOM_JOINED);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room joined " + room.name);
         } else {
             exitRoom(client);
             joinRoom(room.name, client, room.password);
             response.initSingleOpCodeDatagram(network::T_117_ROOM_JOINED);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room joined " + room.name);
         }
     } catch (exception::RTypeUnknownRoomException &e) {
         response.initSingleOpCodeDatagram(network::T_306_UNKNOWN_ROOM);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Unknown room " + room.name);
     } catch (exception::RTypeInvalidPasswordException &e) {
         response.initSingleOpCodeDatagram(network::T_307_INVALID_PASSWORD);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Invalid password for room " + room.name);
     } catch (exception::RTypeRoomAlreadyFullException &e) {
         response.initSingleOpCodeDatagram(network::T_308_ROOM_FULL);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room is not reachable " + room.name);
     }
     _socket.lock()->send(response);
 }
