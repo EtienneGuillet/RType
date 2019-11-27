@@ -8,12 +8,10 @@
 <?rfc strict="yes"?>
 <?rfc toc="yes" ?>
 
-<!-- TODO Calculate the size of every datagram -->
-<!-- TODO Be sure that we don't need a timestamp at the start of every datagram -->
-
 <rfc
         category="std"
-        docName="R-Type-Protocol-UDP-00"
+        ipr="trust200902"
+        docName="draft-r-type-protocol-udp-00"
         consensus="no"
         submissionType="IETF"
         xml:lang="en"

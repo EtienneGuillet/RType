@@ -8,26 +8,22 @@
 #ifndef R_TYPE_INTCOMPONENT_HPP
 #define R_TYPE_INTCOMPONENT_HPP
 
-#include "ecs/IComponent/IComponent.hpp"
+#include <ecs/IEntity/AComponent.hpp>
 #include "logger/DefaultLogger.hpp"
 
 
-class IntComponent : public ecs::IComponent {
+class IntComponent : public ecs::AComponent {
 
 public:
     static const ecs::Version Version;
 
-    IntComponent(int value);
+    explicit IntComponent(int value);
     ~IntComponent() override = default;
 
-    void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
-    const ecs::Version &getVersion() const override;
+    [[nodiscard]] const ecs::Version &getVersion() const override;
 
     int operator++();
-
 private:
-
-    std::weak_ptr<ecs::IEntity> _entity;
     int _value;
 
 };

@@ -16,11 +16,6 @@ IntComponent::IntComponent(int value)
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "test IntComponent");
 }
 
-void IntComponent::setEntity(const std::weak_ptr<ecs::IEntity> &entity)
-{
-    _entity = entity;
-}
-
 const ecs::Version& IntComponent::getVersion() const
 {
     return IntComponent::Version;
