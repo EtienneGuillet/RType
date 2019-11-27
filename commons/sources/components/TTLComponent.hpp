@@ -5,8 +5,8 @@
 ** Created by tpautier,
 */
 
-#ifndef _TRANSFORM_COMPONENT_HPP_
-#define _TRANSFORM_COMPONENT_HPP_
+#ifndef _TTL_COMPONENT_HPP_
+#define _TTL_COMPONENT_HPP_
 
 #include "ecs/IComponent/IComponent.hpp"
 #include "logger/DefaultLogger.hpp"
@@ -52,4 +52,4 @@ namespace rtype {
     };
 } /* rtype */
 
-#endif // _TRANSFORM_COMPONENT_HPP_
+#endif // _TTL_COMPONENT_HPP_
