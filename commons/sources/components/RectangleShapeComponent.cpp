@@ -9,13 +9,22 @@
 
 namespace rtype {
 
-    const ecs::Version AShapeComponent::Version = ecs::Version("RectangleShapeComponent", 0, 0, 0, 1);
+    const ecs::Version RectangleShapeComponent::Version = ecs::Version("RectShapeComponent", 0, 0, 0, 1);
 
-    RectangleShapeComponent::RectangleShapeComponent(const sf::RectangleShape &shape, const int type)
-    :AShapeComponent(type), _shape(shape)
+    RectangleShapeComponent::RectangleShapeComponent(const sf::RectangleShape &shape)
+    :_shape(shape)
     {
     }
 
+    void RectangleShapeComponent::setEntity(const std::weak_ptr<ecs::IEntity> &entity)
+    {
+        _entity = entity;
+    }
+
+    const ecs::Version &RectangleShapeComponent::getVersion() const
+    {
+        return RectangleShapeComponent::Version;
+    }
 
     void RectangleShapeComponent::setTexture(const sf::Texture &texture)
     {
@@ -35,5 +44,25 @@ namespace rtype {
     const sf::Color &RectangleShapeComponent::getColor() const
     {
         return _shape.getFillColor();
+    }
+
+    void RectangleShapeComponent::setOutlineThickness(const float &outlineThickness)
+    {
+        _shape.setOutlineThickness(outlineThickness);
+    }
+
+    float RectangleShapeComponent::getOutlineThickness() const
+    {
+        return _shape.getOutlineThickness();
+    }
+
+    void RectangleShapeComponent::setOutlineColor(const sf::Color &color)
+    {
+        _shape.setOutlineColor(color);
+    }
+
+    const sf::Color &RectangleShapeComponent::getOutlineColor() const
+    {
+        return _shape.getOutlineColor();
     }
 } /* rtype */

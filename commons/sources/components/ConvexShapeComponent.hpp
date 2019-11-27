@@ -5,8 +5,8 @@
 ** Created by tpautier,
 */
 
-#ifndef _RECTANGLE_SHAPE_COMPONENT_HPP_
-#define _RECTANGLE_SHAPE_COMPONENT_HPP_
+#ifndef _CIRCLE_SHAPE_COMPONENT_HPP_
+#define _CIRCLE_SHAPE_COMPONENT_HPP_
 
 #include "ecs/IComponent/IComponent.hpp"
 #include "logger/DefaultLogger.hpp"
@@ -19,47 +19,47 @@
 namespace rtype {
 
     /*!
-     * @class RectangleShapeComponent
-     * @brief This class is a component allowing to display a rectangle.
+     * @class ConvexShapeComponent
+     * @brief This class is a component allowing to display a convex.
      */
-    class RectangleShapeComponent : public ecs::IComponent {
+    class ConvexShapeComponent : public ecs::IComponent {
 
     public:
         static const ecs::Version Version;
 
         /*!
          * @brief Ctor.
-         * @param shape RectangleShape displayed,
+         * @param shape ConvexShape displayed,
          */
-        RectangleShapeComponent(const sf::RectangleShape &shape);
+        ConvexShapeComponent(const sf::ConvexShape &shape);
 
         /*!
          * @brief Ctor.
          */
-        ~RectangleShapeComponent() = default;
+        ~ConvexShapeComponent() = default;
 
         void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
         const ecs::Version &getVersion() const override;
 
         /*!
-         * @brief Set the texture to the RectangleShape.
+         * @brief Set the texture to the ConvexShape.
          * @param texture Texture to set
          */
         void setTexture(const sf::Texture &texture);
 
         /*!
-         * @brief Return the texture set to the RectangleShape.
+         * @brief Return the texture set to the ConvexShape.
          */
         const sf::Texture &getTexture() const;
 
         /*!
-         * @brief Set the color of the RectangleShape.
+         * @brief Set the color of the ConvexShape.
          * @param color Color to set
          */
         void setColor(const sf::Color &color = sf::Color());
 
         /*!
-         * @brief Return the Color applied to the RectangleShape.
+         * @brief Return the Color applied to the ConvexShape.
          */
         const sf::Color &getColor() const;
 
@@ -79,7 +79,7 @@ namespace rtype {
         const sf::Color &getOutlineColor() const;
     private:
         std::weak_ptr<ecs::IEntity> _entity;
-        sf::RectangleShape _shape; /*!< The RectangleShape displayed */
+        sf::ConvexShape _shape; /*!< The ConvexShape displayed */
     };
 } /*rtype */
 
