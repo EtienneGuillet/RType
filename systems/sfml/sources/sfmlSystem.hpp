@@ -22,7 +22,7 @@
 
 #define PATH_TO_ASSETS "./bin/assets/"
 #define PATH_TO_FONTS "./bin/fonts/"
-#define NBR_TEXTURE 42
+#define NBR_TEXTURE 43
 #define NBR_FONT 2
 
 enum Keys {
