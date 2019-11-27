@@ -102,7 +102,7 @@ b12software::network::udp::Datagram &b12software::network::udp::Datagram::operat
 {
     if (&rhs == this)
         return *this;
-    delete _data;
+    delete [] _data;
     _size = rhs._size;
     _infos = rhs._infos;
     if (_size != 0) {

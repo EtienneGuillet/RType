@@ -755,6 +755,8 @@ class rtype::RTypeServer {
     - void createRoom(const std::string &name, unsigned char capacity, bool hasPassword, const std::string &password)
     - void joinRoom(const std::string &roomName, Client &client, const std::string &password = "")
     - void exitRoom(Client &client)
+    - void handleRooms()
+    - void updateRooms()
     - void cleanRooms()
     - void protocol100ConnectDatagramHandler(rtype::network::RTypeDatagram dg)
     - void protocol102PingDatagramHandler(rtype::network::RTypeDatagram dg)
@@ -765,6 +767,9 @@ class rtype::RTypeServer {
     - void protocol112CreateRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
     - void protocol114QuitRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
     - void protocol116JoinRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol200ActionDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol260OkGameEndedDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol280OkGameStartedDatagramHandler(rtype::network::RTypeDatagram dg)
     - void unknownDatagramHandler(rtype::network::RTypeDatagram dg)
     - void invalidDatagramHandler(rtype::network::RTypeDatagram dg)
     - void emptyDatagramHandler(rtype::network::RTypeDatagram dg)
@@ -863,6 +868,16 @@ class rtype::Room {
     + void addClient(Client &client)
     + void removeClient(const Client &client)
     + void applyToClients(std::function<void(Client &)> func)
+    + bool shouldGameRun() const
+    + void startGame()
+    + void syncGame(std::weak_ptr<b12software::network::udp::IUdpSocket> socket)
+    + void setUsernameInputs(const std::string &username, const rtype::network::RTypeDatagramAction &inputs)
+    - void endGame()
+    - void syncGameOnNetwork(const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket)
+    - void syncDisplayLiving(Client &client, const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket, bool living, bool display)
+    - void syncScore(Client &client, const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket)
+    - void syncCharge(Client &client, const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket)
+    - {static} static void gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos)
     - std::string _name
     - unsigned char _capacity
     - unsigned char _slotUsed
@@ -870,7 +885,119 @@ class rtype::Room {
     - std::string _password
     - bool _gameRunning
     - std::vector<std::reference_wrapper<Client>> _clients
+    - std::atomic_bool _shouldGameBeRunning
+    - GameInfos _gameInfos
+    - std::map<std::string, int> _clientPlayerMap
+    - std::atomic_bool _threadRunning
+    - std::unique_ptr<std::thread> _thread
 }
+
+enum rtype::RTypeEntityType {
+    ET_UNKNOWN = 0
+    ET_PLAYER_1 = 1
+    ET_PLAYER_2 = 2
+    ET_PLAYER_3 = 3
+    ET_PLAYER_4 = 4
+    /*!< Anywhere from 100 - 199 is a basic shot the value indicate its size */
+    ET_SHOOT_TYPE_BASIC_BASE = 100
+    ET_SHOOT_TYPE_BASIC_MAX = 199
+    ET_BONUS_SHOOTING_SPEED_UP = 1000
+    ET_BONUS_SHOOTING_SPEED_DOWN = 1001
+    ET_BONUS_MOVING_SPEED_UP = 1000
+    ET_BONUS_MOVING_SPEED_DOWN = 1001
+    /*!< Above this value should be the monsters types */
+    ET_MONSTER_TYPE_BASE = 100000
+}
+
+class rtype::EntityInfos {
+    + EntityInfos(bool hasDisplay = true, bool hasHp = true)
+    + ~EntityInfos()
+    + EntityInfos(const EntityInfos &other)
+    + EntityInfos &operator=(const EntityInfos &rhs)
+    + b12software::maths::Vector3D getPosition() const
+    + void setPosition(const b12software::maths::Vector3D &position)
+    + void setPosition(int x, int y, int z)
+    + b12software::maths::Vector2D getRotation() const
+    + void setRotation(const b12software::maths::Vector2D &rotation)
+    + void setRotation(int x, int y)
+    + b12software::maths::Vector2D getScale() const
+    + void setScale(const b12software::maths::Vector2D &scale)
+    + void setScale(int x, int y)
+    + uint32_t getType() const
+    + void setType(uint32_t type)
+    + uint32_t getHp() const
+    + void setHp(uint32_t hp)
+    + uint32_t getId() const
+    + void setId(uint32_t id)
+    # std::atomic_bool _hasDisplay
+    # std::atomic_bool _hasHp
+    # std::atomic_uint32_t _posX
+    # std::atomic_uint32_t _posY
+    # std::atomic_uint32_t _posZ
+    # std::atomic_uint32_t _rotX
+    # std::atomic_uint32_t _rotY
+    # std::atomic_uint32_t _scaleX
+    # std::atomic_uint32_t _scaleY
+    # std::atomic_uint32_t _type
+    # std::atomic_uint32_t _hp
+    # std::atomic_uint64_t _id
+}
+
+class rtype::GameInfos {
+    + GameInfos()
+    +  ~GameInfos()
+    + GameInfos(const GameInfos &other)
+    + GameInfos &operator=(const GameInfos &rhs)
+    + void reset()
+    + int getNbPlayers() const
+    + void setNbPlayers(int nbPlayer)
+    + PlayerInfos &getPlayer(int nb)
+    + const PlayerInfos &getPlayer(int nb) const
+    + void setPlayer(int nb, const PlayerInfos &infos)
+    + b12software::containers::ThreadSafeList<rtype::EntityInfos> &getEntities()
+    + const b12software::containers::ThreadSafeList<rtype::EntityInfos> &getEntities() const
+    + void setEntities(const b12software::containers::ThreadSafeList<rtype::EntityInfos> &entities)
+    + void addEntity(const rtype::EntityInfos &entity)
+    + void removeEntity(uint32_t id)
+    + void removeEntity(const rtype::EntityInfos &entity)
+    + void removeEntities(const std::function<bool(const rtype::EntityInfos &)> &func)
+    - std::atomic_int _nbPlayers
+    - PlayerInfos _players[4]
+    - b12software::containers::ThreadSafeList<rtype::EntityInfos> _entities
+}
+
+class rtype::PlayerInfos {
+    + PlayerInfos()
+    + ~PlayerInfos()
+    + PlayerInfos(const PlayerInfos &other)
+    + PlayerInfos &operator=(const PlayerInfos &rhs)
+    + bool isUsed() const
+    + void setIsUsed(bool used)
+    + bool isShooting() const
+    + void setIsShooting(bool shooting)
+    + bool isMovingUp() const
+    + void setIsMovingUp(bool movingUp)
+    + bool isMovingDown() const
+    + void setIsMovingDown(bool movingDown)
+    + bool isMovingLeft() const
+    + void setIsMovingLeft(bool movingLeft)
+    + bool isMovingRight() const
+    + void setIsMovingRight(bool movingRight)
+    + char getCharge() const
+    + void setCharge(char charge)
+    + uint32_t getScore() const
+    + void setScore(uint32_t score)
+    - std::atomic_bool _used
+    - std::atomic_bool _shooting
+    - std::atomic_bool _movingUp
+    - std::atomic_bool _movingDown
+    - std::atomic_bool _movingLeft
+    - std::atomic_bool _movingRight
+    - std::atomic_char _charge
+    - std::atomic_uint32_t _score
+}
+
+rtype::EntityInfos <|-- rtype::PlayerInfos
 
 b12software::exception::B12SoftwareException <|-- rtype::exception::RTypeServerException
 

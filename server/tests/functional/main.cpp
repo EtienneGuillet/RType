@@ -15,17 +15,26 @@ static void handleLoopingResponse(const b12software::network::HostInfos &serverH
 {
     rtype::network::RTypeDatagram dg(serverHost);
     std::string username;
-    if (response.getType() == 106) {
+    if (response.getType() == 102) {
+        dg.initSingleOpCodeDatagram(rtype::network::T_103_PONG);
+        socket->send(dg);
+        std::cout << "pong" << std::endl;
+    } else if (response.getType() == 106) {
         response.extract106ClientDisconnectedDatagram(username);
         dg.initSingleOpCodeDatagram(rtype::network::T_107_OK_CLIENT_DISCONNECTED);
         socket->send(dg);
         std::cout << "Received the disconnection of " << username << std::endl;
-    }
-    if (response.getType() == 108) {
+    } else if (response.getType() == 108) {
         response.extract108NewClientConnectedDatagram(username);
         dg.initSingleOpCodeDatagram(rtype::network::T_109_OK_NEW_CLIENT_CONNECTED);
         socket->send(dg);
         std::cout << "Received the connection of " << username << std::endl;
+    } else if (response.getType() == 270) {
+        dg.initSingleOpCodeDatagram(rtype::network::T_280_GAME_STARTED);
+        socket->send(dg);
+        std::cout << "Received game started" << std::endl;
+    } else {
+        std::cout << "Received datagram " << response.getType() << std::endl;
     }
 }
 
@@ -33,10 +42,14 @@ static void connect(const b12software::network::HostInfos &serverHost, const std
 {
     std::cout << "Connect sequence" << std::endl;
     rtype::network::RTypeDatagram dg(serverHost);
+    auto start = std::chrono::high_resolution_clock::now();
     do {
-        dg.init100ConnectDatagram(username);
-        socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        if (std::chrono::high_resolution_clock::now() - start >= std::chrono::milliseconds(500)) {
+            dg.init100ConnectDatagram(username);
+            socket->send(dg);
+            start = std::chrono::high_resolution_clock::now();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_101_CONNECTED) {
             std::cout << "Connected" << std::endl;
@@ -52,10 +65,14 @@ static void disconnect(const b12software::network::HostInfos &serverHost, const 
 {
     std::cout << "Disconnect sequence" << std::endl;
     rtype::network::RTypeDatagram dg(serverHost);
+    auto start = std::chrono::high_resolution_clock::now();
     do {
-        dg.initSingleOpCodeDatagram(rtype::network::T_104_DISCONNECT);
-        socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        if (std::chrono::high_resolution_clock::now() - start >= std::chrono::milliseconds(500)) {
+            dg.initSingleOpCodeDatagram(rtype::network::T_104_DISCONNECT);
+            socket->send(dg);
+            start = std::chrono::high_resolution_clock::now();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_105_DISCONNECTED) {
             std::cout << "Disconnected" << std::endl;
@@ -71,10 +88,14 @@ static void getRooms(const b12software::network::HostInfos &serverHost, const st
 {
     std::cout << "Get rooms sequence" << std::endl;
     rtype::network::RTypeDatagram dg(serverHost);
+    auto start = std::chrono::high_resolution_clock::now();
     do {
-        dg.initSingleOpCodeDatagram(rtype::network::T_110_GET_ROOMS);
-        socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        if (std::chrono::high_resolution_clock::now() - start >= std::chrono::milliseconds(500)) {
+            dg.initSingleOpCodeDatagram(rtype::network::T_110_GET_ROOMS);
+            socket->send(dg);
+            start = std::chrono::high_resolution_clock::now();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_111_ROOM_LIST) {
             std::vector<rtype::network::RTypeDatagramRoom> rooms;
@@ -94,11 +115,15 @@ static void createRoom(const b12software::network::HostInfos &serverHost, const 
 {
     std::cout << "Create room sequence" << std::endl;
     rtype::network::RTypeDatagram dg(serverHost);
+    auto start = std::chrono::high_resolution_clock::now();
     do {
-        rtype::network::RTypeDatagramRoom room = {"Room1", 3, 0, true, "password"};
-        dg.init112CreateRoomDatagram(room);
-        socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        rtype::network::RTypeDatagramRoom room = {"Room1", 2, 0, true, "password"};
+        if (std::chrono::high_resolution_clock::now() - start >= std::chrono::milliseconds(500)) {
+            dg.init112CreateRoomDatagram(room);
+            socket->send(dg);
+            start = std::chrono::high_resolution_clock::now();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_113_ROOM_CREATED) {
             std::cout << "Room created" << std::endl;
@@ -114,11 +139,15 @@ static void joinRoom(const b12software::network::HostInfos &serverHost, const st
 {
     std::cout << "Join room sequence" << std::endl;
     rtype::network::RTypeDatagram dg(serverHost);
+    auto start = std::chrono::high_resolution_clock::now();
     do {
-        rtype::network::RTypeDatagramRoom room = {"Room1", 3, 0, true, "password"};
-        dg.init116JoinRoomDatagram(room);
-        socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        rtype::network::RTypeDatagramRoom room = {"Room1", 2, 0, true, "password"};
+        if (std::chrono::high_resolution_clock::now() - start >= std::chrono::milliseconds(500)) {
+            dg.init116JoinRoomDatagram(room);
+            socket->send(dg);
+            start = std::chrono::high_resolution_clock::now();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_117_ROOM_JOINED) {
             std::cout << "Room joined and is containing";
@@ -140,10 +169,14 @@ static void quitRoom(const b12software::network::HostInfos &serverHost, const st
 {
     std::cout << "Quiting room sequence" << std::endl;
     rtype::network::RTypeDatagram dg(serverHost);
+    auto start = std::chrono::high_resolution_clock::now();
     do {
-        dg.initSingleOpCodeDatagram(rtype::network::T_114_QUIT_ROOM);
-        socket->send(dg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        if (std::chrono::high_resolution_clock::now() - start >= std::chrono::milliseconds(500)) {
+            dg.initSingleOpCodeDatagram(rtype::network::T_114_QUIT_ROOM);
+            socket->send(dg);
+            start = std::chrono::high_resolution_clock::now();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         rtype::network::RTypeDatagram response = socket->receive();
         if (response.isValid() && response.getType() == rtype::network::T_115_ROOM_QUITTED) {
             std::cout << "Room quited" << std::endl;
@@ -177,9 +210,18 @@ int main()
     getRooms(serverHost, socket2);
     joinRoom(serverHost, socket2);
     getRooms(serverHost, socket1);
+    auto start = std::chrono::system_clock::now();
+    while (std::chrono::system_clock::now() - start <= std::chrono::seconds(10)) {
+        auto dg = socket2->receive();
+        if (dg.isValid())
+            handleLoopingResponse(serverHost, socket2, dg);
+        auto dg2 = socket1->receive();
+        if (dg2.isValid())
+            handleLoopingResponse(serverHost, socket1, dg2);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
     quitRoom(serverHost, socket1);
-    getRooms(serverHost, socket1);
     disconnect(serverHost, socket1);
-    getRooms(serverHost, socket2);
+    disconnect(serverHost, socket2);
     return 0;
 }
