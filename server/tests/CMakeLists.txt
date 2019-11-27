@@ -51,6 +51,12 @@ target_include_directories(
 
 target_link_libraries(
         tests_server_functional
-        dl
         ${CONAN_LIBS}
 )
+
+if (UNIX)
+	target_link_libraries(
+		r-tests_server_functional
+		dl
+	)
+endif (UNIX)

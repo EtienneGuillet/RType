@@ -12,7 +12,9 @@
 
 #include <string>
 #include <vector>
+#ifdef __linux__
 #include <getopt.h>
+#endif
 
 /*!
  * @namespace rtype
@@ -81,10 +83,12 @@ namespace rtype {
         void displayErrors() const;
 
     private:
+#ifdef __linux__
         static constexpr struct option longOptions[] = {
             {"help", no_argument, 0, 'h'},
             {"port", required_argument, 0, 'p'},
         };
+#endif
 
     private:
         std::string _binaryName; /*!< The name of this binary */

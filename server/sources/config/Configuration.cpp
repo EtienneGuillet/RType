@@ -13,6 +13,7 @@
 rtype::Configuration::Configuration(int nbArgs, char * const *args)
     : _binaryName(args[0]), _help(false), _port(54321), _errors()
 {
+#ifdef __linux__
     int optionIdx = 0;
     while (true) {
         int c = ::getopt_long(nbArgs, args, "hp:", longOptions, &optionIdx);
@@ -41,6 +42,32 @@ rtype::Configuration::Configuration(int nbArgs, char * const *args)
     while (optind < nbArgs) {
         _errors.push_back(std::string("non-option argument element ") + args[optind++] + " is invalid");
     }
+#else
+	bool nextShouldBePort = false;
+	for (int i = 1; i < nbArgs; i++) {
+		std::string strArg(args[i]);
+		if (strArg == "-h" || strArg == "--help") {
+			_help = true;
+		} else if (strArg == "-p" || strArg == "--port") {
+			nextShouldBePort = true;
+		} else if (nextShouldBePort) {
+			try {
+				_port = std::stoi(strArg);
+			}
+			catch (std::invalid_argument &e) {
+				_port = 0;
+				_errors.push_back(std::string("Invalid port: ") + e.what());
+			}
+			catch (std::out_of_range &e) {
+				_port = 0;
+				_errors.push_back(std::string("Invalid port: ") + e.what());
+			}
+			nextShouldBePort = false;
+		} else {
+			_errors.push_back("Unknown argument " + strArg);
+		}
+	}
+#endif
 }
 
 bool rtype::Configuration::shouldDisplayHelp() const
