@@ -13,7 +13,7 @@ namespace rtype {
         0, 0, 1);
 
     TextComponent::TextComponent(const int fontId, const std::string &string)
-        : _fontIsSet(false), _string(string), _fontId(fontId)
+        : _textIsSet(false), _string(string), _fontId(fontId)
     {
     }
 
@@ -38,17 +38,6 @@ namespace rtype {
         _text.setString(_string);
     }
 
-    const sf::Font &TextComponent::getFont() const
-    {
-        return (*_text.getFont());
-    }
-
-    void TextComponent::setFont(const sf::Font &font)
-    {
-        _text.setFont(font);
-        _fontIsSet = true;
-    }
-
     const sf::Text &TextComponent::getText() const
     {
         return _text;
@@ -59,9 +48,9 @@ namespace rtype {
         _text = text;
     }
 
-    bool TextComponent::isFontSet() const
+    bool TextComponent::isTextSet() const
     {
-        return _fontIsSet;
+        return _textIsSet;
     }
 
     int TextComponent::getFontId() const

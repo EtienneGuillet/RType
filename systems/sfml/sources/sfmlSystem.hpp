@@ -18,8 +18,9 @@
 #include <SFML/Graphics.hpp>
 
 #define PATH_TO_ASSETS "./bin/assets/"
+#define PATH_TO_FONTS "./bin/fonts/"
 #define NBR_TEXTURE 42
-#define NBR_FONT 0
+#define NBR_FONT 2
 
 enum Keys {
     Z,

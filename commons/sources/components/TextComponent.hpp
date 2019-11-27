@@ -54,17 +54,6 @@ namespace rtype {
         void setString(const std::string &string);
 
         /*!
-         * @brief Return the font used to display the text.
-         */
-        const sf::Font &getFont() const;
-
-        /*!
-         * @brief Set the font to the text.
-         * @param font Font used to display the text
-         */
-        void setFont(const sf::Font &font);
-
-        /*!
          * @brief Return the text.
          */
         const sf::Text &getText() const;
@@ -76,9 +65,9 @@ namespace rtype {
         void setText(const sf::Text &text);
 
         /*!
-         * @brief return a boolean indicating if the font is set.
+         * @brief return a boolean indicating if the text is set.
          */
-        bool isFontSet() const;
+        bool isTextSet() const;
 
         /*!
          * @brief return the id of the font used to display the text.
@@ -88,7 +77,7 @@ namespace rtype {
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         sf::Text _text; /*!< The text displayed */
-        bool _fontIsSet; /*!< Bool indicating if the font has been set */
+        bool _textIsSet; /*!< Bool indicating if the font has been set */
         std::string _string; /*!< String with the content of the text */
         int _fontId; /*!< Id of the font to use */
     };

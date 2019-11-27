@@ -50,15 +50,16 @@ void SfmlSystem::loadFonts()
     std::string filename = "r-typeFont";
     std::string extension = ".ttf";
 
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
     for (int i = 0; i < NBR_FONT; i++) {
         sf::Font font;
         std::string path;
-        path.append(PATH_TO_ASSETS);
+        path.append(PATH_TO_FONTS);
         path.append(filename);
         path.append(std::to_string(i + 1));
         path.append(extension);
-        if (font.loadFromFile(path)) {
-            throw SfmlSystemException("Font didn't load, file not found.", WHERE);
+        if (!font.loadFromFile(path)) {
+            throw SfmlSystemException("Font didn't load, file " + path + " not found.", WHERE);
         }
         _fonts[i] = std::make_shared<sf::Font>(font);
     }
@@ -116,13 +117,14 @@ void SfmlSystem::renderEntities()
 {
     _window.clear(sf::Color::Black);
     auto lockedWorld = _world.lock();
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
     if (lockedWorld) {
         lockedWorld->applyToEach({rtype::SpriteComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components[0].lock());
+            std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
             (void)entity;
             if (!spriteComponent->isSpriteSetted()) {
                 sf::Sprite sprite;
-                auto it = _textures.find(spriteComponent->getAssetId());
+                auto it = _textures.find(spriteComponent->getAssetId() - 1);
                 if (it == _textures.end())
                     return;
                 sprite.setTexture(*(it->second));
@@ -131,14 +133,16 @@ void SfmlSystem::renderEntities()
             _window.draw(spriteComponent->getSprite());
         });
         lockedWorld->applyToEach({rtype::TextComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
+            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
             (void)entity;
-            if (!textComponent->isFontSet()) {
+            if (!textComponent->isTextSet()) {
                 sf::Text text;
-                auto it = _fonts.find(textComponent->getFontId());
+                auto it = _fonts.find(textComponent->getFontId() - 1);
                 if (it == _fonts.end())
                     return;
+                text.setString(textComponent->getString());
                 text.setFont(*(_fonts[textComponent->getFontId()]));
+                textComponent->setText(text);
             }
             _window.draw(textComponent->getText());
         });
