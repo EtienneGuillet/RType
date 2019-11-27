@@ -23,11 +23,14 @@ namespace rtype {
         void addDeletedListener(std::filesystem::path path, Handler handler);
 
     private:
-
+        int computeSet(const std::map<int, Handler> &map, fd_set *set, fd_set *errorSet);
+        int computeSet(int notifyFd, fd_set *set, fd_set *errorSet);
     private:
         int _notifierFdCreate;
         int _notifierFdDelete;
 
+        std::map<int, Handler> _mapCreatedEvents;
+        std::map<int, Handler> _mapDeletedEvents;
     };
 }
 

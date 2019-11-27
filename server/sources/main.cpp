@@ -58,7 +58,7 @@ int main()
     auto libLoader = rtype::LibLoader(ecs, world, "./server");
 
     while (gSignalStatus == 0) {
-        libLoader.checkUpdates();
+        libLoader.checkForChanges();
         updateWorld(world);
     }
     return 0;

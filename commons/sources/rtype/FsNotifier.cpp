@@ -2,64 +2,83 @@
 #include <sys/inotify.h>
 #include <exception/B12SoftwareException.hpp>
 #include <cstring>
+#include <unistd.h>
 
 void rtype::FsNotifier::addCreateListener(std::filesystem::path path, rtype::FsNotifier::Handler handler) {
-    int watchCreateFd = inotify_add_watch(_notifierFdCreate, path.string().c_str(), IN_CREATE | IN_DELETE);
+    int watchCreateFd = inotify_add_watch(_notifierFdCreate, path.string().c_str(), IN_CREATE);
+
+    if (watchCreateFd < 0)
+        throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
+    _mapCreatedEvents.insert(std::make_pair(watchCreateFd, handler));
 }
 
 void rtype::FsNotifier::addDeletedListener(std::filesystem::path path, rtype::FsNotifier::Handler handler) {
+    int watchDeleteFd = inotify_add_watch(_notifierFdDelete, path.string().c_str(), IN_DELETE);
 
+    if (watchDeleteFd < 0)
+        throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
+    _mapCreatedEvents.insert(std::make_pair(watchDeleteFd, handler));
 }
 
 rtype::FsNotifier::FsNotifier() {
     _notifierFdCreate = inotify_init();
     _notifierFdDelete = inotify_init();
 
-    if (_notifierFdCreate < 0 || _notifierFdDelete < 0)
+    if (_notifierFdCreate < 0)
+        throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
+    if (_notifierFdDelete < 0)
         throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
 }
 
 void rtype::FsNotifier::update() {
-
-}
-
-
-/*void rtype::LibLoader::checkUpdates() {
-    fd_set writeSet;
+    fd_set readSet, writeSet, errorSet;
     struct timeval timeout = {
             0,
             1
     };
-    computeSet();
-    int selectRes = select(_notifyFileDescriptior + 1, &_notifySet, &writeSet, &_errorSet, &timeout);
 
+    int selectRes = select(computeSet(_notifierFdCreate, &readSet, &errorSet), &readSet, &writeSet, &errorSet, &timeout);
     if (selectRes < 0)
         throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
-    if (selectRes > 0 && FD_ISSET(_notifyFileDescriptior, &_notifySet)) {
+    if (FD_ISSET(_notifierFdCreate, &readSet)) {
         constexpr int eventSize = sizeof(struct inotify_event) + 16;
         constexpr size_t buffLen = 1024 * (eventSize);
         char buffer[buffLen] = {0};
 
-        int length = read(_notifyFileDescriptior, buffer, buffLen);
+        int length = read(_notifierFdCreate, buffer, buffLen);
         struct inotify_event *event = nullptr;
 
         for (int i = 0; i < length; i += eventSize + event->len) {
             event = (struct inotify_event *) &buffer[i];
             if (event && event->len && !(event->mask & IN_ISDIR)) {
-                if (event->mask & IN_DELETE) {
-                    unloadLib(event->name);
-                } else if (event->mask & IN_CREATE) {
-                    std::cout << event->wd
-                    //loadLib(event->name);
+                if (event->mask & IN_CREATE) {
+                    auto it = std::find_if(_mapCreatedEvents.begin(), _mapCreatedEvents.end(), [event] (const std::pair<int, Handler> &pair) {
+                        return event->wd == pair.first;
+                    });
+                    it->second(event->name);
                 }
             }
         }
     }
 }
 
-void rtype::LibLoader::computeSet() {
-    FD_ZERO(&_notifySet);
-    FD_ZERO(&_errorSet);
-    FD_SET(_notifyFileDescriptior, &_notifySet);
-    FD_SET(_notifyFileDescriptior, &_errorSet);
-}*/
+int rtype::FsNotifier::computeSet(const std::map<int, Handler> &map, fd_set *set, fd_set *errorSet) {
+    int maxFd = 0;
+
+    FD_ZERO(set);
+    FD_ZERO(errorSet);
+    for (const auto &pair : map) {
+        FD_SET(pair.first, set);
+        FD_SET(pair.first, errorSet);
+        maxFd = (std::max)(pair.first, maxFd);
+    }
+    return maxFd + 1;
+}
+
+int rtype::FsNotifier::computeSet(int notifyFd, fd_set *set, fd_set *errorSet) {
+    FD_ZERO(set);
+    FD_ZERO(errorSet);
+    FD_SET(notifyFd, set);
+    FD_SET(notifyFd, errorSet);
+    return notifyFd + 1;
+}
