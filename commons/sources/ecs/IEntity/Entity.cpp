@@ -95,3 +95,11 @@ std::shared_ptr<ecs::IComponent> ecs::Entity::removeComponent(const ecs::Version
     }
     return std::shared_ptr<ecs::IComponent>();
 }
+
+bool ecs::Entity::operator ==(const ecs::Entity &rhs) const {
+    return _id == rhs.getID() && _name == rhs.getName();
+}
+
+bool ecs::Entity::operator !=(const ecs::Entity &rhs) const{
+    return !(rhs == *this);
+}

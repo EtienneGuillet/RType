@@ -1,4 +1,4 @@
-#include <components/IntComponent.hpp>
+#include <components/Int/IntComponent.hpp>
 #include "ExampleSystem.hpp"
 #include "logger/StandardLogger.hpp"
 

@@ -31,6 +31,21 @@ namespace b12software {
         struct HostInfos {
             std::string host; /*!< The host as an address or a domain */
             unsigned short port; /*!< The port for this host */
+
+            operator std::string() const
+            {
+                return host + ":" + std::to_string(port);
+            };
+
+            bool operator==(const HostInfos &rhs) const
+            {
+                return host == rhs.host && port == rhs.port;
+            }
+
+            bool operator!=(const HostInfos &rhs) const
+            {
+                return !(rhs == *this);
+            }
         };
 
         const HostInfos emptyHost = {"", 0};

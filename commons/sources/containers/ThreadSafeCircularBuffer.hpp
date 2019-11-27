@@ -29,7 +29,7 @@ namespace b12software {
          * @class ThreadSafeCircularBuffer
          * @brief A thread safe version of b12software::containers::CircularBuffer
          */
-        class ThreadSafeCircularBuffer : public CircularBuffer {
+    class ThreadSafeCircularBuffer : public CircularBuffer {
         public:
             /*!
              * @brief ctor
@@ -85,7 +85,7 @@ namespace b12software {
             /*!
              * @brief try to lock the internal mutex by calling the try_lock function
              */
-            void tryLock();
+            void try_lock();
 
         private:
             mutable std::recursive_mutex _mutex; /*!< The mutex that is used to make the buffer thread safe */

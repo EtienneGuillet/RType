@@ -8,12 +8,10 @@
 <?rfc strict="yes"?>
 <?rfc toc="yes" ?>
 
-<!-- TODO Calculate the size of every packet -->
-<!-- TODO Be sure that we don't need a timestamp at the start of every packet -->
-
 <rfc
         category="std"
-        docName="R-Type-Protocol-UDP-00"
+        ipr="trust200902"
+        docName="draft-r-type-protocol-udp-00"
         consensus="no"
         submissionType="IETF"
         xml:lang="en"
@@ -85,9 +83,9 @@
 
             <t>
                 The protocol will use UDP to communicate between client and server,
-                every packet that the client receive that does not come from the server will be ignored.
-                The same happen for the server, every packet not recognized by the server will send the unknown
-                packet (<xref target="unknown"/>).
+                every datagram that the client receive that does not come from the server will be ignored.
+                The same happen for the server, every datagram not recognized by the server will send the unknown
+                datagram (<xref target="unknown"/>).
             </t>
 
             <figure>
@@ -105,7 +103,7 @@
                 Operation codes are on 2 bytes stored as unsigned short
                 <list>
                     <t>1XX - Used for out of game protocol (<xref target="out-of-game"/>)</t>
-                    <t>2XX - Used for in-game protocol (<xref target="in-game-packets"/>)</t>
+                    <t>2XX - Used for in-game protocol (<xref target="in-game-datagrams"/>)</t>
                     <t>3XX - Used for errors (<xref target="errors"/>)</t>
                 </list>
             </t>
@@ -119,7 +117,7 @@
                 </t>
             </section>
 
-            <section anchor="in-game-packets" title="In-game protocol">
+            <section anchor="in-game-datagrams" title="In-game protocol">
                 <t>
                     <list>
                         <t>200 - Action (<xref target="action"/>)</t>
@@ -145,20 +143,20 @@
         <section title="Packets">
             <section anchor="connection" title="Connection">
                 <t>
-                    These packets are used to describe the connection steps.
+                    These datagrams are used to describe the connection steps.
                 </t>
 
                 <section anchor="connect" title="Connect">
                     <t>
                         100 : Connect : 12 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent continuously by the client until a
+                        This datagram is sent continuously by the client until a
                         <xref target="connected"/>
-                        packet has been received.
+                        datagram has been received.
                     </t>
 
                     <texttable>
-                        <preamble>Connection packet</preamble>
+                        <preamble>Connection datagram</preamble>
                         <ttcol align="center">OpCode</ttcol>
                         <ttcol align="center" width="75%">Username</ttcol>
 
@@ -171,12 +169,12 @@
                     <t>
                         101 : Connected : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent by the server when he received a connect packet
+                        This datagram is sent by the server when he received a connect datagram
                         (<xref target="connect"/>).
                     </t>
 
                     <texttable>
-                        <preamble>Connection packet</preamble>
+                        <preamble>Connection datagram</preamble>
                         <ttcol align="center">OpCode</ttcol>
 
                         <c>2 bytes</c>
@@ -187,12 +185,12 @@
                     <t>
                         102 : Ping : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is used to check the availability of a connected client or server. The response of
-                        this packet is always a pong packet (<xref target="pong"/>).
+                        This datagram is used to check the availability of a connected client or server. The response of
+                        this datagram is always a pong datagram (<xref target="pong"/>).
                     </t>
 
                     <texttable>
-                        <preamble>Ping packet</preamble>
+                        <preamble>Ping datagram</preamble>
                         <ttcol align="center">OpCode</ttcol>
 
                         <c>2 bytes</c>
@@ -203,11 +201,11 @@
                     <t>
                         103 : Pong : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is the response of a ping packet (<xref target="ping"/>).
+                        This datagram is the response of a ping datagram (<xref target="ping"/>).
                     </t>
 
                     <texttable>
-                        <preamble>Ping packet</preamble>
+                        <preamble>Ping datagram</preamble>
                         <ttcol align="center">OpCode</ttcol>
 
                         <c>2 bytes</c>
@@ -218,7 +216,7 @@
                     <t>
                         104 : Disconnect : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent continuously to inform the client that the server is going to shutdown
+                        This datagram is sent continuously to inform the client that the server is going to shutdown
                         , or to the server that the client is disconnecting.
                     </t>
 
@@ -234,7 +232,7 @@
                     <t>
                         105 : Disconnected : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is send as response to disconnect packet
+                        This datagram is send as response to disconnect datagram
                         (<xref target="disconnect"/>) to confirm the reception of disconnection.
                     </t>
 
@@ -245,19 +243,85 @@
                         <c>2 bytes</c>
                     </texttable>
                 </section>
+
+                <section anchor="client-disconnected" title="Client Disconnected">
+                    <t>
+                        106 : Client Disconnected : 12 bytes
+                        <vspace blankLines="2"/>
+                        This datagram is sent continuously by the server to inform the client that one client has disconnected from the room / game
+                    </t>
+
+                    <texttable>
+                        <preamble>Client Disconnected</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center" width="75%">Username</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>10 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ok-client-disconnected" title="OK Client Disconnected">
+                    <t>
+                        107 : OK Client Disconnected : 2 bytes
+                        <vspace blankLines="2"/>
+                        This datagram is send as response to client disconnected datagram
+                        (<xref target="client-disconnected"/>) to confirm the reception of disconnection.
+                    </t>
+
+                    <texttable>
+                        <preamble>OK Client Disconnected</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="new-client-connected" title="New Client Connected">
+                    <t>
+                        108 : New Client Connected : 12 bytes
+                        <vspace blankLines="2"/>
+                        This datagram is sent continuously by the server to inform the client that a new client connected to the room
+                    </t>
+
+                    <texttable>
+                        <preamble>New Client Connected</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+                        <ttcol align="center" width="75%">Username</ttcol>
+
+                        <c>2 bytes</c>
+                        <c>10 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="ok-new-client-connected" title="OK New Client Connected">
+                    <t>
+                        109 : OK New Client Connected : 2 bytes
+                        <vspace blankLines="2"/>
+                        This datagram is send as response to new client connected datagram
+                        (<xref target="new-client-connected"/>) to confirm the reception of connection.
+                    </t>
+
+                    <texttable>
+                        <preamble>OK New Client Connected</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
             </section>
 
             <section anchor="rooms" title="Rooms">
                 <t>
-                    These packets are used to describe the room system.
+                    These datagrams are used to describe the room system.
                 </t>
 
                 <section anchor="get-rooms" title="Get rooms">
                     <t>
                         110 : Get rooms : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent continuously by the client until it receives a list
-                        of rooms packet (<xref target="rooms-list"/>).
+                        This datagram is sent continuously by the client until it receives a list
+                        of rooms datagram (<xref target="rooms-list"/>).
                     </t>
 
                     <texttable>
@@ -297,8 +361,8 @@
                         112 : Create room : 17 + Password size bytes
                         <vspace blankLines="2"/>
 
-                        This packet is sent continuously by the client until it receives a
-                        ok-create packet (<xref target="ok-create"/>).
+                        This datagram is sent continuously by the client until it receives a
+                        ok-create datagram (<xref target="ok-create"/>).
                     </t>
 
                     <texttable>
@@ -321,8 +385,8 @@
                     <t>
                         113 : OK create : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent by the server when the client as successfully created a
-                        room using create-room packet (<xref target="create-room"/>).
+                        This datagram is sent by the server when the client as successfully created a
+                        room using create-room datagram (<xref target="create-room"/>).
                     </t>
 
                     <texttable>
@@ -337,8 +401,8 @@
                     <t>
                         114 : Quit room : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent continuously by the client that wants to leave a room,
-                        until it receives a ok-quit packet (<xref target="ok-quit"/>).
+                        This datagram is sent continuously by the client that wants to leave a room,
+                        until it receives a ok-quit datagram (<xref target="ok-quit"/>).
                     </t>
 
                     <texttable>
@@ -353,7 +417,7 @@
                     <t>
                         115 : OK quit : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a quit room packet (<xref target="quit-room"/>).
+                        This datagram is sent as response to a quit room datagram (<xref target="quit-room"/>).
                     </t>
 
                     <texttable>
@@ -368,8 +432,8 @@
                     <t>
                         116 : Join room : 16 + Password size bytes
                         <vspace blankLines="2"/>
-                        This packet is sent continuously by the client that want to join a room,
-                        until it receives a joined-room packet (<xref target="joined-room"/>).
+                        This datagram is sent continuously by the client that want to join a room,
+                        until it receives a joined-room datagram (<xref target="joined-room"/>).
                     </t>
 
                     <texttable>
@@ -390,7 +454,7 @@
                     <t>
                         117 : Joined room : 3 + (User count * 10) bytes
                         <vspace blankLines="2"/>
-                        This packet is sent by the server as a respond to join-room (<xref target="join-room"/>).
+                        This datagram is sent by the server as a respond to join-room (<xref target="join-room"/>).
                     </t>
 
                     <texttable>
@@ -409,7 +473,7 @@
 
             <section anchor="in-game" title="In-game Packets">
                 <t>
-                    These packets are sent during the game to describe actions made by the client or
+                    These datagrams are sent during the game to describe actions made by the client or
                     information about the game being played.
                 </t>
 
@@ -417,7 +481,7 @@
                     <t>
                         200 : Action : 7 bytes
                         <vspace blankLines="2"/>
-                        This packet contains a boolean for every key of a client.
+                        This datagram contains a boolean for every key of a client.
                         The boolean is true if the key is pressed
                     </t>
 
@@ -443,7 +507,7 @@
                     <t>
                         210 : Disp : 42 bytes
                         <vspace blankLines="2"/>
-                        This packet contains the minimums information to let the client display an entity
+                        This datagram contains the minimums information to let the client display an entity
                     </t>
 
                     <texttable>
@@ -469,7 +533,7 @@
                     <t>
                         220 : Living : 14 bytes
                         <vspace blankLines="2"/>
-                        This packet contains the health points of an entity
+                        This datagram contains the health points of an entity
                     </t>
 
                     <texttable>
@@ -488,7 +552,7 @@
                     <t>
                         230 : Charge : 3 bytes
                         <vspace blankLines="2"/>
-                        This packet contains the charge percentage of the player
+                        This datagram contains the charge percentage of the player
                     </t>
 
                     <texttable>
@@ -505,7 +569,7 @@
                     <t>
                         240 : Score : 18 bytes
                         <vspace blankLines="2"/>
-                        This packet contains the score of the players.
+                        This datagram contains the score of the players.
                     </t>
 
                     <texttable>
@@ -527,11 +591,11 @@
                 <section anchor="end-game" title="Endgame">
                     <t>
                         250 : Endgame : 18 bytes
-                        This packet is sent continuously by the server until a
+                        This datagram is sent continuously by the server until a
                         <xref target="ok-end-game"/>
-                        packet has been received.
+                        datagram has been received.
                         <vspace blankLines="2"/>
-                        This packet contains the score of the players and informs the client that the game has ended.
+                        This datagram contains the score of the players and informs the client that the game has ended.
                     </t>
 
                     <texttable>
@@ -554,7 +618,7 @@
                     <t>
                         260 : OK Endgame: 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent by the client to inform the server that a Endgame packet
+                        This datagram is sent by the client to inform the server that a Endgame datagram
                         (<xref target="end-game"/>) has been received.
                     </t>
 
@@ -565,37 +629,69 @@
                         <c>2 bytes</c>
                     </texttable>
                 </section>
-            </section>
 
-            <section anchor="errors" title="Errors">
-                <t>
-                    These packets are used to describe all the errors that may occur.
-                </t>
-
-                <section anchor="unknown" title="Unknown packet">
+                <section anchor="game-starting" title="Game Starting">
                     <t>
-                        300 : Unknown packet : 2 bytes
-                        <vspace blankLines="2"/>
-                        This packet is sent in response to any unknown packet.
+                        270 : Game Starting : 2 bytes
+                        This datagram is sent continuously by the server until a
+                        <xref target="ok-game-started"/>
+                        datagram has been received.
                     </t>
 
                     <texttable>
-                        <preamble>Unknown packet</preamble>
+                        <preamble>Game Starting</preamble>
                         <ttcol align="center">OpCode</ttcol>
 
                         <c>2 bytes</c>
                     </texttable>
                 </section>
 
-                <section anchor="invalid" title="Invalid packet">
+                <section anchor="ok-game-started" title="OK Game Started">
                     <t>
-                        301 : Invalid packet : 2 bytes
+                        280 : OK Game Started: 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent in response to any packet that has a known opcode but has malformed data.
+                        This datagram is sent by the client to inform the server that a Game Starting datagram
+                        (<xref target="game-starting"/>) has been received.
                     </t>
 
                     <texttable>
-                        <preamble>Invalid packet</preamble>
+                        <preamble>OK Game Started</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+            </section>
+
+            <section anchor="errors" title="Errors">
+                <t>
+                    These datagrams are used to describe all the errors that may occur.
+                </t>
+
+                <section anchor="unknown" title="Unknown datagram">
+                    <t>
+                        300 : Unknown datagram : 2 bytes
+                        <vspace blankLines="2"/>
+                        This datagram is sent in response to any unknown datagram.
+                    </t>
+
+                    <texttable>
+                        <preamble>Unknown datagram</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+
+                <section anchor="invalid" title="Invalid datagram">
+                    <t>
+                        301 : Invalid datagram : 2 bytes
+                        <vspace blankLines="2"/>
+                        This datagram is sent in response to any datagram that has a known opcode but has malformed data.
+                    </t>
+
+                    <texttable>
+                        <preamble>Invalid datagram</preamble>
                         <ttcol align="center">OpCode</ttcol>
 
                         <c>2 bytes</c>
@@ -606,7 +702,7 @@
                     <t>
                         302 : Invalid param : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to any packet that is well formatted but has an invalid parameter(s).
+                        This datagram is sent as response to any datagram that is well formatted but has an invalid parameter(s).
                     </t>
 
                     <texttable>
@@ -621,7 +717,7 @@
                     <t>
                         303 : Already used username : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent as response to a connect packet (<xref target="connect"/>) when the username
+                        This datagram is sent as response to a connect datagram (<xref target="connect"/>) when the username
                         requested is already used by another client.
                     </t>
 
@@ -637,7 +733,7 @@
                     <t>
                         304 : Room name already used : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent in response to a create room packet (<xref target="create-room"/>) when a
+                        This datagram is sent in response to a create room datagram (<xref target="create-room"/>) when a
                         room with the same name already exists.
                     </t>
 
@@ -653,7 +749,7 @@
                     <t>
                         305 : Not in room : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent in response to a quit-room packet (<xref target="quit-room"/>) when the
+                        This datagram is sent in response to a quit-room datagram (<xref target="quit-room"/>) when the
                         client isn't in any room.
                     </t>
 
@@ -669,7 +765,7 @@
                     <t>
                         306 : Unknown room : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent in response to a join room packet (<xref target="join-room"/>) when the room
+                        This datagram is sent in response to a join room datagram (<xref target="join-room"/>) when the room
                         name request is unknown.
                     </t>
 
@@ -685,7 +781,7 @@
                     <t>
                         307 : Invalid password : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent in response to a join room packet (<xref target="join-room"/>) when the
+                        This datagram is sent in response to a join room datagram (<xref target="join-room"/>) when the
                         password is invalid.
                     </t>
 
@@ -701,12 +797,31 @@
                     <t>
                         308 : Room full : 2 bytes
                         <vspace blankLines="2"/>
-                        This packet is sent in response to a join room packet (<xref target="join-room"/>) when the room
+                        This datagram is sent in response to a join room datagram (<xref target="join-room"/>) when the room
                         has no empty slots.
                     </t>
 
                     <texttable>
                         <preamble>Room full</preamble>
+                        <ttcol align="center">OpCode</ttcol>
+
+                        <c>2 bytes</c>
+                    </texttable>
+                </section>
+                <section anchor="operation-not-permitted" title="Operation not permitted">
+                    <t>
+                        309 : Operation not permitted : 2 bytes
+                        <vspace blankLines="2"/>
+                        This datagram is sent in response to a
+                        get rooms datagram (<xref target="get-rooms"/>),
+                        create room datagram (<xref target="create-room"/>),
+                        quit room datagram (<xref target="quit-room"/>),
+                        join room datagram (<xref target="join-room"/>),
+                        when the user is not logged in with a connect datagram (<xref target="connect"/>)
+                    </t>
+
+                    <texttable>
+                        <preamble>Operation not permitted</preamble>
                         <ttcol align="center">OpCode</ttcol>
 
                         <c>2 bytes</c>

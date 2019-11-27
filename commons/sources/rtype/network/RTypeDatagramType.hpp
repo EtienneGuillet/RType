@@ -32,6 +32,10 @@ namespace rtype {
             T_103_PONG = 103,
             T_104_DISCONNECT = 104,
             T_105_DISCONNECTED = 105,
+            T_106_CLIENT_DISCONNECTED = 106,
+            T_107_OK_CLIENT_DISCONNECTED = 107,
+            T_108_NEW_CLIENT_CONNECTED = 108,
+            T_109_OK_NEW_CLIENT_CONNECTED = 109,
             T_110_GET_ROOMS = 110,
             T_111_ROOM_LIST = 111,
             T_112_CREATE_ROOM = 112,
@@ -47,6 +51,8 @@ namespace rtype {
             T_240_SCORE = 240,
             T_250_END_GAME = 250,
             T_260_GAME_ENDED = 260,
+            T_270_GAME_STARTING = 270,
+            T_280_GAME_STARTED = 280,
             T_300_UNKNOWN_PACKET = 300,
             T_301_INVALID_PACKET = 301,
             T_302_INVALID_PARAM = 302,
@@ -56,6 +62,7 @@ namespace rtype {
             T_306_UNKNOWN_ROOM = 306,
             T_307_INVALID_PASSWORD = 307,
             T_308_ROOM_FULL = 308,
+            T_309_OPERATION_NOT_PERMITTED = 309,
         };
     }
 }
