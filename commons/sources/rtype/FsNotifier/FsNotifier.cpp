@@ -46,13 +46,14 @@ int rtype::FsNotifier::computeSet(int notifyFd, fd_set *set, fd_set *errorSet) {
     return notifyFd + 1;
 }
 
-void rtype::FsNotifier::checkNotifier(int fdNotifier, std::map<int, Handler> map, int mask) {
+void rtype::FsNotifier::checkNotifier(int fdNotifier, const std::map<int, Handler> &map, int mask) {
     fd_set readSet, writeSet, errorSet;
     struct timeval timeout = {
             0,
             1
     };
 
+    FD_ZERO(&writeSet);
     int selectRes = select(computeSet(fdNotifier, &readSet, &errorSet), &readSet, &writeSet, &errorSet, &timeout);
     if (selectRes < 0)
         throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);

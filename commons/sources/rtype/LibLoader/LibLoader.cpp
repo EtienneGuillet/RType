@@ -4,18 +4,19 @@
 #include <sys/inotify.h>
 #include <unistd.h>
 #include <cstring>
+#include <map>
 
 rtype::LibLoader::LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder) : _ecs(ecs), _world(world), _entitiesPath(libFolder + "/entities"), _systemsPath(libFolder + "/systems"), _notifierEntities(_entitiesPath), _notifierSystems(_systemsPath) {
-    _notifierEntities.addCreateListener([this](const std::filesystem::path &path) {
+    _notifierEntities.addCreateListener([this] (const std::filesystem::path &path) {
         loadLib<ecs::IEntityAPI>(path, _entities);
     });
-    _notifierEntities.addDeletedListener([this](const std::filesystem::path &path) {
+    _notifierEntities.addDeletedListener([this] (const std::filesystem::path &path) {
         unloadLib<ecs::IEntityAPI>(path, _entities);
     });
-    _notifierSystems.addCreateListener([this](const std::filesystem::path &path) {
+    _notifierSystems.addCreateListener([this] (const std::filesystem::path &path) {
         loadLib<ecs::ISystemAPI>(path, _systems);
     });
-    _notifierSystems.addDeletedListener([this](const std::filesystem::path &path) {
+    _notifierSystems.addDeletedListener([this] (const std::filesystem::path &path) {
         unloadLib<ecs::ISystemAPI>(path, _systems);
     });
     firstLibrariesLoad();
@@ -25,22 +26,32 @@ template <typename TypeAPI>
 void rtype::LibLoader::loadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs) {
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Loading lib] ") + libPath.string());
     try {
-        ecs::DLLoader loader(libPath);
-        auto api = loader.loadAPI<TypeAPI>(getEntryPoint<TypeAPI>());
+        std::shared_ptr<ecs::DLLoader> loader(new ecs::DLLoader(libPath));
+        auto api = loader->loadAPI<TypeAPI>(getEntryPoint<TypeAPI>());
         libs.insert(std::make_pair(libPath, LibLoaded<TypeAPI> {
                 api->getVersion(),
-                loader,
-                api
+                api,
+                loader
         }));
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib loaded] ") + libPath.string());
     } catch (const ecs::DLLoaderException &e) {
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, std::string("[Failed to load lib] ") + libPath.string());
     }
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib loaded] ") + libPath.string());
 }
 
 template <typename TypeAPI>
 void rtype::LibLoader::unloadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs) {
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[TODO Lib unload] ") + libPath.string());
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib unload] ") + libPath.string());
+    for (auto i = libs.begin(), last = libs.end(); i != last; ) {
+        if ((*i).first == libPath) {
+            //TODO Clean systems / entities
+            (*i).second.api = std::shared_ptr<TypeAPI>();
+            i = libs.erase(i);
+        } else {
+            ++i;
+        }
+    }
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib unloaded] ") + libPath.string());
 }
 
 void rtype::LibLoader::firstLibrariesLoad() {

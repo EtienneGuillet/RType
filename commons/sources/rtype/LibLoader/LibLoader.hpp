@@ -15,8 +15,8 @@ namespace rtype {
         template <typename TypeAPI>
         struct LibLoaded {
             ecs::Version version;
-            ecs::DLLoader &loader;
             std::shared_ptr<TypeAPI> api;
+            std::shared_ptr<ecs::DLLoader> loader;
             bool toDelete = false;
         };
 
@@ -38,7 +38,6 @@ namespace rtype {
         void unloadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs);
 
         void firstLibrariesLoad();
-        template <typename TypeAPI> void loadFolderLib(std::map<std::filesystem::path, LibLoaded<TypeAPI>> &libs);
     private:
         std::unique_ptr<ecs::IECS> &_ecs;
         std::shared_ptr<ecs::IWorld> &_world;

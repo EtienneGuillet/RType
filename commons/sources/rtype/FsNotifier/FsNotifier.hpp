@@ -26,7 +26,7 @@ namespace rtype {
         int computeSet(const std::map<int, Handler> &map, fd_set *set, fd_set *errorSet);
         int computeSet(int notifyFd, fd_set *set, fd_set *errorSet);
 
-        void checkNotifier(int fdNotifier, std::map<int, Handler> map, int mask);
+        void checkNotifier(int fdNotifier, const std::map<int, Handler> &map, int mask);
 
     private:
         std::filesystem::path _folderPath;
