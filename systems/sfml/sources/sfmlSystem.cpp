@@ -2,6 +2,7 @@
 #include "exception/SfmlSystemException.hpp"
 #include <logger/DefaultLogger.hpp>
 #include <logger/StandardLogger.hpp>
+#include <components/RectangleShapeComponent.hpp>
 
 const ecs::Version SfmlSystem::Version = ecs::Version("System_Sfml", 0, 1, 0, 0);
 
@@ -119,6 +120,7 @@ void SfmlSystem::renderEntities()
     auto lockedWorld = _world.lock();
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
     if (lockedWorld) {
+        //render the Sprites.
         lockedWorld->applyToEach({rtype::SpriteComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
             (void)entity;
@@ -132,6 +134,7 @@ void SfmlSystem::renderEntities()
             }
             _window.draw(spriteComponent->getSprite());
         });
+        //render the Texts.
         lockedWorld->applyToEach({rtype::TextComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
             (void)entity;
@@ -145,6 +148,24 @@ void SfmlSystem::renderEntities()
                 textComponent->setText(text);
             }
             _window.draw(textComponent->getText());
+        });
+        //render the Rectangle.
+        lockedWorld->applyToEach({rtype::RectangleShapeComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::RectangleShapeComponent> rectangleComponent = std::dynamic_pointer_cast<rtype::RectangleShapeComponent>(components.front().lock());
+            (void)entity;
+            _window.draw(rectangleComponent->getShape());
+        });
+        //render the Circles.
+        lockedWorld->applyToEach({rtype::CircleShapeComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::CircleShapeComponent> circleComponent = std::dynamic_pointer_cast<rtype::CircleShapeComponent>(components.front().lock());
+            (void)entity;
+            _window.draw(circleComponent->getShape());
+        });
+        //render the Convexs.
+        lockedWorld->applyToEach({rtype::RectangleShapeComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::RectangleShapeComponent> rectangleComponent = std::dynamic_pointer_cast<rtype::RectangleShapeComponent>(components.front().lock());
+            (void)entity;
+            _window.draw(rectangleComponent->getShape());
         });
     }
     _window.display();

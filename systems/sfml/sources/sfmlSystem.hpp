@@ -12,6 +12,9 @@
 #include "components/SpriteComponent.hpp"
 #include "components/TextComponent.hpp"
 #include "components/TransformComponent.hpp"
+#include "components/RectangleShapeComponent.hpp"
+#include "components/CircleShapeComponent.hpp"
+#include "components/ConvexShapeComponent.hpp"
 #include <SFML/Window.hpp>
 #include <map>
 #include <logger/DefaultLogger.hpp>
@@ -77,8 +80,19 @@ class SfmlSystem : public ecs::ASystem {
 
     private:
 
+    /*
+     * @brief Used to load all textures from /bin/assets.
+     */
     void loadTextures();
+
+    /*
+     * @brief Used to load all fonts /bin/fonts.
+     */
     void loadFonts();
+
+    /*
+     * @brief Render all entities on the screen that has a spriteComponent, a RectangleComponent, a CircleComponent or a ConvexComponent.
+     */
     void renderEntities();
 
     static const ecs::Version Version;

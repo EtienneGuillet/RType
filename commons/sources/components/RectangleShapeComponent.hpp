@@ -31,7 +31,7 @@ namespace rtype {
          * @brief Ctor.
          * @param shape RectangleShape displayed,
          */
-        RectangleShapeComponent(const sf::RectangleShape &shape);
+        RectangleShapeComponent(const sf::RectangleShape &shape = sf::RectangleShape(sf::Vector2f(100, 100)));
 
         /*!
          * @brief Ctor.
@@ -77,6 +77,8 @@ namespace rtype {
         void setOutlineColor(const sf::Color &color);
 
         const sf::Color &getOutlineColor() const;
+
+        const sf::RectangleShape &getShape() const;
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         sf::RectangleShape _shape; /*!< The RectangleShape displayed */

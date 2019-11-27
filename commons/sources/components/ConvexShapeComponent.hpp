@@ -5,8 +5,8 @@
 ** Created by tpautier,
 */
 
-#ifndef _CIRCLE_SHAPE_COMPONENT_HPP_
-#define _CIRCLE_SHAPE_COMPONENT_HPP_
+#ifndef _CONVEX_SHAPE_COMPONENT_HPP_
+#define _CONVEX_SHAPE_COMPONENT_HPP_
 
 #include "ecs/IComponent/IComponent.hpp"
 #include "logger/DefaultLogger.hpp"
@@ -36,7 +36,7 @@ namespace rtype {
         /*!
          * @brief Ctor.
          */
-        ~ConvexShapeComponent() = default;
+        ~ConvexShapeComponent() override = default;
 
         void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
         const ecs::Version &getVersion() const override;
@@ -77,10 +77,12 @@ namespace rtype {
         void setOutlineColor(const sf::Color &color);
 
         const sf::Color &getOutlineColor() const;
+
+        const sf::ConvexShape &getShape() const;
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         sf::ConvexShape _shape; /*!< The ConvexShape displayed */
     };
 } /*rtype */
 
-#endif // _RECTANGLE_SHAPE_COMPONENT_HPP_
+#endif // _CONVEX_SHAPE_COMPONENT_HPP_

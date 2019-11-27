@@ -31,7 +31,7 @@ namespace rtype {
          * @brief Ctor.
          * @param shape CircleShape displayed,
          */
-        CircleShapeComponent(const sf::CircleShape &shape);
+        CircleShapeComponent(const sf::CircleShape &shape = sf::CircleShape(50));
 
         /*!
          * @brief Ctor.
@@ -77,10 +77,13 @@ namespace rtype {
         void setOutlineColor(const sf::Color &color);
 
         const sf::Color &getOutlineColor() const;
-    private:
+
+        const sf::CircleShape &getShape() const;
+
+        private:
         std::weak_ptr<ecs::IEntity> _entity;
         sf::CircleShape _shape; /*!< The CircleShape displayed */
     };
 } /*rtype */
 
-#endif // _RECTANGLE_SHAPE_COMPONENT_HPP_
+#endif // _CIRCLE_SHAPE_COMPONENT_HPP_
