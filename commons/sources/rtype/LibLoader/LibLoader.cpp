@@ -67,7 +67,9 @@ void rtype::LibLoader::unloadLib(const std::filesystem::path &libPath, MapType <
             if constexpr (std::is_same<TypeAPI, ecs::IEntityAPI>::value) {
               _ecs->forgetEntity((*i).second.version);
             } else if (std::is_same<TypeAPI, ecs::ISystemAPI>::value) {
-                _world->getSystem((*i).second.version).lock()->stop();
+                auto system = _world->getSystem((*i).second.version).lock();
+                if (system)
+                    system->stop();
                 _ecs->forgetSystem((*i).second.version);
                 _world->removeSystem((*i).second.version);
             } else {

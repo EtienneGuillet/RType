@@ -44,14 +44,18 @@ void updateWorld(std::shared_ptr<ecs::IWorld> &world)
     }
 }
 
-int main()
+int main(int ac, char **av)
 {
-    std::signal(SIGINT, signalHandler);
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
+    if (ac < 2) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelFatal, std::string("Please specify server dynamic libraries folder: ") + av[0] + " folderPath");
+        return 84;
+    }
+    std::signal(SIGINT, signalHandler);
 
     auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
     auto world = ecs->createWorld();
-    auto libLoader = rtype::LibLoader(ecs, world, "./server");
+    auto libLoader = rtype::LibLoader(ecs, world, std::string(av[1]));
 
     while (gSignalStatus == 0) {
         libLoader.checkForChanges();
