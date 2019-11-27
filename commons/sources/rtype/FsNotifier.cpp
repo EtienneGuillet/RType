@@ -31,35 +31,8 @@ rtype::FsNotifier::FsNotifier() {
 }
 
 void rtype::FsNotifier::update() {
-    fd_set readSet, writeSet, errorSet;
-    struct timeval timeout = {
-            0,
-            1
-    };
-
-    int selectRes = select(computeSet(_notifierFdCreate, &readSet, &errorSet), &readSet, &writeSet, &errorSet, &timeout);
-    if (selectRes < 0)
-        throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
-    if (FD_ISSET(_notifierFdCreate, &readSet)) {
-        constexpr int eventSize = sizeof(struct inotify_event) + 16;
-        constexpr size_t buffLen = 1024 * (eventSize);
-        char buffer[buffLen] = {0};
-
-        int length = read(_notifierFdCreate, buffer, buffLen);
-        struct inotify_event *event = nullptr;
-
-        for (int i = 0; i < length; i += eventSize + event->len) {
-            event = (struct inotify_event *) &buffer[i];
-            if (event && event->len && !(event->mask & IN_ISDIR)) {
-                if (event->mask & IN_CREATE) {
-                    auto it = std::find_if(_mapCreatedEvents.begin(), _mapCreatedEvents.end(), [event] (const std::pair<int, Handler> &pair) {
-                        return event->wd == pair.first;
-                    });
-                    it->second(event->name);
-                }
-            }
-        }
-    }
+    checkNotifier(_notifierFdCreate, _mapCreatedEvents, IN_CREATE);
+    checkNotifier(_notifierFdDelete, _mapDeletedEvents, IN_DELETE);
 }
 
 int rtype::FsNotifier::computeSet(const std::map<int, Handler> &map, fd_set *set, fd_set *errorSet) {
@@ -81,4 +54,37 @@ int rtype::FsNotifier::computeSet(int notifyFd, fd_set *set, fd_set *errorSet) {
     FD_SET(notifyFd, set);
     FD_SET(notifyFd, errorSet);
     return notifyFd + 1;
+}
+
+void rtype::FsNotifier::checkNotifier(int fdNotifier, std::map<int, Handler> map, int mask) {
+    fd_set readSet, writeSet, errorSet;
+    struct timeval timeout = {
+            0,
+            1
+    };
+
+    int selectRes = select(computeSet(fdNotifier, &readSet, &errorSet), &readSet, &writeSet, &errorSet, &timeout);
+    if (selectRes < 0)
+        throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
+    if (FD_ISSET(fdNotifier, &readSet)) {
+        constexpr int eventSize = sizeof(struct inotify_event) + 16;
+        constexpr size_t buffLen = 1024 * (eventSize);
+        char buffer[buffLen] = {0};
+
+        int length = read(fdNotifier, buffer, buffLen);
+        struct inotify_event *event = nullptr;
+
+        for (int i = 0; i < length; i += eventSize + event->len) {
+            event = (struct inotify_event *) &buffer[i];
+            if (event && event->len && !(event->mask & IN_ISDIR)) {
+                if (event->mask & mask) {
+                    auto it = std::find_if(map.begin(), map.end(), [event] (const std::pair<int, Handler> &pair) {
+                        return event->wd == pair.first;
+                    });
+                    if (it != map.end())
+                        it->second(event->name);
+                }
+            }
+        }
+    }
 }
