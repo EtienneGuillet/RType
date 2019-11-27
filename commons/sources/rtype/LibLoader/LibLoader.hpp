@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <map>
 #include <ecs/DLLoader/DLLoader.hpp>
+#include <rtype/FsNotifier.hpp>
 
 namespace rtype {
     class LibLoader {
@@ -18,29 +19,40 @@ namespace rtype {
             std::shared_ptr<TypeAPI> api;
             bool toDelete = false;
         };
+
+        template <typename TypeAPI>
+        using MapType = std::map<std::filesystem::path, rtype::LibLoader::LibLoaded<TypeAPI>>;
     public:
         LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder);
-
-        void index();
-        void checkUpdates();
-
+        void checkForChanges();
     private:
-        void computeSet();
-        void loadLib(const std::string libPath);
-        void unloadLib(const std::string libPath);
-        template <typename TypeAPI> void loadLibs(std::map<std::filesystem::path, LibLoaded<TypeAPI>> &libs);
+        template <typename TypeAPI>
+        std::string getEntryPoint();
+
+        template <typename TypeAPI>
+        std::string getlibFolder();
+
+        template <typename TypeAPI>
+        void loadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs);
+        template <typename TypeAPI>
+        void unloadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs);
+
+        void firstLibrariesLoad();
+        template <typename TypeAPI> void loadFolderLib(std::map<std::filesystem::path, LibLoaded<TypeAPI>> &libs);
     private:
         std::unique_ptr<ecs::IECS> &_ecs;
         std::shared_ptr<ecs::IWorld> &_world;
         const std::filesystem::path _entitiesPath;
         const std::filesystem::path _systemsPath;
 
-        std::map<std::filesystem::path, LibLoaded<ecs::IEntityAPI>> _entities;
-        std::map<std::filesystem::path, LibLoaded<ecs::ISystemAPI>> _systems;
+        MapType<ecs::IEntityAPI> _entities;
+        MapType<ecs::ISystemAPI> _systems;
 
         int _notifyFileDescriptior;
         fd_set _notifySet;
         fd_set _errorSet;
+
+        rtype::FsNotifier _notifier;
     };
 }
 
