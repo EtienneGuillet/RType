@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <map>
 #include <ecs/DLLoader/DLLoader.hpp>
-#include <rtype/FsNotifier.hpp>
+#include <rtype/FsNotifier/FsNotifier.hpp>
 
 namespace rtype {
     class LibLoader {

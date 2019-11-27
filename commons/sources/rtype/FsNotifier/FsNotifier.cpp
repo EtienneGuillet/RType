@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 void rtype::FsNotifier::addCreateListener(const Handler &createHandler) {
-    int watchCreateFd = inotify_add_watch(_notifierFdCreate, _folderPath.string().c_str(), IN_CREATE);
+    int watchCreateFd = inotify_add_watch(_notifierFdCreate, _folderPath.string().c_str(), IN_CREATE | IN_CLOSE_WRITE);
 
     if (watchCreateFd < 0)
         throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
@@ -21,7 +21,7 @@ void rtype::FsNotifier::addDeletedListener(const Handler &deleteHandle) {
 }
 
 void rtype::FsNotifier::update() {
-    checkNotifier(_notifierFdCreate, _mapCreatedEvents, IN_CREATE);
+    checkNotifier(_notifierFdCreate, _mapCreatedEvents, IN_CREATE | IN_CLOSE_WRITE);
     checkNotifier(_notifierFdDelete, _mapDeletedEvents, IN_DELETE);
 }
 
