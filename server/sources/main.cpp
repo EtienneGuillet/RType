@@ -11,17 +11,13 @@
 #include <iostream>
 #include <memory>
 #include <ecs/IWorld/IWorld.hpp>
-#include <ecs/IWorld/World.hpp>
-#include <ecs/DLLoader/DLLoader.hpp>
 #include <ecs/IECS/IECS.hpp>
 #include <ecs/IECS/ECS.hpp>
 #include <filesystem>
 #include <exception/B12SoftwareException.hpp>
-#include <map>
 #include <rtype/LibLoader/LibLoader.hpp>
 #include "logger/DefaultLogger.hpp"
 #include "logger/StandardLogger.hpp"
-#include "network/INetworkManager.hpp"
 
 namespace fs = std::filesystem;
 
@@ -61,5 +57,7 @@ int main()
         libLoader.checkForChanges();
         updateWorld(world);
     }
+    world = std::shared_ptr<ecs::IWorld>();
+    ecs = std::unique_ptr<ecs::IECS>();
     return 0;
 }

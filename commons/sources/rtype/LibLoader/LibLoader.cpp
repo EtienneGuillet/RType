@@ -33,6 +33,15 @@ void rtype::LibLoader::loadLib(const std::filesystem::path &libPath, MapType <Ty
                 api,
                 loader
         }));
+        if constexpr (std::is_same<TypeAPI, ecs::IEntityAPI>::value) {
+          _ecs->learnEntity(api);
+        } else if (std::is_same<TypeAPI, ecs::ISystemAPI>::value) {
+            auto systemApi = std::dynamic_pointer_cast<ecs::ISystemAPI>(api);
+            _ecs->learnSystem(api);
+            _world->addSystem(systemApi->createNewSystem());
+        } else {
+            throw b12software::exception::B12SoftwareException(std::string("Invalid API type used: ") + typeid(TypeAPI).name() , WHERE);
+        }
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib loaded] ") + libPath.string());
     } catch (const ecs::DLLoaderException &e) {
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, std::string("[Failed to load lib] ") + libPath.string());
@@ -84,6 +93,8 @@ std::string rtype::LibLoader::getlibFolder() {
 }
 
 void rtype::LibLoader::checkForChanges() {
-    _notifierSystems.update();
-    _notifierEntities.update();
+    try {
+        _notifierSystems.update();
+        _notifierEntities.update();
+    } catch (const b12software::exception::B12SoftwareException &e) {}
 }

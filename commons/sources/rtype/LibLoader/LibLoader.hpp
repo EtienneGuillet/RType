@@ -14,6 +14,10 @@ namespace rtype {
     private:
         template <typename TypeAPI>
         struct LibLoaded {
+            ~LibLoaded() {
+                api = std::shared_ptr<TypeAPI>();
+            }
+
             ecs::Version version;
             std::shared_ptr<TypeAPI> api;
             std::shared_ptr<ecs::DLLoader> loader;
