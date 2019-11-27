@@ -2,6 +2,7 @@
 #define R_TYPE_ENTITIESSTATE_HPP
 
 #include <map>
+#include "maths/Vectors.hpp"
 
 namespace rtype {
 
@@ -13,37 +14,37 @@ namespace rtype {
 
         ~EntitiesState() = default;
 
-        void setPos(int x, int y, int z);
+        void setPos(std::uint32_t x, std::uint32_t y, std::uint32_t z);
 
-        const std::map<std::string, int> &getPos() const;
+        b12software::maths::Vector3D getPos() const;
 
-        void setRot(int x, int y);
+        void setRot(std::uint32_t x, std::uint32_t y);
 
-        const std::map<std::string, int> &getRot() const;
+        b12software::maths::Vector2D getRot() const;
 
-        void setScale(int x, int y);
+        void setScale(std::uint32_t x, std::uint32_t y);
 
-        const std::map<std::string, int> &getScale() const;
+        b12software::maths::Vector2D getScale() const;
 
-        void setId(int id);
+        void setId(std::uint32_t id);
 
-        [[nodiscard]] int getId() const;
+        int getId() const;
 
-        void setType(int type);
+        void setType(std::uint32_t type);
 
-        [[nodiscard]] int getType() const;
+        int getType() const;
 
         private:
 
-        int _id;
-        int _type;
-        int _posX;
-        int _posY;
-        int _posZ;
-        int _rotX;
-        int _rotY;
-        int _scaleX;
-        int _scaleY;
+        std::uint32_t _id;
+        std::uint32_t _type;
+        std::uint32_t _posX;
+        std::uint32_t _posY;
+        std::uint32_t _posZ;
+        std::uint32_t _rotX;
+        std::uint32_t _rotY;
+        std::uint32_t _scaleX;
+        std::uint32_t _scaleY;
     };
 }
 
