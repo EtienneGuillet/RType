@@ -17,17 +17,20 @@ namespace rtype {
         } WatchedItem;
 
     public:
-        FsNotifier();
+        explicit FsNotifier(const std::filesystem::path &folderPath);
         void update();
-        void addCreateListener(std::filesystem::path path, Handler handler);
-        void addDeletedListener(std::filesystem::path path, Handler handler);
+        void addCreateListener(const Handler &createHandler);
+        void addDeletedListener(const Handler &deleteHandle);
 
     private:
         int computeSet(const std::map<int, Handler> &map, fd_set *set, fd_set *errorSet);
         int computeSet(int notifyFd, fd_set *set, fd_set *errorSet);
 
         void checkNotifier(int fdNotifier, std::map<int, Handler> map, int mask);
+
     private:
+        std::filesystem::path _folderPath;
+
         int _notifierFdCreate;
         int _notifierFdDelete;
 

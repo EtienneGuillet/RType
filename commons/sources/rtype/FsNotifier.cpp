@@ -4,30 +4,20 @@
 #include <cstring>
 #include <unistd.h>
 
-void rtype::FsNotifier::addCreateListener(std::filesystem::path path, rtype::FsNotifier::Handler handler) {
-    int watchCreateFd = inotify_add_watch(_notifierFdCreate, path.string().c_str(), IN_CREATE);
+void rtype::FsNotifier::addCreateListener(const Handler &createHandler) {
+    int watchCreateFd = inotify_add_watch(_notifierFdCreate, _folderPath.string().c_str(), IN_CREATE);
 
     if (watchCreateFd < 0)
         throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
-    _mapCreatedEvents.insert(std::make_pair(watchCreateFd, handler));
+    _mapCreatedEvents.insert(std::make_pair(watchCreateFd, createHandler));
 }
 
-void rtype::FsNotifier::addDeletedListener(std::filesystem::path path, rtype::FsNotifier::Handler handler) {
-    int watchDeleteFd = inotify_add_watch(_notifierFdDelete, path.string().c_str(), IN_DELETE);
+void rtype::FsNotifier::addDeletedListener(const Handler &deleteHandle) {
+    int watchDeleteFd = inotify_add_watch(_notifierFdDelete, _folderPath.string().c_str(), IN_DELETE);
 
     if (watchDeleteFd < 0)
         throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
-    _mapDeletedEvents.insert(std::make_pair(watchDeleteFd, handler));
-}
-
-rtype::FsNotifier::FsNotifier() {
-    _notifierFdCreate = inotify_init();
-    _notifierFdDelete = inotify_init();
-
-    if (_notifierFdCreate < 0)
-        throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
-    if (_notifierFdDelete < 0)
-        throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
+    _mapDeletedEvents.insert(std::make_pair(watchDeleteFd, deleteHandle));
 }
 
 void rtype::FsNotifier::update() {
@@ -82,9 +72,19 @@ void rtype::FsNotifier::checkNotifier(int fdNotifier, std::map<int, Handler> map
                         return event->wd == pair.first;
                     });
                     if (it != map.end())
-                        it->second(event->name);
+                        it->second(_folderPath.string() + "/" + std::string(event->name));
                 }
             }
         }
     }
+}
+
+rtype::FsNotifier::FsNotifier(const std::filesystem::path &folderPath) : _folderPath(folderPath) {
+    _notifierFdCreate = inotify_init();
+    _notifierFdDelete = inotify_init();
+
+    if (_notifierFdCreate < 0)
+        throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
+    if (_notifierFdDelete < 0)
+        throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
 }

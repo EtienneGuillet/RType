@@ -5,17 +5,17 @@
 #include <unistd.h>
 #include <cstring>
 
-rtype::LibLoader::LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder) : _ecs(ecs), _world(world), _entitiesPath(libFolder + "/entities"), _systemsPath(libFolder + "/systems"), _notifier() {
-    _notifier.addCreateListener(_entitiesPath, [this](const std::filesystem::path &path) {
+rtype::LibLoader::LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder) : _ecs(ecs), _world(world), _entitiesPath(libFolder + "/entities"), _systemsPath(libFolder + "/systems"), _notifierEntities(_entitiesPath), _notifierSystems(_systemsPath) {
+    _notifierEntities.addCreateListener([this](const std::filesystem::path &path) {
         loadLib<ecs::IEntityAPI>(path, _entities);
     });
-    _notifier.addDeletedListener(_entitiesPath, [this] (const std::filesystem::path &path) {
+    _notifierEntities.addDeletedListener([this](const std::filesystem::path &path) {
         unloadLib<ecs::IEntityAPI>(path, _entities);
     });
-    _notifier.addCreateListener(_systemsPath, [this] (const std::filesystem::path &path) {
+    _notifierSystems.addCreateListener([this](const std::filesystem::path &path) {
         loadLib<ecs::ISystemAPI>(path, _systems);
     });
-    _notifier.addDeletedListener(_systemsPath, [this] (const std::filesystem::path &path) {
+    _notifierSystems.addDeletedListener([this](const std::filesystem::path &path) {
         unloadLib<ecs::ISystemAPI>(path, _systems);
     });
     firstLibrariesLoad();
@@ -73,5 +73,6 @@ std::string rtype::LibLoader::getlibFolder() {
 }
 
 void rtype::LibLoader::checkForChanges() {
-    _notifier.update();
+    _notifierSystems.update();
+    _notifierEntities.update();
 }

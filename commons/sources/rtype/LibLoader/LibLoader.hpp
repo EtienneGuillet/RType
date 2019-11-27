@@ -42,17 +42,15 @@ namespace rtype {
     private:
         std::unique_ptr<ecs::IECS> &_ecs;
         std::shared_ptr<ecs::IWorld> &_world;
+
         const std::filesystem::path _entitiesPath;
         const std::filesystem::path _systemsPath;
 
         MapType<ecs::IEntityAPI> _entities;
         MapType<ecs::ISystemAPI> _systems;
 
-        int _notifyFileDescriptior;
-        fd_set _notifySet;
-        fd_set _errorSet;
-
-        rtype::FsNotifier _notifier;
+        rtype::FsNotifier _notifierEntities;
+        rtype::FsNotifier _notifierSystems;
     };
 }
 
