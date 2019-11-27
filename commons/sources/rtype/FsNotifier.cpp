@@ -17,7 +17,7 @@ void rtype::FsNotifier::addDeletedListener(std::filesystem::path path, rtype::Fs
 
     if (watchDeleteFd < 0)
         throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
-    _mapCreatedEvents.insert(std::make_pair(watchDeleteFd, handler));
+    _mapDeletedEvents.insert(std::make_pair(watchDeleteFd, handler));
 }
 
 rtype::FsNotifier::FsNotifier() {
