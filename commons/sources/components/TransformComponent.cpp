@@ -12,7 +12,7 @@ namespace rtype {
     const ecs::Version TransformComponent::Version = ecs::Version("TransformComponent", 0, 0, 0, 1);
 
     TransformComponent::TransformComponent(sf::Vector3<float> pos, sf::Vector2<float> rot, sf::Vector2<float> scale)
-        : _pos(pos), _rot(rot), _scale(scale)
+    : _pos(pos), _rot(rot), _scale(scale)
     {
         // b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::to_string(_value));
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "test TransformComponent");
