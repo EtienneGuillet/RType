@@ -46,8 +46,8 @@ int main(int ac, char **av)
 
     auto exampleSystem = world->addSystem(ecs->createSystemFromAPI(ecs::Version("System_Sfml")));
     exampleSystem.lock()->start();
-    world->pushEntity(ecs->createEntityFromAPI(ecs::Version("Entity_Example")));
-    world->pushEntity(ecs->createEntityFromAPI(ecs::Version("Entity_Example")));
+    world->pushEntity(ecs->createEntityFromAPI(ecs::Version("Entity_Player")));
+    world->pushEntity(ecs->createEntityFromAPI(ecs::Version("Entity_Player")));
 
     auto start = std::chrono::system_clock::now();
     auto end = start;

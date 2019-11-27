@@ -6,7 +6,7 @@
 PlayerEntity::PlayerEntity()
     : Entity("PlayerEntity")
 {
-    addComponent(std::make_shared<rtype::SpriteComponent>(1));
+    addComponent(std::make_shared<rtype::SpriteComponent>(42));
     addComponent(std::make_shared<rtype::TransformComponent>());
     addComponent(std::make_shared<rtype::TTLComponent>());
 }

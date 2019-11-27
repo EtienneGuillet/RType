@@ -49,7 +49,7 @@ namespace rtype {
         _sprite.setTextureRect(rect);
     }
 
-    const sf::Sprite &SpriteComponent::getSprite() const
+    sf::Sprite &SpriteComponent::getSprite()
     {
         return _sprite;
     }

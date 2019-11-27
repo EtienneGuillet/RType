@@ -78,7 +78,7 @@ namespace rtype {
 
         const sf::Color &getOutlineColor() const;
 
-        const sf::CircleShape &getShape() const;
+        sf::CircleShape &getShape();
 
         private:
         std::weak_ptr<ecs::IEntity> _entity;

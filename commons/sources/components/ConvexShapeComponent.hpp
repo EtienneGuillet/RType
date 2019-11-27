@@ -78,7 +78,7 @@ namespace rtype {
 
         const sf::Color &getOutlineColor() const;
 
-        const sf::ConvexShape &getShape() const;
+        sf::ConvexShape &getShape();
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         sf::ConvexShape _shape; /*!< The ConvexShape displayed */

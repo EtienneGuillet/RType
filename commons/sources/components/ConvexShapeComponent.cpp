@@ -66,7 +66,7 @@ namespace rtype {
         return _shape.getOutlineColor();
     }
 
-    const sf::ConvexShape& ConvexShapeComponent::getShape() const
+    sf::ConvexShape& ConvexShapeComponent::getShape()
     {
         return _shape;
     }

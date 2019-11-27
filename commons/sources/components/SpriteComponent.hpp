@@ -65,7 +65,7 @@ namespace rtype {
         /*!
          * @brief Return the Sprite displayed.
          */
-        const sf::Sprite &getSprite() const;
+        sf::Sprite &getSprite();
 
         /*!
          * @brief Set the Sprite displayed.

@@ -56,7 +56,7 @@ namespace rtype {
         /*!
          * @brief Return the text.
          */
-        const sf::Text &getText() const;
+        sf::Text &getText();
 
         /*!
          * @brief Set the text.

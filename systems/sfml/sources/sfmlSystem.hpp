@@ -80,6 +80,13 @@ class SfmlSystem : public ecs::ASystem {
 
     private:
 
+    static std::map<int, sf::IntRect> getMapRectTexture()
+    {
+        std::map<int, sf::IntRect> map;
+        map[42] = sf::Rect(66,0,33,17);
+        return map;
+    }
+
     /*
      * @brief Used to load all textures from /bin/assets.
      */
@@ -101,7 +108,7 @@ class SfmlSystem : public ecs::ASystem {
     sf::Clock _clock;
     sf::RenderWindow _window;
     std::map<int, std::shared_ptr<sf::Font>> _fonts;
-    std::map<int, std::shared_ptr<sf::Texture>> _textures;
+    std::map<int, std::pair<std::shared_ptr<sf::Texture>, sf::IntRect>> _textures;
 };
 
 #endif //R_TYPE_SFMLSYSTEM_HPP

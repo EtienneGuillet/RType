@@ -78,7 +78,7 @@ namespace rtype {
 
         const sf::Color &getOutlineColor() const;
 
-        const sf::RectangleShape &getShape() const;
+        sf::RectangleShape &getShape();
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         sf::RectangleShape _shape; /*!< The RectangleShape displayed */

@@ -1,6 +1,6 @@
 file(
         GLOB_RECURSE
-        RTYPE_SOURCES_EXAMPLE_ENTITY_TESTS
+        RTYPE_SOURCES_PLAYER_ENTITY_TESTS
         ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
         ${PROJECT_SOURCE_DIR}/entities/example/*.cpp
@@ -9,7 +9,7 @@ file(
         *.hpp
 )
 
-add_executable(tests_example_entity ${RTYPE_SOURCES_EXAMPLE_ENTITY_TESTS})
+add_executable(tests_player_entity ${RTYPE_SOURCES_PLAYER_ENTITY_TESTS})
 
 target_include_directories(
         tests_example_entity PUBLIC

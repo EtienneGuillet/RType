@@ -38,7 +38,7 @@ namespace rtype {
         _text.setString(_string);
     }
 
-    const sf::Text &TextComponent::getText() const
+    sf::Text &TextComponent::getText()
     {
         return _text;
     }
