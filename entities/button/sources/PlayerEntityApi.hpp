@@ -1,10 +1,10 @@
-#ifndef _R_TYPE_BUTTON_ENTITY_API_HPP_
-#define _R_TYPE_BUTTON_ENTITY_API_HPP_
+#ifndef _R_TYPE_PLAYER_ENTITY_API_HPP_
+#define _R_TYPE_PLAYER_ENTITY_API_HPP_
 
 
 #include <ecs/IEntityAPI/IEntityAPI.hpp>
 
-class ButtonEntityAPI : public ecs::IEntityAPI {
+class PlayerEntityAPI : public ecs::IEntityAPI {
 public:
     const ecs::Version &getVersion() const override;
 
@@ -15,4 +15,4 @@ public:
 };
 
 
-#endif //_R_TYPE_BUTTON_ENTITY_API_HPP_
+#endif // _R_TYPE_PLAYER_ENTITY_API_HPP_

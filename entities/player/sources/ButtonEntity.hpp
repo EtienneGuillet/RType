@@ -1,5 +1,5 @@
-#ifndef R_TYPE_EXAMPLEENTITY_HPP
-#define R_TYPE_EXAMPLEENTITY_HPP
+#ifndef _R_TYPE_BUTTON_ENTITY_HPP_
+#define _R_TYPE_BUTTON_ENTITY_HPP_
 
 #include "ecs/IEntity/Entity.hpp"
 
@@ -10,4 +10,4 @@ private:
 };
 
 
-#endif //R_TYPE_EXAMPLEENTITY_HPP
+#endif // _R_TYPE_BUTTON_ENTITY_HPP_
