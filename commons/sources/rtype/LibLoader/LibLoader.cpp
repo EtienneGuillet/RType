@@ -61,17 +61,25 @@ void rtype::LibLoader::loadLib(const std::filesystem::path &libPath, MapType <Ty
 
 template <typename TypeAPI>
 void rtype::LibLoader::unloadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs) {
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib unload] ") + libPath.string());
     for (auto i = libs.begin(), last = libs.end(); i != last; ) {
         if ((*i).first == libPath) {
-            //TODO Clean systems / entities
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib unload] ") + libPath.string());
+            if constexpr (std::is_same<TypeAPI, ecs::IEntityAPI>::value) {
+              _ecs->forgetEntity((*i).second.version);
+            } else if (std::is_same<TypeAPI, ecs::ISystemAPI>::value) {
+                _world->getSystem((*i).second.version).lock()->stop();
+                _ecs->forgetSystem((*i).second.version);
+                _world->removeSystem((*i).second.version);
+            } else {
+                throw b12software::exception::B12SoftwareException(std::string("Invalid API type used: ") + typeid(TypeAPI).name() , WHERE);
+            }
             (*i).second.api = std::shared_ptr<TypeAPI>();
             i = libs.erase(i);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib unloaded] ") + libPath.string());
         } else {
             ++i;
         }
     }
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib unloaded] ") + libPath.string());
 }
 
 void rtype::LibLoader::firstLibrariesLoad() {
