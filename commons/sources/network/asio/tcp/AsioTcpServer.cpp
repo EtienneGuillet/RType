@@ -203,7 +203,7 @@ void b12software::network::asio::AsioTcpServer::handleAccept(boost::shared_ptr<A
                                                              const boost::system::error_code &error)
 {
     if (error == boost::asio::error::operation_aborted) {
-        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioTcpServer] Operation aborted (this is due to an async operation still beeing queued while socket is closing.");
+        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioTcpServer] Operation aborted (this is due to an async operation still beeing queued while socket is closing).");
         return;
     }
     if (!error) {

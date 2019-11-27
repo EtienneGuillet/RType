@@ -122,7 +122,7 @@ void b12software::network::asio::AsioUdpSocket::sendHandler([[maybe_unused]]cons
                                                       [[maybe_unused]]size_t byteTransferred)
 {
     if (error == boost::asio::error::operation_aborted) {
-        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioUdpSocket] Operation aborted (this is due to an async operation still beeing queued while socket is closing.");
+        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioUdpSocket] Operation aborted (this is due to an async operation still beeing queued while socket is closing).");
         return;
     }
     if (!error) {
@@ -137,7 +137,7 @@ void b12software::network::asio::AsioUdpSocket::receiveHandler(const std::shared
                                                          const boost::system::error_code &error, size_t byteReceived)
 {
     if (error == boost::asio::error::operation_aborted) {
-        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioUdpSocket] Operation aborted (this is due to an async operation still beeing queued while socket is closing.");
+        logger::DefaultLogger::Log(logger::LogLevelInfo, "[AsioUdpSocket] Operation aborted (this is due to an async operation still beeing queued while socket is closing).");
         return;
     }
     if (!error) {

@@ -34,6 +34,14 @@ class b12software::exception::NotEnoughDataInCircularBufferException {
     + NotEnoughDataInCircularBufferException(const std::string &what, const std::string &where)
 }
 
+class rtype::exception::DatagramErrorException {
+    + DatagramErrorException(const std::string &what, const std::string &where)
+}
+
+class rtype::exception::DatagramMalformedException {
+    + DatagramMalformedException(const std::string &what, const std::string &where)
+}
+
 '-Containers
 
 class b12software::containers::CircularBuffer {
@@ -64,7 +72,7 @@ class b12software::containers::ThreadSafeCircularBuffer {
     + ThreadSafeCircularBuffer &operator=(const ThreadSafeCircularBuffer &rhs)
     + void lock()
     + void unlock()
-    + void tryLock()
+    + void try_lock()
     - ThreadSafeCircularBuffer(const ThreadSafeCircularBuffer &other, const std::lock_guard<std::recursive_mutex> &)
     - mutable std::recursive_mutex _mutex
 }
@@ -83,11 +91,35 @@ class b12software::containers::ThreadSafeQueue<T : queue elements type> {
     + void pop()
     + void lock()
     + void unlock()
-    + void trylock()
+    + void try_lock()
 
     - mutable std::recursive_mutex _mutex
     - std::condition_variable_any _variable
     - std::queue<T> _queue
+}
+
+class b12software::containers::ThreadSafeList<T : list elements type> {
+    + ThreadSafeList()
+    + ThreadSafeList(const ThreadSafeList<T> &other)
+    + ThreadSafeList<T> &operator=(const ThreadSafeList<T> &rhs)
+    + T &front()
+    + T &back()
+    + bool empty() const
+    + size_t size() const
+    + typename std::list<T>::iterator begin()
+    + typename std::list<T>::const_iterator begin() const
+    + typename std::list<T>::iterator end()
+    + typename std::list<T>::const_iterator end() const
+    + void clear()
+    + void push_back(const T &elem)
+    + void push_back(T &&elem)
+    + void remove(const T &value)
+    + template<class UnaryPredicate> void remove_if(UnaryPredicate p)
+    + void lock()
+    + void unlock()
+    + void try_lock()
+    - std::recursive_mutex _mutex
+    - std::list<T> _list
 }
 
 '-Logger
@@ -310,6 +342,8 @@ class rtype::network::RTypeDatagram {
     + RTypeDatagram &operator=(const Datagram &rhs)
     + void initSingleOpCodeDatagram(RTypeDatagramType type)
     + void init100ConnectDatagram(const std::string &username)
+    + void init106ClientDisconnectedDatagram(const std::string &username)
+    + void init108NewClientConnectedDatagram(const std::string &username)
     + void init111RoomListDatagram(const std::vector<RTypeDatagramRoom> &rooms)
     + void init112CreateRoomDatagram(const RTypeDatagramRoom &room)
     + void init116JoinRoomDatagram(const RTypeDatagramRoom &room)
@@ -322,6 +356,8 @@ class rtype::network::RTypeDatagram {
     + void init250EndGameDatagram(const RTypeDatagramScore &score)
     + unsigned short getType() const
     + void extract100ConnectDatagram(std::string &username)
+    + void extract106ClientDisconnectedDatagram(std::string &username)
+    + void extract108NewClientConnectedDatagram(std::string &username)
     + void extract111RoomListDatagram(std::vector<RTypeDatagramRoom> &rooms)
     + void extract112CreateRoomDatagram(RTypeDatagramRoom &room)
     + void extract116JoinRoomDatagram(RTypeDatagramRoom &room)
@@ -388,6 +424,10 @@ enum rtype::network::RTypeDatagramType {
     T_103_PONG = 103
     T_104_DISCONNECT = 104
     T_105_DISCONNECTED = 105
+    T_106_CLIENT_DISCONNECTED = 106
+    T_107_OK_CLIENT_DISCONNECTED = 107
+    T_108_NEW_CLIENT_CONNECTED = 108
+    T_109_OK_NEW_CLIENT_CONNECTED = 109
     T_110_GET_ROOMS = 110
     T_111_ROOM_LIST = 111
     T_112_CREATE_ROOM = 112
@@ -403,6 +443,8 @@ enum rtype::network::RTypeDatagramType {
     T_240_SCORE = 240
     T_250_END_GAME = 250
     T_260_GAME_ENDED = 260
+    T_270_GAME_STARTING = 270
+    T_280_GAME_STARTED = 280
     T_300_UNKNOWN_PACKET = 300
     T_301_INVALID_PACKET = 301
     T_302_INVALID_PARAM = 302
@@ -412,6 +454,7 @@ enum rtype::network::RTypeDatagramType {
     T_306_UNKNOWN_ROOM = 306
     T_307_INVALID_PASSWORD = 307
     T_308_ROOM_FULL = 308
+    T_309_OPERATION_NOT_PERMITTED = 309
 }
 
 'Extension
@@ -426,6 +469,10 @@ b12software::exception::CircularBufferException <|-- b12software::exception::Not
 b12software::exception::B12SoftwareException <|-- b12software::exception::NetworkException
 
 b12software::exception::B12SoftwareException <|-- b12software::exception::NullPointerException
+
+b12software::exception::B12SoftwareException <|-- rtype::exception::DatagramErrorException
+
+rtype::exception::DatagramErrorException <|-- rtype::exception::DatagramMalformedException
 
 '-Containers
 b12software::containers::CircularBuffer <|-- b12software::containers::ThreadSafeCircularBuffer
@@ -690,5 +737,145 @@ ecs::IEntity <|-- ecs::Entity
 ecs::IWorld <|-- ecs::World
 
 std::enable_shared_from_this <|-- ecs::World
+
+class rtype::RTypeServer {
+    + RTypeServer(unsigned short port = 54321)
+    + ~RTypeServer()
+    + void run()
+    - void handleDatagrams()
+    - void handleLiveness()
+    - void handleLooping()
+    - Client &getClientByHost(const b12software::network::HostInfos &host)
+    - Client &getClientByUsername(const std::string &username)
+    - int isInvalidUsername(const std::string &username)
+    - void addNewClient(const Client &client)
+    - void updateClientLiveness(const b12software::network::HostInfos &host)
+    - void disconnectClient(const Client &client)
+    - int isInvalidRoomName(const std::string &name)
+    - void createRoom(const std::string &name, unsigned char capacity, bool hasPassword, const std::string &password)
+    - void joinRoom(const std::string &roomName, Client &client, const std::string &password = "")
+    - void exitRoom(Client &client)
+    - void cleanRooms()
+    - void protocol100ConnectDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol102PingDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol104DisconnectDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol107ClientDisconnectedDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol109NewClientConnectedDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol110GetRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol112CreateRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol114QuitRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void protocol116JoinRoomsDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void unknownDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void invalidDatagramHandler(rtype::network::RTypeDatagram dg)
+    - void emptyDatagramHandler(rtype::network::RTypeDatagram dg)
+    - std::unique_ptr<b12software::network::INetworkManager> _networkManager
+    - std::weak_ptr<b12software::network::udp::IUdpSocket> _socket
+    - b12software::containers::ThreadSafeList<rtype::Client> _clients
+    - std::list<std::shared_ptr<rtype::Room>> _rooms
+}
+
+class rtype::exception::RTypeServerException {
+    + RTypeServerException(const std::string &what, const std::string &where)
+}
+
+class rtype::exception::RTypeUnknownRoomException {
+    + RTypeUnknownRoomException(const std::string &what, const std::string &where)
+}
+
+class rtype::exception::RTypeRoomAlreadyFullException {
+    + RTypeRoomAlreadyFullException(const std::string &what, const std::string &where)
+}
+
+class rtype::exception::RTypeInvalidPasswordException {
+    + RTypeInvalidPasswordException(const std::string &what, const std::string &where)
+}
+
+class rtype::Configuration {
+    + Configuration(int nbArgs, char * const *args)
+    + Configuration(const Configuration &other)
+    + ~Configuration()
+    + Configuration &operator=(const Configuration &rhs)
+    + bool shouldDisplayHelp() const
+    + unsigned short getPort() const
+    + void displayHelp(bool onError = false) const
+    + bool hasError() const
+    + void displayErrors() const
+    - std::string _binaryName
+    - bool _help
+    - unsigned short _port
+    - std::vector<std::string> _errors
+}
+
+class rtype::Client {
+    + Client()
+    + Client(const b12software::network::HostInfos &host, const std::string &username, ClientState state = CS_IN_LOBBY)
+    + ~Client()
+    + Client(const Client &other)
+    + Client &operator=(const Client &rhs)
+    + bool operator==(const Client &rhs) const
+    + bool operator!=(const Client &rhs) const
+    + void setHost(const b12software::network::HostInfos &host)
+    + const b12software::network::HostInfos &getHost() const
+    + const std::string &getUsername() const
+    + void setUsername(const std::string &username)
+    + ClientState getClientState() const
+    + void setClientState(ClientState state)
+    + const TimePoint &getLastReached() const
+    + void setLastReached(const TimePoint &lastReached)
+    + const TimePoint &getClock(rtype::network::RTypeDatagramType type) const
+    + void setClock(rtype::network::RTypeDatagramType type, const TimePoint &clock)
+    + const rtype::network::RTypeDatagram &getDatagram(rtype::network::RTypeDatagramType type) const
+    + void setDatagram(rtype::network::RTypeDatagramType type, const rtype::network::RTypeDatagram &datagram)
+    + std::vector<rtype::network::RTypeDatagramType> getDatagramTypes() const
+    + const std::weak_ptr<rtype::Room> &getRoom() const
+    + void setRoom(const std::weak_ptr<rtype::Room> &room)
+    + void removeRoom()
+    - b12software::network::HostInfos _host
+    - std::string _username
+    - ClientState _state
+    - TimePoint _lastReached
+    - std::map<rtype::network::RTypeDatagramType, TimePoint> _clocks
+    - std::map<rtype::network::RTypeDatagramType, rtype::network::RTypeDatagram> _datagrams
+    - std::weak_ptr<rtype::Room> _room
+}
+
+enum rtype::ClientState {
+    CS_IN_LOBBY
+    CS_IN_ROOM
+    CS_IN_GAME
+}
+
+class rtype::Room {
+    + Room()
+    + ~Room()
+    + const std::string &getName() const
+    + void setName(const std::string &name)
+    + unsigned char getCapacity() const
+    + void setCapacity(unsigned char capacity)
+    + unsigned char getSlotUsed() const
+    + void setSlotUsed(unsigned char slotUsed)
+    + bool hasPassword() const
+    + void setHasPassword(bool hasPassword)
+    + const std::string &getPassword() const
+    + void setPassword(const std::string &password)
+    + bool isGameRunning() const
+    + void setGameRunning(bool gameRunning)
+    + void addClient(Client &client)
+    + void removeClient(const Client &client)
+    + void applyToClients(std::function<void(Client &)> func)
+    - std::string _name
+    - unsigned char _capacity
+    - unsigned char _slotUsed
+    - bool _hasPassword
+    - std::string _password
+    - bool _gameRunning
+    - std::vector<std::reference_wrapper<Client>> _clients
+}
+
+b12software::exception::B12SoftwareException <|-- rtype::exception::RTypeServerException
+
+rtype::exception::RTypeServerException <|-- rtype::exception::RTypeInvalidPasswordException
+rtype::exception::RTypeServerException <|-- rtype::exception::RTypeRoomAlreadyFullException
+rtype::exception::RTypeServerException <|-- rtype::exception::RTypeUnknownRoomException
 
 @enduml

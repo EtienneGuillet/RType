@@ -105,6 +105,16 @@ namespace rtype {
              */
             void init100ConnectDatagram(const std::string &username);
             /*!
+             * @brief Initialize this datagram to be a client disconnected datagram
+             * @param username The username disconnected (will be truncated if more that 10 chars)
+             */
+            void init106ClientDisconnectedDatagram(const std::string &username);
+            /*!
+             * @brief Initialize this datagram to be a new client connected datagram
+             * @param username The username connected (will be truncated if more that 10 chars)
+             */
+            void init108NewClientConnectedDatagram(const std::string &username);
+            /*!
              * @brief Initialize a room list datagram
              * @param rooms The rooms to send
              */
@@ -166,6 +176,16 @@ namespace rtype {
              * @param username The username to use (will be truncated if more that 10 chars)
              */
             void extract100ConnectDatagram(std::string &username);
+            /*!
+             * @brief Extract this datagram to be a client disconnected datagram
+             * @param username The username disconnected (will be truncated if more that 10 chars)
+             */
+            void extract106ClientDisconnectedDatagram(std::string &username);
+            /*!
+             * @brief Extract this datagram to be a new client connected datagram
+             * @param username The username connected (will be truncated if more that 10 chars)
+             */
+            void extract108NewClientConnectedDatagram(std::string &username);
             /*!
              * @brief Extract a room list datagram
              * @param rooms The rooms to send
