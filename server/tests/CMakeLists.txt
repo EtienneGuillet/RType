@@ -56,7 +56,7 @@ target_link_libraries(
 
 if (UNIX)
 	target_link_libraries(
-		r-tests_server_functional
+		tests_server_functional
 		dl
 	)
 endif (UNIX)
