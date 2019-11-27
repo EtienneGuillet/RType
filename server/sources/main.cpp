@@ -53,15 +53,20 @@ int main(int ac, char **av)
     }
     std::signal(SIGINT, signalHandler);
 
-    auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
-    auto world = ecs->createWorld();
-    auto libLoader = rtype::LibLoader(ecs, world, std::string(av[1]));
 
-    while (gSignalStatus == 0) {
-        libLoader.checkForChanges();
-        updateWorld(world);
+    try {
+        auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
+        auto world = ecs->createWorld();
+        auto libLoader = rtype::LibLoader(ecs, world, std::string(av[1]));
+
+        while (gSignalStatus == 0) {
+            libLoader.checkForChanges();
+            updateWorld(world);
+        }
+        world = std::shared_ptr<ecs::IWorld>();
+        ecs = std::unique_ptr<ecs::IECS>();
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl << std::flush;
     }
-    world = std::shared_ptr<ecs::IWorld>();
-    ecs = std::unique_ptr<ecs::IECS>();
     return 0;
 }

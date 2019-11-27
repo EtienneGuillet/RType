@@ -130,9 +130,9 @@ rtype::FsNotifier::FsNotifier(const std::filesystem::path &folderPath) : _folder
         _notifierFdDelete = inotify_init();
 
         if (_notifierFdCreate < 0)
-            throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
+            throw b12software::exception::B12SoftwareException(folderPath.string() + std::string(strerror(errno)), WHERE);
         if (_notifierFdDelete < 0)
-            throw b12software::exception::B12SoftwareException(strerror(errno), WHERE);
+            throw b12software::exception::B12SoftwareException(folderPath.string() + std::string(strerror(errno)), WHERE);
     #elif defined(WINDOWS)
     #endif
 }
