@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2022
-** IntComponent.cpp
-** File description:
-** Created by tpautier,
-*/
-
 #include "IntComponent.hpp"
 
 const ecs::Version rtype::IntComponent::Version = ecs::Version("IntComponent", 0, 1, 0, 0);

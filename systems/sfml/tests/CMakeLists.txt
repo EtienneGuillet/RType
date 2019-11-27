@@ -23,5 +23,5 @@ target_link_libraries(
         ${CONAN_LIBS}
 )
 
-add_test(NAME example_system COMMAND tests_esfml_system)
+add_test(NAME sfml_system COMMAND tests_sfml_system)
 add_dependencies(${TESTS_RULE} tests_sfml_system)

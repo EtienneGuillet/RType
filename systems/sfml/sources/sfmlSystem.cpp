@@ -46,7 +46,6 @@ void SfmlSystem::loadTextures()
         _textures[i].first = std::make_shared<sf::Texture>(texture);
         auto it = mapRectTexture.find(i + 1);
         if (it != mapRectTexture.end()) {
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "texture de : " + std::to_string(i));
             _textures[i].second = mapRectTexture[i + 1];
         }
     }
@@ -126,71 +125,94 @@ void SfmlSystem::renderEntities()
     auto lockedWorld = _world.lock();
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
     if (lockedWorld) {
-        //render the Sprites.
-        lockedWorld->applyToEach({rtype::SpriteComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
-            std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
-
-            (void)entity;
-            if (!spriteComponent->isSpriteSetted()) {
-                sf::Sprite sprite;
-                auto it = _textures.find(spriteComponent->getAssetId() - 1);
-                if (it == _textures.end())
-                    return;
-                sprite.setTexture(*(it->second.first));
-                sprite.setTextureRect(it->second.second);
-                spriteComponent->setSprite(sprite);
-            }
-            spriteComponent->getSprite().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
-            _window.draw(spriteComponent->getSprite());
-        });
-        //render the Texts.
-        lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
-            std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
-
-            (void)entity;
-            if (!textComponent->isTextSet()) {
-                sf::Text text;
-                auto it = _fonts.find(textComponent->getFontId() - 1);
-                if (it == _fonts.end())
-                    return;
-                text.setString(textComponent->getString());
-                text.setFont(*(_fonts[textComponent->getFontId()]));
-                textComponent->setText(text);
-            }
-            textComponent->getText().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
-            _window.draw(textComponent->getText());
-        });
-        //render the Rectangle.
-        lockedWorld->applyToEach({rtype::RectangleShapeComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::RectangleShapeComponent> rectangleComponent = std::dynamic_pointer_cast<rtype::RectangleShapeComponent>(components.front().lock());
-            std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
-
-            (void)entity;
-            rectangleComponent->getShape().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
-            _window.draw(rectangleComponent->getShape());
-        });
-        //render the Circles.
-        lockedWorld->applyToEach({rtype::CircleShapeComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::CircleShapeComponent> circleComponent = std::dynamic_pointer_cast<rtype::CircleShapeComponent>(components.front().lock());
-            std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
-
-            (void)entity;
-            circleComponent->getShape().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
-            _window.draw(circleComponent->getShape());
-        });
-        //render the Convexs.
-        lockedWorld->applyToEach({rtype::ConvexShapeComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::ConvexShapeComponent> convexComponent = std::dynamic_pointer_cast<rtype::ConvexShapeComponent>(components.front().lock());
-            std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
-
-            (void)entity;
-            convexComponent->getShape().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
-            _window.draw(convexComponent->getShape());
-        });
+        this->renderSprites(lockedWorld);
+        this->renderShapes(lockedWorld);
+        this->renderTexts(lockedWorld);
     }
     _window.display();
+}
+
+void SfmlSystem::renderSprites(const std::shared_ptr<ecs::IWorld> &lockedWorld)
+{
+    lockedWorld->applyToEach({rtype::SpriteComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
+        std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
+
+        (void)entity;
+        if (!spriteComponent->isSpriteSetted()) {
+            sf::Sprite sprite;
+            auto it = _textures.find(spriteComponent->getAssetId() - 1);
+            if (it == _textures.end())
+                return;
+            sprite.setTexture(*(it->second.first));
+            sprite.setTextureRect(it->second.second);
+            spriteComponent->setSprite(sprite);
+        }
+        spriteComponent->getSprite().setRotation(transformComponent->getRotation().y);
+        spriteComponent->getSprite().setScale(transformComponent->getScale());
+        spriteComponent->getSprite().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
+        _window.draw(spriteComponent->getSprite());
+    });
+}
+
+void SfmlSystem::renderTexts(const std::shared_ptr<ecs::IWorld> &lockedWorld)
+{
+    lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
+        std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
+
+        (void)entity;
+        if (!textComponent->isTextSet()) {
+            sf::Text text;
+            auto it = _fonts.find(textComponent->getFontId() - 1);
+            if (it == _fonts.end())
+                return;
+            text.setString(textComponent->getString());
+            text.setFont(*(_fonts[textComponent->getFontId()]));
+            textComponent->setText(text);
+        }
+        textComponent->getText().setRotation(transformComponent->getRotation().y);
+        textComponent->getText().setScale(transformComponent->getScale());
+        textComponent->getText().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
+        _window.draw(textComponent->getText());
+    });
+}
+
+void SfmlSystem::renderShapes(const std::shared_ptr<ecs::IWorld> &lockedWorld)
+{
+    //render the Rectangle.
+    lockedWorld->applyToEach({rtype::RectangleShapeComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        std::shared_ptr<rtype::RectangleShapeComponent> rectangleComponent = std::dynamic_pointer_cast<rtype::RectangleShapeComponent>(components.front().lock());
+        std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
+
+        (void)entity;
+        rectangleComponent->getShape().setRotation(transformComponent->getRotation().y);
+        rectangleComponent->getShape().setScale(transformComponent->getScale());
+        rectangleComponent->getShape().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
+        _window.draw(rectangleComponent->getShape());
+    });
+    //render the Circles.
+    lockedWorld->applyToEach({rtype::CircleShapeComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        std::shared_ptr<rtype::CircleShapeComponent> circleComponent = std::dynamic_pointer_cast<rtype::CircleShapeComponent>(components.front().lock());
+        std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
+
+        (void)entity;
+        circleComponent->getShape().setRotation(transformComponent->getRotation().y);
+        circleComponent->getShape().setScale(transformComponent->getScale());
+        circleComponent->getShape().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
+        _window.draw(circleComponent->getShape());
+    });
+    //render the Convexs.
+    lockedWorld->applyToEach({rtype::ConvexShapeComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        std::shared_ptr<rtype::ConvexShapeComponent> convexComponent = std::dynamic_pointer_cast<rtype::ConvexShapeComponent>(components.front().lock());
+        std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
+
+        (void)entity;
+        convexComponent->getShape().setRotation(transformComponent->getRotation().y);
+        convexComponent->getShape().setScale(transformComponent->getScale());
+        convexComponent->getShape().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
+        _window.draw(convexComponent->getShape());
+    });
 }
 
 bool SfmlSystem::isRunning() const

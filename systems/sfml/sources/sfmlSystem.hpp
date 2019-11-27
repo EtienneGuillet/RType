@@ -97,10 +97,22 @@ class SfmlSystem : public ecs::ASystem {
      */
     void loadFonts();
 
-    /*
-     * @brief Render all entities on the screen that has a spriteComponent, a RectangleComponent, a CircleComponent or a ConvexComponent.
-     */
     void renderEntities();
+
+    /*
+     * @brief Render all entities on the screen that has a spriteComponent and a transformComponent.
+     */
+    void renderSprites(const std::shared_ptr<ecs::IWorld> &lockedWorld);
+
+    /*
+     * @brief Render all entities on the screen that has a textComponent and a transformComponent.
+     */
+    void renderTexts(const std::shared_ptr<ecs::IWorld> &lockedWorld);
+
+    /*
+     * @brief Render all entities on the screen that has a transformComponent and a circleComponent, a rectangleComponent or a ConvexComponent.
+     */
+    void renderShapes(const std::shared_ptr<ecs::IWorld> &lockedWorld);
 
     static const ecs::Version Version;
     std::pair</*x*/float, /*y*/float> _mouseInput;
