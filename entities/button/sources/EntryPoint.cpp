@@ -1,5 +1,5 @@
 #include "ecs/IEntityAPI/IEntityAPI.hpp"
-#include "PlayerEntityApi.hpp"
+#include "ButtonEntityApi.hpp"
 #include <memory>
 
 #if defined(_WIN32) || defined(_WIN64) || defined(WIN32) || defined(WIN64)
@@ -10,6 +10,6 @@
 
 extern "C" {
 	WIN_DLLEXPORT_COMPAT ecs::IEntityAPI *entryPointEntityAPI() {
-        return new PlayerEntityAPI();
+        return new ButtonEntityAPI();
     }
 }

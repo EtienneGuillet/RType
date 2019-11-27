@@ -5,10 +5,10 @@ file(
         sources/*.cpp
 )
 
-add_library(button_entity SHARED ${RTYPE_SOURCES_ENTITY_EXAMPLE})
+add_library(player_entity SHARED ${RTYPE_SOURCES_ENTITY_EXAMPLE})
 
 target_include_directories(
-        button_entity PUBLIC
+        player_entity PUBLIC
         ${PROJECT_SOURCE_DIR}/commons/sources
 )
 
