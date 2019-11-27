@@ -13,7 +13,7 @@
         #define LINUX
     #endif
 #elif defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64)
-    #include <windows.h>
+    #include <Windows.h>
     #ifndef WINDOWS
         #define WINDOWS
     #endif

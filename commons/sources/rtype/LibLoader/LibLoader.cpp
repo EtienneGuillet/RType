@@ -1,8 +1,6 @@
 #include <exception/B12SoftwareException.hpp>
 #include <logger/DefaultLogger.hpp>
 #include "LibLoader.hpp"
-#include <sys/inotify.h>
-#include <unistd.h>
 #include <cstring>
 #include <map>
 
@@ -26,7 +24,7 @@ template <typename TypeAPI>
 void rtype::LibLoader::loadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs) {
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Loading lib] ") + libPath.string());
     try {
-        std::shared_ptr<ecs::DLLoader> loader(new ecs::DLLoader(libPath));
+        std::shared_ptr<ecs::DLLoader> loader(new ecs::DLLoader(libPath.string()));
         auto api = loader->loadAPI<TypeAPI>(getEntryPoint<TypeAPI>());
         libs.insert(std::make_pair(libPath, LibLoaded<TypeAPI> {
                 api->getVersion(),
@@ -85,9 +83,9 @@ std::string rtype::LibLoader::getEntryPoint() {
 template<typename TypeAPI>
 std::string rtype::LibLoader::getlibFolder() {
     if (std::is_same<TypeAPI, ecs::IEntityAPI>::value)
-        return _entitiesPath;
+        return _entitiesPath.string();
     else if(std::is_same<TypeAPI, ecs::ISystemAPI>::value)
-        return _systemsPath;
+        return _systemsPath.string();
     else
         throw b12software::exception::B12SoftwareException(std::string("Invalid API type used: ") + typeid(TypeAPI).name() , WHERE);
 }
