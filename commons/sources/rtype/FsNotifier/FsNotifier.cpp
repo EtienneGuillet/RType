@@ -46,15 +46,15 @@ void rtype::FsNotifier::update() {
                 }
             }
             if (toAdd) {
-                _indexedPaths.insert(std::make_pair(entry.path(), true));
-                _mapCreatedEvents[0](entry.path());
+                if (_mapCreatedEvents[0](entry.path()) == true)
+                    _indexedPaths.insert(std::make_pair(entry.path(), true));;
             }
         }
 
         for (auto i = _indexedPaths.begin(), last = _indexedPaths.end(); i != last; ) {
             if ((*i).second == false) {
-                _mapDeletedEvents[0]((*i).first);
-                i = _indexedPaths.erase(i);
+                if (_mapDeletedEvents[0]((*i).first) == true)
+                    i = _indexedPaths.erase(i);
             } else {
                 ++i;
             }

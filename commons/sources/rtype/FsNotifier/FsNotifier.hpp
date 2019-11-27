@@ -23,7 +23,7 @@
 namespace rtype {
     class FsNotifier {
     public:
-        typedef std::function<void (std::filesystem::path)> Handler;
+        typedef std::function<bool (std::filesystem::path)> Handler;
 
     public:
         explicit FsNotifier(const std::filesystem::path &folderPath);

@@ -6,16 +6,28 @@
 
 rtype::LibLoader::LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder) : _ecs(ecs), _world(world), _entitiesPath(libFolder + "/entities"), _systemsPath(libFolder + "/systems"), _notifierEntities(_entitiesPath), _notifierSystems(_systemsPath) {
     _notifierEntities.addCreateListener([this] (const std::filesystem::path &path) {
-        loadLib<ecs::IEntityAPI>(path, _entities);
+        try {
+            loadLib<ecs::IEntityAPI>(path, _entities);
+            return true;
+        } catch (ecs::DLLoaderException &e) {
+            return false;
+        }
     });
     _notifierEntities.addDeletedListener([this] (const std::filesystem::path &path) {
         unloadLib<ecs::IEntityAPI>(path, _entities);
+        return true;
     });
     _notifierSystems.addCreateListener([this] (const std::filesystem::path &path) {
-        loadLib<ecs::ISystemAPI>(path, _systems);
+        try {
+            loadLib<ecs::ISystemAPI>(path, _systems);
+            return true;
+        } catch (ecs::DLLoaderException &e) {
+            return false;
+        }
     });
     _notifierSystems.addDeletedListener([this] (const std::filesystem::path &path) {
         unloadLib<ecs::ISystemAPI>(path, _systems);
+        return true;
     });
     firstLibrariesLoad();
 }
@@ -42,7 +54,8 @@ void rtype::LibLoader::loadLib(const std::filesystem::path &libPath, MapType <Ty
         }
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib loaded] ") + libPath.string());
     } catch (const ecs::DLLoaderException &e) {
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, std::string("[Failed to load lib] ") + libPath.string());
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, std::string("[Failed to load lib] ") + e.what() + ": " + e.where());
+        throw e;
     }
 }
 
