@@ -12,4 +12,9 @@ target_include_directories(
         ${PROJECT_SOURCE_DIR}/commons/sources
 )
 
+add_custom_command(TARGET example_system POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:example_system> ${SERVER_SYSTEMS_FOLDER}
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:example_system> ${CLIENT_SYSTEMS_FOLDER}
+)
+
 add_subdirectory(tests)

@@ -12,9 +12,6 @@
 
 #include <exception>
 #include <string>
-#ifndef WHERE
-    #define WHERE (std::string(__FILE__) + " line: " + std::to_string(__LINE__))
-#endif
 
 /*!
  * @namespace ecs

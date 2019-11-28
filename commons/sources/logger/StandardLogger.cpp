@@ -42,8 +42,8 @@ void b12software::logger::StandardLogger::log(b12software::logger::LogLevel mess
         return;
     if (messageLevel >= _currentLevel) {
         if (stringLevels.count(messageLevel) != 0)
-            std::cerr << "[" << stringLevels[messageLevel] << "][" << std::this_thread::get_id() << "]" << message << std::endl;
+            std::cerr << "[" << stringLevels[messageLevel] << "][" << std::this_thread::get_id() << "]" << message << std::endl << std::flush;
         else
-            std::cerr << "[" << std::to_string(messageLevel) << "][" << std::this_thread::get_id() << "]" << message << std::endl;
+            std::cerr << "[" << std::to_string(messageLevel) << "][" << std::this_thread::get_id() << "]" << message << std::endl << std::flush;
     }
 }

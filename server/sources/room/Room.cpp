@@ -9,11 +9,12 @@
 
 #include <algorithm>
 #include <rtype/game/RTypeEntityType.hpp>
-
+#include <rtype/LibLoader/LibLoader.hpp>
+#include <ecs/IECS/ECS.hpp>
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
-rtype::Room::Room()
+rtype::Room::Room(const std::string &libsFolder)
     : _name(""),
       _capacity(0),
       _slotUsed(0),
@@ -25,7 +26,8 @@ rtype::Room::Room()
       _gameInfos(),
       _clientPlayerMap(),
       _threadRunning(false),
-      _thread()
+      _thread(),
+      _libsFolder(libsFolder)
 {
 
 }
@@ -166,7 +168,7 @@ void rtype::Room::syncGame(std::weak_ptr<b12software::network::udp::IUdpSocket> 
         }
         if (allClientsRdy) {
             _threadRunning = true;
-            _thread = std::make_unique<std::thread>(rtype::Room::gameThreadFunc, std::ref(_shouldGameBeRunning), std::ref(_threadRunning), std::ref(_gameInfos));
+            _thread = std::make_unique<std::thread>(rtype::Room::gameThreadFunc, std::ref(_shouldGameBeRunning), std::ref(_threadRunning), std::ref(_gameInfos), _libsFolder);
             _gameRunning = true;
         }
     } else if (_shouldGameBeRunning && _gameRunning) {
@@ -208,7 +210,6 @@ void rtype::Room::setUsernameInputs(const std::string &username, const rtype::ne
 
 void rtype::Room::syncGameOnNetwork(const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket)
 {
-
     constexpr std::chrono::milliseconds timeBetweenDisplays(100);
     constexpr std::chrono::milliseconds timeBetweenLiving(100);
     constexpr std::chrono::milliseconds timeBetweenCharges(100);
@@ -346,30 +347,46 @@ void rtype::Room::endGame()
     _clientPlayerMap.clear();
 }
 
-void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos)
+void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos, const std::string libsFolder)
 {
     threadRunning = true;
+    auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
+    auto world = ecs->createWorld();
+    auto libLoader = rtype::LibLoader(ecs, world, libsFolder);
+    auto start = std::chrono::system_clock::now();
+    auto end = start;
+    //TODO Force add NetworkSyncSystem
+
     while (shouldGameBeRunning && threadRunning) {
-        //todo run the ecs
-        int used = 4;
-        for (int i = 0; i < 4; i++) {
-            auto &player = infos.getPlayer(i);
-            if (player.isUsed()) {
-                std::string str = "Player " + std::to_string(i) + " inputs:";
-                str += std::string("[SHOOT:") + (player.isShooting() ? "true" : "false") + "]";
-                str += std::string("[UP:") + (player.isMovingUp() ? "true" : "false") + "]";
-                str += std::string("[DOWN:") + (player.isMovingDown() ? "true" : "false") + "]";
-                str += std::string("[LEFT:") + (player.isMovingLeft() ? "true" : "false") + "]";
-                str += std::string("[RIGHT:") + (player.isMovingRight() ? "true" : "false") + "]";
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, str);
-            } else {
-                used--;
+        end = std::chrono::system_clock::now();
+        auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        if (deltaTime >= 10) {
+            libLoader.checkForChanges();
+            start = std::chrono::system_clock::now();
+            world->tick(deltaTime);
+
+            int used = 4;
+            for (int i = 0; i < 4; i++) {
+                auto &player = infos.getPlayer(i);
+                if (player.isUsed()) {
+                    std::string str = "Player " + std::to_string(i) + " inputs:";
+                    str += std::string("[SHOOT:") + (player.isShooting() ? "true" : "false") + "]";
+                    str += std::string("[UP:") + (player.isMovingUp() ? "true" : "false") + "]";
+                    str += std::string("[DOWN:") + (player.isMovingDown() ? "true" : "false") + "]";
+                    str += std::string("[LEFT:") + (player.isMovingLeft() ? "true" : "false") + "]";
+                    str += std::string("[RIGHT:") + (player.isMovingRight() ? "true" : "false") + "]";
+                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, str);
+                } else {
+                    used--;
+                }
             }
+            if (used == 0)
+                break;
         }
-        if (used == 0)
-            break;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
+    world = std::shared_ptr<ecs::IWorld>();
+    ecs = std::unique_ptr<ecs::IECS>();
     threadRunning = false;
 }
 

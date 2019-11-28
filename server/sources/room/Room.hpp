@@ -32,8 +32,9 @@ namespace rtype {
     public:
         /*!
          * @brief ctor
+         * @param libsFolder The folder containing entities and systems libs
          */
-        Room();
+        Room(const std::string &libsFolder);
         /*!
          * @brief cpy ctor deleted
          * @param other the object to copy
@@ -126,8 +127,9 @@ namespace rtype {
         /*!
          * @brief The thread game function runned
          * @param infos the infos to sync on the network
+         * @param libsFolder The folder containing entities and systems libs
          */
-        static void gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos);
+        static void gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos, const std::string libsFolder);
 
     private:
         std::string _name; /*!< The room name */
@@ -143,6 +145,7 @@ namespace rtype {
         std::map<std::string, int> _clientPlayerMap; /*!< Map linking a client to a player */
         std::atomic_bool _threadRunning; /*!< Is the thread running */
         std::unique_ptr<std::thread> _thread; /*!< The game thread */
+        const std::string _libsFolder; /*< The path of the libraries folder */
     };
 }
 

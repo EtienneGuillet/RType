@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <memory>
+#include <fstream>
 #include "DLLoaderException.hpp"
+#include "exception/B12SoftwareException.hpp"
 
 #if defined(__linux__)
     #include <dlfcn.h>
@@ -11,7 +13,7 @@
         #define LINUX
     #endif
 #elif defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64)
-    #include <windows.h>
+    #include <Windows.h>
     #ifndef WINDOWS
         #define WINDOWS
     #endif
@@ -58,6 +60,15 @@ namespace ecs {
             }
 #endif
         }
+
+        /*!
+         * @brief copy ctor deleted
+         */
+        DLLoader(DLLoader &) = delete;
+        /*!
+         * @brief copy ctor deleted
+         */
+        DLLoader &operator =(DLLoader &) = delete;
 
         /*!
          * @brief dtor
