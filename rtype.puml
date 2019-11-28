@@ -1145,15 +1145,47 @@ class ecs::components::DisplayableComponent {
 ecs::AComponent <|-- ecs::components::DisplayableComponent
 
 class systems::MovementSystem {
+    + MovementSystem()
+    + ~MovementSystem()
+    + MovementSystem(const MovementSystem &other)
+    + MovementSystem &operator=(const MovementSystem &rhs)
     + {static} const ecs::Version Version
 }
 
 ecs::ASystem <|-- systems::MovementSystem
 
 class systems::MovementSystemApi {
+    + MovementSystemApi()
+    + ~MovementSystemApi()
+    + MovementSystemApi(const MovementSystemApi &other)
+    + MovementSystemApi &operator=(const MovementSystemApi &rhs)
     + {static} const ecs::Version Version
 }
 
 ecs::ISystemAPI <|-- systems::MovementSystemApi
+
+class systems::DamageSystem {
+    + DamageSystem()
+    + ~DamageSystem()
+    + DamageSystem(const DamageSystem &other)
+    + DamageSystem &operator=(const DamageSystem &rhs)
+    + {static} const ecs::Version Version
+    - void computeDamages() const
+    - {static} bool collide(const b12software::maths::Vector2D &colAPos, const b12software::maths::Vector2D &colASize, const b12software::maths::Vector2D &colBPos, const b12software::maths::Vector2D &colBSize)
+    - long _elapsedTime
+    - long _computeEvery
+}
+
+ecs::ASystem <|-- systems::DamageSystem
+
+class systems::DamageSystemApi {
+    + DamageSystemApi()
+    + ~DamageSystemApi()
+    + DamageSystemApi(const DamageSystemApi &other)
+    + DamageSystemApi &operator=(const DamageSystemApi &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ISystemAPI <|-- systems::DamageSystemApi
 
 @enduml
