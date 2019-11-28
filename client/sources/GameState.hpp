@@ -82,6 +82,11 @@ namespace rtype {
          */
         std::vector<rtype::EntitiesState> getEntities(const std::vector<std::uint32_t > &ids);
 
+        /*
+         * @brief Sort the vector of entities by there Position in Z axe.
+         */
+        void sortByZindex();
+
         /*!
          * @brief Set the inputs of the client.
          * @param A map of key and a bool, true or false whether the input is held or not.
@@ -96,6 +101,8 @@ namespace rtype {
 
 
         private:
+
+        static bool comparePositionZ(rtype::EntitiesState entity1, rtype::EntitiesState entity2);
 
         std::map<Keys, bool> _inputs;
         std::vector<rtype::EntitiesState> _entities;

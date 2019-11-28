@@ -52,6 +52,16 @@ std::vector<rtype::EntitiesState> rtype::GameState::getEntities(const std::vecto
     return vector;
 }
 
+bool rtype::GameState::comparePositionZ(rtype::EntitiesState entity1, rtype::EntitiesState entity2)
+{
+    return (entity1.getPos().z < entity2.getPos().z);
+}
+
+void rtype::GameState::sortByZindex()
+{
+    std::sort(_entities.begin(), _entities.end(), comparePositionZ);
+}
+
 void rtype::GameState::setInputs(const std::map<Keys, bool> &keys)
 {
     _inputs = keys;
