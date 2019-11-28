@@ -167,7 +167,7 @@ void rtype::Room::syncGame(std::weak_ptr<b12software::network::udp::IUdpSocket> 
         }
         if (allClientsRdy) {
             _threadRunning = true;
-            _thread = std::make_unique<std::thread>(rtype::Room::gameThreadFunc, std::ref(_shouldGameBeRunning), std::ref(_threadRunning), std::ref(_gameInfos));
+            _thread = std::make_unique<std::thread>(rtype::Room::gameThreadFunc, std::ref(_shouldGameBeRunning), std::ref(_threadRunning), std::ref(_gameInfos), _libsFolder);
             _gameRunning = true;
         }
     } else if (_shouldGameBeRunning && _gameRunning) {
