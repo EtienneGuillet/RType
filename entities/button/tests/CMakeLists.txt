@@ -12,19 +12,19 @@ file(
 add_executable(tests_button_entity ${RTYPE_SOURCES_BUTTON_ENTITY_TESTS})
 
 target_include_directories(
-        tests_example_entity PUBLIC
+        tests_button_entity PUBLIC
         ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/client/sources
         ${PROJECT_SOURCE_DIR}/client/tests
         ${PROJECT_SOURCE_DIR}/commons/tests
 )
 target_link_libraries(
-        tests_example_entity
+        tests_button_entity
         criterion
         dl
         gcov
         ${CONAN_LIBS}
 )
 
-add_test(NAME example_entity COMMAND tests_example_entity)
-add_dependencies(${TESTS_RULE} tests_example_entity)
+add_test(NAME tests_button_entity COMMAND tests_example_entity)
+add_dependencies(${TESTS_RULE} tests_button_entity)
