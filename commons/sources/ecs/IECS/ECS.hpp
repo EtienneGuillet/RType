@@ -41,6 +41,7 @@ namespace ecs {
         void learnEntity(const std::shared_ptr<IEntityAPI> &api) override;
         std::shared_ptr<ISystemAPI> forgetSystem(const Version &version) override;
         std::shared_ptr<IEntityAPI> forgetEntity(const Version &version) override;
+        [[nodiscard]] std::vector<std::shared_ptr<ecs::IEntityAPI>> getKnownEntities() const override;
 
     private:
         std::vector<std::shared_ptr<ISystemAPI>> _systemsAPI; /*!< known system api */

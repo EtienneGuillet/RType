@@ -117,3 +117,7 @@ std::shared_ptr<ecs::IEntityAPI> ecs::ECS::forgetEntity(const ecs::Version &vers
     }
     return std::shared_ptr<ecs::IEntityAPI>();
 }
+
+std::vector<std::shared_ptr<ecs::IEntityAPI>> ecs::ECS::getKnownEntities() const {
+    return _entitysAPI;
+}
