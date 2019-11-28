@@ -443,6 +443,42 @@ b12software::network::tcp::ITcpServer <|-- b12software::network::asio::AsioTcpSe
 
 '-Rtype datagram
 
+class rtype::FsNotifier {
+    + typedef std::function<bool (std::filesystem::path)> Handler
+    + FsNotifier(const std::filesystem::path &folderPath)
+    + void update()
+    + void addCreateListener(const Handler &createHandler)
+    + void addDeletedListener(const Handler &deleteHandle)
+    - int computeSet(const std::map<int, Handler> &map, fd_set *set, fd_set *errorSet)
+    - int computeSet(int notifyFd, fd_set *set, fd_set *errorSet)
+    - void checkNotifier(int fdNotifier, const std::map<int, Handler> &map, int mask)
+    - std::filesystem::path _folderPath
+    - int _notifierFdCreate
+    - int _notifierFdDelete
+    - std::map<int, Handler> _mapCreatedEvents
+    - std::map<int, Handler> _mapDeletedEvents
+    - std::map<std::filesystem::path, bool> _indexedPaths
+}
+
+class rtype::LibLoader {
+    + template <typename TypeAPI> MapType = std::map<std::filesystem::path, rtype::LibLoader::LibLoaded<TypeAPI>>
+    + LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder)
+    + void checkForChanges()
+    - template <typename TypeAPI> std::string getEntryPoint()
+    - template <typename TypeAPI> std::string getlibFolder()
+    - template <typename TypeAPI> void loadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs)
+    - template <typename TypeAPI> void unloadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs)
+    - void firstLibrariesLoad()
+    - std::unique_ptr<ecs::IECS> &_ecs
+    - std::shared_ptr<ecs::IWorld> &_world
+    - const std::filesystem::path _entitiesPath
+    - const std::filesystem::path _systemsPath
+    - MapType<ecs::IEntityAPI> _entities
+    - MapType<ecs::ISystemAPI> _systems
+    - rtype::FsNotifier _notifierEntities
+    - rtype::FsNotifier _notifierSystems
+}
+
 b12software::network::udp::Datagram <|-- rtype::network::RTypeDatagram
 
 title R-Type - Class Diagram
