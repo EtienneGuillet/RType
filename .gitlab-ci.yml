@@ -58,6 +58,8 @@ uml:
     - dnf -y install plantuml graphviz
   script:
     - plantuml rtype.puml
+    - plantuml docs/datagramFlow.puml
   artifacts:
     paths:
       - rtype.png
+      - docs/datagramFlow.png

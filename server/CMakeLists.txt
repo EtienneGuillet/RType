@@ -12,6 +12,7 @@ target_include_directories(
         ${PROJECT_SOURCE_DIR}/commons/sources
         sources
 )
+
 target_link_libraries(
         r-type_server
         ${CONAN_LIBS}
@@ -23,5 +24,8 @@ if (UNIX)
 		dl
 	)
 endif (UNIX)
+
+file(MAKE_DIRECTORY ${SERVER_ENTITIES_FOLDER})
+file(MAKE_DIRECTORY ${SERVER_SYSTEMS_FOLDER})
 
 add_subdirectory(tests)

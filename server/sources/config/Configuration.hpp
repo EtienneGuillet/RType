@@ -66,6 +66,12 @@ namespace rtype {
         unsigned short getPort() const;
 
         /*!
+         * @brief Get the path to le libraries folder
+         * @return the path of folder containing folder entities and systems
+         */
+        const std::string & getLibsFolder() const;
+
+        /*!
          * @brief display the help on the standard output
          * @param onError should use the error output instead of standard
          */
@@ -87,11 +93,13 @@ namespace rtype {
         static constexpr struct option longOptions[] = {
             {"help", no_argument, 0, 'h'},
             {"port", required_argument, 0, 'p'},
+            {"libs", required_argument, 0, 'l'},
         };
 #endif
 
     private:
         std::string _binaryName; /*!< The name of this binary */
+        std::string _libsFolder; /*!< The path to the libraries folder */
         bool _help; /*!< Should the program display help */
         unsigned short _port; /*!< The port this program should start on */
         std::vector<std::string> _errors; /*!< Unknown parameters */

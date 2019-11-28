@@ -36,15 +36,15 @@ const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
     {rtype::network::T_115_ROOM_QUITTED, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_116_JOIN_ROOM, &rtype::RTypeServer::protocol116JoinRoomsDatagramHandler},
     {rtype::network::T_117_ROOM_JOINED, &rtype::RTypeServer::invalidDatagramHandler},
-    {rtype::network::T_200_ACTION, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_200_ACTION, &rtype::RTypeServer::protocol200ActionDatagramHandler},
     {rtype::network::T_210_DISPLAY, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_220_LIVING, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_230_CHARGE, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_240_SCORE, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_250_END_GAME, &rtype::RTypeServer::invalidDatagramHandler},
-    {rtype::network::T_260_GAME_ENDED, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_260_GAME_ENDED, &rtype::RTypeServer::protocol260OkGameEndedDatagramHandler},
     {rtype::network::T_270_GAME_STARTING, &rtype::RTypeServer::invalidDatagramHandler},
-    {rtype::network::T_280_GAME_STARTED, &rtype::RTypeServer::invalidDatagramHandler}, //todo
+    {rtype::network::T_280_GAME_STARTED, &rtype::RTypeServer::protocol280OkGameStartedDatagramHandler},
     {rtype::network::T_301_INVALID_PACKET, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_302_INVALID_PARAM, &rtype::RTypeServer::invalidDatagramHandler},
     {rtype::network::T_303_USERNAME_ALREADY_USED, &rtype::RTypeServer::invalidDatagramHandler},
@@ -56,11 +56,12 @@ const rtype::RTypeServer::ProtocolMapType rtype::RTypeServer::protocolMap = {
     {rtype::network::T_309_OPERATION_NOT_PERMITTED, &rtype::RTypeServer::invalidDatagramHandler},
 };
 
-rtype::RTypeServer::RTypeServer(unsigned short port)
+rtype::RTypeServer::RTypeServer(unsigned short port, const std::string libsFolder)
     : _networkManager(std::make_unique<b12software::network::asio::AsioNetworkManager>()),
       _socket(),
       _clients(),
-      _rooms()
+      _rooms(),
+      _libsFolder(libsFolder)
 {
     if (!_networkManager)
         throw rtype::exception::RTypeServerException("Failed to initialize network manager", WHERE);
@@ -87,7 +88,7 @@ void rtype::RTypeServer::run()
     handleDatagrams();
     handleLiveness();
     handleLooping();
-    cleanRooms();
+    handleRooms();
 }
 
 void rtype::RTypeServer::handleDatagrams()
@@ -95,7 +96,8 @@ void rtype::RTypeServer::handleDatagrams()
     auto locketSocket = _socket.lock();
     if (!locketSocket)
         return;
-    while (locketSocket->hasPendingDatagrams()) {
+    auto start = std::chrono::high_resolution_clock::now();
+    while (locketSocket->hasPendingDatagrams() && (std::chrono::high_resolution_clock::now() - start) <= std::chrono::milliseconds(10)) {
         rtype::network::RTypeDatagram dg = locketSocket->receive();
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER] Received datagram from " + static_cast<std::string>(dg.getHostInfos()) + "(" + std::to_string(dg.getDatagramSize()) + " bytes)(code: " + std::to_string(dg.getType()) + ")");
         auto it = protocolMap.find(dg.getType());
@@ -297,7 +299,7 @@ void rtype::RTypeServer::createRoom(const std::string &name, unsigned char capac
 {
     if (capacity <= 0)
         throw exception::RTypeServerException("Invalid capacity", WHERE);
-    std::shared_ptr<Room> newRoom = std::make_shared<Room>();
+    std::shared_ptr<Room> newRoom = std::make_shared<Room>(_libsFolder);
     newRoom->setCapacity(capacity);
     newRoom->setGameRunning(false);
     newRoom->setHasPassword(hasPassword);
@@ -346,10 +348,28 @@ void rtype::RTypeServer::exitRoom(rtype::Client &client)
     }
 }
 
+void rtype::RTypeServer::handleRooms()
+{
+    updateRooms();
+    cleanRooms();
+}
+
+void rtype::RTypeServer::updateRooms()
+{
+    for (auto &room : _rooms) {
+        if (!(room->isGameRunning() || room->shouldGameRun()) && room->getSlotUsed() == room->getCapacity()) {
+            room->startGame();
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER] Starting game for room " + room->getName());
+        } else if (room->isGameRunning() || room->shouldGameRun()) {
+            room->syncGame(_socket);
+        }
+    }
+}
+
 void rtype::RTypeServer::cleanRooms()
 {
     _rooms.remove_if([](const std::shared_ptr<Room> &elem) {
-        if (elem->getSlotUsed() == 0) {
+        if (elem->getSlotUsed() == 0 && !elem->isGameRunning()) {
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER] Cleaning room " + elem->getName());
             return true;
         }
@@ -519,4 +539,39 @@ void rtype::RTypeServer::protocol116JoinRoomsDatagramHandler(rtype::network::RTy
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER][" + static_cast<std::string>(dg.getHostInfos()) + "][116] Room is not reachable " + room.name);
     }
     _socket.lock()->send(response);
+}
+
+void rtype::RTypeServer::protocol200ActionDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    try {
+        auto &client = getClientByHost(dg.getHostInfos());
+        auto lockedRoom = client.getRoom().lock();
+        if (lockedRoom) {
+            rtype::network::RTypeDatagramAction inputs;
+            dg.extract200ActionDatagram(inputs);
+            lockedRoom->setUsernameInputs(client.getUsername(), inputs);
+        }
+    } catch (exception::RTypeServerException &e) {}
+}
+
+void rtype::RTypeServer::protocol260OkGameEndedDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    try {
+        auto &client = getClientByHost(dg.getHostInfos());
+        client.setDatagram(network::T_250_END_GAME, Client::defaultDg);
+        if (client.getClientState() == CS_IN_GAME) {
+            client.setClientState(CS_IN_ROOM);
+        }
+    } catch (exception::RTypeServerException &e) {}
+}
+
+void rtype::RTypeServer::protocol280OkGameStartedDatagramHandler(rtype::network::RTypeDatagram dg)
+{
+    try {
+        auto &client = getClientByHost(dg.getHostInfos());
+        client.setDatagram(network::T_270_GAME_STARTING, Client::defaultDg);
+        if (client.getClientState() == CS_IN_ROOM) {
+            client.setClientState(CS_IN_GAME);
+        }
+    } catch (exception::RTypeServerException &e) {}
 }

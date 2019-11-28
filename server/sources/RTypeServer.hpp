@@ -32,8 +32,9 @@ namespace rtype {
         /*!
          * @brief ctor
          * @param port The port of the server to use
+         * @param libsFolder The folder containing entities and systems libs
          */
-        explicit RTypeServer(unsigned short port = 54321);
+        explicit RTypeServer(unsigned short port = 54321, std::string libsFolder = "./server");
         /*!
          * @brief dtor
          */
@@ -78,7 +79,7 @@ namespace rtype {
 
         static constexpr Client::Clock::duration lostConnectionDuration = std::chrono::milliseconds(2500);
         static constexpr Client::Clock::duration forceDisconnectDuration = std::chrono::milliseconds(5000);
-        static constexpr Client::Clock::duration timeBetweenDatagramsDuration = std::chrono::milliseconds(50);
+        static constexpr Client::Clock::duration timeBetweenDatagramsDuration = std::chrono::milliseconds(500);
 
     private:
         /*!
@@ -150,7 +151,16 @@ namespace rtype {
         void exitRoom(Client &client);
 
         /*!
-         * @brief Clean empty rooms by destroying them
+         * @brief Update room related infos
+         */
+        void handleRooms();
+
+        /*!
+         * @brief Update the rooms with a game running and start the ones who need it (room full)
+         */
+        void updateRooms();
+        /*!
+         * @brief Clean rooms with no user in it and no game running
          */
         void cleanRooms();
 
@@ -201,6 +211,21 @@ namespace rtype {
          */
         void protocol116JoinRoomsDatagramHandler(rtype::network::RTypeDatagram dg);
         /*!
+         * @brief A handler called when an action datagram is received
+         * @param dg the received datagram
+         */
+        void protocol200ActionDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler called when a ok game ended datagram is received
+         * @param dg the received datagram
+         */
+        void protocol260OkGameEndedDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler called when a ok game started datagram is received
+         * @param dg the received datagram
+         */
+        void protocol280OkGameStartedDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
          * @brief Default handler called when an unknown datagram type comes in
          * @param dg the received datagram
          */
@@ -222,6 +247,8 @@ namespace rtype {
 
         b12software::containers::ThreadSafeList<rtype::Client> _clients; /*!< Connected clients */
         std::list<std::shared_ptr<rtype::Room>> _rooms; /*!< Existing rooms */
+
+        const std::string _libsFolder; /*< The path of the libraries folder */
     };
 }
 

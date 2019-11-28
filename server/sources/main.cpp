@@ -10,7 +10,6 @@
 #include <csignal>
 #include <thread>
 #include <memory>
-#include <iostream>
 #include "config/Configuration.hpp"
 #include "exception/B12SoftwareException.hpp"
 #include "logger/DefaultLogger.hpp"
@@ -28,8 +27,7 @@ namespace {
 
 void runMain(const rtype::Configuration &config)
 {
-    unsigned short port = config.getPort();
-    auto server = std::make_unique<rtype::RTypeServer>(port);
+    auto server = std::make_unique<rtype::RTypeServer>(config.getPort(), config.getLibsFolder());
 
     while (gSignalStatus == 0) {
         server->run();
