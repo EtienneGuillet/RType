@@ -1069,4 +1069,19 @@ class ecs::components::ColliderComponent {
 
 ecs::AComponent <|-- ecs::components::ColliderComponent
 
+class ecs::components::RigidbodyComponent {
+    + RigidbodyComponent(float ups = 1, const b12software::maths::Vector2D &direction = b12software::maths::Vector2D())
+    + ~RigidbodyComponent()
+    + RigidbodyComponent(const RigidbodyComponent &other)
+    + RigidbodyComponent &operator=(const RigidbodyComponent &other)
+    + const b12software::maths::Vector2D &getDirection() const
+    + void setDirection(const b12software::maths::Vector2D &direction)
+    + float getUps() const
+    + void setUps(float ups)
+    - b12software::maths::Vector2D _direction
+    - float _ups
+}
+
+ecs::AComponent <|-- ecs::components::RigidbodyComponent
+
 @enduml
