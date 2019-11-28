@@ -51,7 +51,7 @@ void systems::WeaponSystem::tick(long deltatime)
             lockedPlayer->setCharge(0);
             if (shotLevel == 0)
                 return;
-            auto parentTr = std::dynamic_pointer_cast<ecs::components::TransformComponent>(lockedEntity->getComponent(ecs::components::TransformComponent).lock());
+            auto parentTr = std::dynamic_pointer_cast<ecs::components::TransformComponent>(lockedEntity->getComponent(ecs::components::TransformComponent::Version).lock());
             auto basePos = (parentTr) ? parentTr->getPosition() : b12software::maths::Vector3D(0, 0, 0);
             std::shared_ptr<ecs::IEntity> shotEntity = std::make_shared<ecs::Entity>("playerShot");
             auto networkIdComp = std::make_shared<ecs::components::NetworkIdentityComponent>(shotEntity->getID());
