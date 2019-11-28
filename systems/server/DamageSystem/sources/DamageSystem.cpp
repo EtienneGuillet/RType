@@ -19,7 +19,7 @@ const ecs::Version systems::DamageSystem::Version = ecs::Version("SYSTEM_DamageS
 
 
 systems::DamageSystem::DamageSystem()
-    : _elapsedTime(0), _computeEvery(200)
+    : ASystem(), _elapsedTime(0), _computeEvery(200)
 {
 
 }

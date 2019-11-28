@@ -46,16 +46,38 @@ namespace ecs {
              * @brief Get the charge of this player
              * @return the charge of the player
              */
-            uint8_t getCharge() const;
+            float getCharge() const;
             /*!
              * @brief Set the charge of this player weapon
              * @param charge the new charge of the weapon
              */
-            void setCharge(uint8_t charge);
+            void setCharge(float charge);
+            /*!
+             * @brief Is the shot button pressed
+             * @return true or false
+             */
+            bool isShotPressed() const;
+            /*!
+             * @brief Set the shot button pressed
+             * @param shotPressed is it pressed
+             */
+            void setShotPressed(bool shotPressed);
+            /*!
+             * @brief Was the shot button released
+             * @return true if was released false otherwise
+             */
+            bool isReleased() const;
+            /*!
+             * @brief Set was released
+             * @param released true if was released false otherwise
+             */
+            void setReleased(bool released);
 
         private:
             uint32_t _score; /*!< The score of this player */
-            uint8_t _charge; /*!< The charge of this player */
+            float _charge; /*!< The charge of this player */
+            bool _shotPressed; /*!< Is the shot button pressed */
+            bool _released; /*!< Was the shot button just released */
         };
     }
 }

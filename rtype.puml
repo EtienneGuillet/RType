@@ -1115,10 +1115,16 @@ class ecs::components::PlayerComponent {
     + PlayerComponent &operator=(const PlayerComponent &rhs)
     + uint32_t getScore() const
     + void setScore(uint32_t score)
-    + uint8_t getCharge() const
-    + void setCharge(uint8_t charge)
+    + float getCharge() const
+    + void setCharge(float charge)
+    + bool isShotPressed() const
+    + void setShotPressed(bool shotPressed)
+    + bool isReleased() const
+    + void setReleased(bool released)
     - uint32_t _score
-    - uint8_t _charge
+    - float _charge
+    - bool _shotPressed
+    - bool _released
 }
 
 ecs::AComponent <|-- ecs::components::PlayerComponent
@@ -1235,4 +1241,29 @@ class systems::LifeSystemApi {
 
 ecs::ISystemAPI <|-- systems::LifeSystemApi
 
+class systems::NetworkSyncSystem {
+    + NetworkSyncSystem()
+    + ~NetworkSyncSystem()
+    + NetworkSyncSystem(const NetworkSyncSystem &other)
+    + NetworkSyncSystem &operator=(const NetworkSyncSystem &rhs)
+    + {static} const ecs::Version Version
+    + void setGameInfosPtr(std::weak_ptr<rtype::GameInfos> ptr)
+    + bool areGameInfosSet() const
+    - std::weak_ptr<rtype::GameInfos> _ptr
+    - bool _valid
+    - long _elapsedTime
+    - long _timeBetweenSync
+}
+
+ecs::ASystem <|-- systems::NetworkSyncSystem
+
+class systems::NetworkSyncSystemApi {
+    + NetworkSyncSystemApi()
+    + ~NetworkSyncSystemApi()
+    + NetworkSyncSystemApi(const NetworkSyncSystemApi &other)
+    + NetworkSyncSystemApi &operator=(const NetworkSyncSystemApi &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ISystemAPI <|-- systems::NetworkSyncSystemApi
 @enduml

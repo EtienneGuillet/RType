@@ -8,6 +8,8 @@
 /* Created the 26/11/2019 at 05:12 by julian.frabel@epitech.eu */
 
 #include <algorithm>
+#include <rtype/game/RTypeEntityType.hpp>
+
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -252,7 +254,7 @@ void rtype::Room::syncDisplayLiving(rtype::Client &client,
         if (!player.isUsed())
             continue;
         auto id = player.getId();
-        if (display) {
+        if (display && displayData.type != rtype::ET_UNKNOWN) {
             displayData.entityId = id;
             displayData.type = player.getType();
             auto position = player.getPosition();
@@ -275,7 +277,7 @@ void rtype::Room::syncDisplayLiving(rtype::Client &client,
     std::scoped_lock lock(entities);
     for (auto &entity : entities) {
         auto id = entity.getId();
-        if (display) {
+        if (display && displayData.type != rtype::ET_UNKNOWN) {
             displayData.entityId = id;
             displayData.type = entity.getType();
             auto position = entity.getPosition();

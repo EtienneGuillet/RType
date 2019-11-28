@@ -15,6 +15,8 @@ ecs::components::PlayerComponent::PlayerComponent(uint32_t score, uint8_t charge
     : AComponent()
     , _score(score)
     , _charge(charge)
+    , _shotPressed(false)
+    , _released(false)
 {
 
 }
@@ -29,12 +31,12 @@ void ecs::components::PlayerComponent::setScore(uint32_t score)
     _score = score;
 }
 
-uint8_t ecs::components::PlayerComponent::getCharge() const
+float ecs::components::PlayerComponent::getCharge() const
 {
     return _charge;
 }
 
-void ecs::components::PlayerComponent::setCharge(uint8_t charge)
+void ecs::components::PlayerComponent::setCharge(float charge)
 {
     _charge = charge;
 }
@@ -42,4 +44,28 @@ void ecs::components::PlayerComponent::setCharge(uint8_t charge)
 const ecs::Version &ecs::components::PlayerComponent::getVersion() const
 {
     return Version;
+}
+
+bool ecs::components::PlayerComponent::isShotPressed() const
+{
+    return _shotPressed;
+}
+
+void ecs::components::PlayerComponent::setShotPressed(bool shotPressed)
+{
+    if (_shotPressed && !shotPressed)
+        _released = true;
+    else
+        _released = false;
+    _shotPressed = shotPressed;
+}
+
+bool ecs::components::PlayerComponent::isReleased() const
+{
+    return _released;
+}
+
+void ecs::components::PlayerComponent::setReleased(bool released)
+{
+    _released = released;
 }
