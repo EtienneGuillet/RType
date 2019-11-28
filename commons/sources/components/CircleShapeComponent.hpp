@@ -8,7 +8,7 @@
 #ifndef _CIRCLE_SHAPE_COMPONENT_HPP_
 #define _CIRCLE_SHAPE_COMPONENT_HPP_
 
-#include "ecs/IComponent/IComponent.hpp"
+#include "ecs/IComponent/AComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -22,7 +22,7 @@ namespace rtype {
      * @class CircleShapeComponent
      * @brief This class is a component allowing to display a circle.
      */
-    class CircleShapeComponent : public ecs::IComponent {
+    class CircleShapeComponent : public ecs::AComponent {
 
     public:
         static const ecs::Version Version;
