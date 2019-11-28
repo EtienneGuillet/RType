@@ -27,7 +27,7 @@ namespace systems {
 
     public:
         void tick(long deltatime) override;
-        const ecs::Version &getType() const override;
+        [[nodiscard]] const ecs::Version &getType() const override;
         void start() override;
         void stop() override;
 
