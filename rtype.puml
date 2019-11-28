@@ -1084,4 +1084,19 @@ class ecs::components::RigidbodyComponent {
 
 ecs::AComponent <|-- ecs::components::RigidbodyComponent
 
+class ecs::components::PlayerComponent {
+    + PlayerComponent(uint32_t score = 0, uint8_t charge = 0)
+    + ~PlayerComponent()
+    + PlayerComponent(const PlayerComponent &other)
+    + PlayerComponent &operator=(const PlayerComponent &rhs)
+    + uint32_t getScore() const
+    + void setScore(uint32_t score)
+    + uint8_t getCharge() const
+    + void setCharge(uint8_t charge)
+    - uint32_t _score
+    - uint8_t _charge
+}
+
+ecs::AComponent <|-- ecs::components::PlayerComponent
+
 @enduml
