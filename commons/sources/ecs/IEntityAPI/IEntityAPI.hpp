@@ -34,6 +34,12 @@ namespace ecs {
          * @return A new entity.
          */
         [[nodiscard]] virtual std::shared_ptr<IEntity> createNewEntity() const = 0;
+
+        /*!
+         * @brief Check if the entity is a spawnable monster.
+         * @return True if the entity is a spawnable monster false otherwise.
+         */
+        [[nodiscard]] virtual bool isSpawnable() const = 0;
     };
 } /* ecs */
 

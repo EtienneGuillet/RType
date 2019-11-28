@@ -618,6 +618,7 @@ interface ecs::IEntityAPI {
     + {abstract} ~IEntityAPI() = default
     + {abstract} [[nodiscard]] const Version &getVersion() const
     + {abstract} [[nodiscard]] std::shared_ptr<IEntity> createNewEntity()
+    + {abstract} [[nodiscard]] bool isSpawnable() const
 }
 
 interface ecs::ISystem {
