@@ -20,7 +20,7 @@ namespace ecs {
          * @class WeaponComponent
          * @brief A component for a weapon
          */
-        class WeaponComponent : ecs::AComponent {
+        class WeaponComponent : public ecs::AComponent {
         public:
             static const ecs::Version Version;
             const ecs::Version &getVersion() const override;

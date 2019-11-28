@@ -20,7 +20,7 @@ namespace ecs {
          * @class NetworkIdentityComponent
          * @brief A network identity component
          */
-        class NetworkIdentityComponent : ecs::AComponent {
+        class NetworkIdentityComponent : public ecs::AComponent {
         public:
             static const ecs::Version Version;
             const ecs::Version &getVersion() const override;
