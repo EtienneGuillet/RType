@@ -775,7 +775,7 @@ ecs::IWorld <|-- ecs::World
 std::enable_shared_from_this <|-- ecs::World
 
 class rtype::RTypeServer {
-    + RTypeServer(unsigned short port = 54321)
+    + RTypeServer(unsigned short port = 54321, const std::string libsFolder = "./server")
     + ~RTypeServer()
     + void run()
     - void handleDatagrams()
@@ -838,10 +838,12 @@ class rtype::Configuration {
     + Configuration &operator=(const Configuration &rhs)
     + bool shouldDisplayHelp() const
     + unsigned short getPort() const
+    + std::string &getLibsFolder() const
     + void displayHelp(bool onError = false) const
     + bool hasError() const
     + void displayErrors() const
     - std::string _binaryName
+    - std::string _libsFolder
     - bool _help
     - unsigned short _port
     - std::vector<std::string> _errors
@@ -887,7 +889,7 @@ enum rtype::ClientState {
 }
 
 class rtype::Room {
-    + Room()
+    + Room(const std::string libsFolder)
     + ~Room()
     + const std::string &getName() const
     + void setName(const std::string &name)
@@ -913,7 +915,7 @@ class rtype::Room {
     - void syncDisplayLiving(Client &client, const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket, bool living, bool display)
     - void syncScore(Client &client, const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket)
     - void syncCharge(Client &client, const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket)
-    - {static} static void gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos)
+    - {static} void gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos, const std::string libsFolder)
     - std::string _name
     - unsigned char _capacity
     - unsigned char _slotUsed
@@ -926,6 +928,7 @@ class rtype::Room {
     - std::map<std::string, int> _clientPlayerMap
     - std::atomic_bool _threadRunning
     - std::unique_ptr<std::thread> _thread
+    - const std::string _libsFolder
 }
 
 enum rtype::RTypeEntityType {

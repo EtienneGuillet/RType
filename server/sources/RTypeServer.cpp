@@ -60,7 +60,8 @@ rtype::RTypeServer::RTypeServer(unsigned short port, const std::string libsFolde
     : _networkManager(std::make_unique<b12software::network::asio::AsioNetworkManager>()),
       _socket(),
       _clients(),
-      _rooms()
+      _rooms(),
+      _libsFolder(libsFolder)
 {
     if (!_networkManager)
         throw rtype::exception::RTypeServerException("Failed to initialize network manager", WHERE);
@@ -298,7 +299,7 @@ void rtype::RTypeServer::createRoom(const std::string &name, unsigned char capac
 {
     if (capacity <= 0)
         throw exception::RTypeServerException("Invalid capacity", WHERE);
-    std::shared_ptr<Room> newRoom = std::make_shared<Room>();
+    std::shared_ptr<Room> newRoom = std::make_shared<Room>(_libsFolder);
     newRoom->setCapacity(capacity);
     newRoom->setGameRunning(false);
     newRoom->setHasPassword(hasPassword);
