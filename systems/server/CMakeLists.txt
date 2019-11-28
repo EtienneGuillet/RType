@@ -1,2 +1,3 @@
 add_subdirectory(MovementSystem)
 add_subdirectory(DamageSystem)
+add_subdirectory(LifeSystem)

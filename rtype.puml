@@ -1168,6 +1168,8 @@ class ecs::components::PointAwarderComponent {
     - int _points
 }
 
+ecs::AComponent <|-- ecs::components::PointAwarderComponent
+
 class systems::MovementSystem {
     + MovementSystem()
     + ~MovementSystem()
@@ -1211,5 +1213,25 @@ class systems::DamageSystemApi {
 }
 
 ecs::ISystemAPI <|-- systems::DamageSystemApi
+
+class systems::LifeSystem {
+    + LifeSystem()
+    + ~LifeSystem()
+    + LifeSystem(const LifeSystem &other)
+    + LifeSystem &operator=(const LifeSystem &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ASystem <|-- systems::LifeSystem
+
+class systems::LifeSystemApi {
+    + LifeSystemApi()
+    + ~LifeSystemApi()
+    + LifeSystemApi(const LifeSystemApi &other)
+    + LifeSystemApi &operator=(const LifeSystemApi &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ISystemAPI <|-- systems::LifeSystemApi
 
 @enduml
