@@ -14,7 +14,7 @@ void rtype::EntitiesState::setPos(std::uint32_t x, std::uint32_t y, std::uint32_
 
 b12software::maths::Vector3D rtype::EntitiesState::getPos() const
 {
-    b12software::maths::Vector3D vector3D(_posX, _posY, _posY);
+    b12software::maths::Vector3D vector3D(_posX, _posY, _posZ);
     return vector3D;
 }
 
@@ -47,7 +47,7 @@ void rtype::EntitiesState::setId(std::uint32_t id)
     _id = id;
 }
 
-int rtype::EntitiesState::getId() const
+std::uint32_t rtype::EntitiesState::getId() const
 {
     return _id;
 }
@@ -57,7 +57,7 @@ void rtype::EntitiesState::setType(std::uint32_t type)
     _type = type;
 }
 
-int rtype::EntitiesState::getType() const
+std::uint32_t rtype::EntitiesState::getType() const
 {
     return _type;
 }
