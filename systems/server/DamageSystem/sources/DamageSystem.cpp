@@ -77,6 +77,8 @@ void systems::DamageSystem::computeDamages() const
             return false;
         }), damageableEntities.end());
 
+        std::vector<int> toDelete;
+
         for (auto &damagerEntity : damagerEntities) {
             auto lockedDamagerEntity = damagerEntity.lock();
             if (!lockedDamagerEntity)
@@ -98,12 +100,21 @@ void systems::DamageSystem::computeDamages() const
                 auto damagedCol = std::dynamic_pointer_cast<ecs::components::ColliderComponent>(lockedDamagedEntity->getComponent(ecs::components::ColliderComponent::Version).lock());
                 if (!damagedDmg || !damagedCol)
                     continue;
+                if (!(damagerDmg->getDamageLayer() & damagedDmg->getDamageLayer()))
+                    continue;
                 auto damagedBasePos = (damagedTr) ? damagedTr->getPosition() : b12software::maths::Vector3D(0, 0, 0);
                 auto damagedColWorldPos = b12software::maths::Vector2D(damagedBasePos.x, damagedBasePos.y) + damagedCol->getOffset();
                 if (collide(damagerColWorldPos, damagerCol->getSize(), damagedColWorldPos, damagedCol->getSize())) {
                     damagedDmg->damage(damagerDmg->getDamages());
+                    if (damagerDmg->isDestroyOnHit()) {
+                        toDelete.push_back(lockedDamagerEntity->getID());
+                        break;
+                    }
                 }
             }
+        }
+        for (auto &id : toDelete) {
+            lockedWorld->popEntity(id);
         }
     }
 }

@@ -11,10 +11,11 @@
 
 const ecs::Version ecs::components::DamagerComponent::Version = ecs::Version("COMPONENT_DamagerComponent", 0, 0, 1, 0);
 
-ecs::components::DamagerComponent::DamagerComponent(uint32_t damages, bool destroyOnHit)
+ecs::components::DamagerComponent::DamagerComponent(uint32_t damages, bool destroyOnHit, int layer)
     : AComponent()
     , _damages(damages)
     , _destroyOnHit(destroyOnHit)
+    , _damageLayer(layer)
 {
 
 }
@@ -42,4 +43,14 @@ void ecs::components::DamagerComponent::setDestroyOnHit(bool destroyOnHit)
 const ecs::Version &ecs::components::DamagerComponent::getVersion() const
 {
     return Version;
+}
+
+int ecs::components::DamagerComponent::getDamageLayer() const
+{
+    return _damageLayer;
+}
+
+void ecs::components::DamagerComponent::setDamageLayer(int damageLayer)
+{
+    _damageLayer = damageLayer;
 }

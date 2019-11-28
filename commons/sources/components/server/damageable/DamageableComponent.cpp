@@ -11,12 +11,13 @@
 
 const ecs::Version ecs::components::DamageableComponent::Version = ecs::Version("COMPONENT_DamageableComponent", 0, 0, 1, 0);
 
-ecs::components::DamageableComponent::DamageableComponent(int hp, int maxHp, long invulnerabilityPeriod)
+ecs::components::DamageableComponent::DamageableComponent(int hp, int maxHp, long invulnerabilityPeriod, int damageLayer)
     : AComponent()
     , _hp(hp)
     , _maxHp(maxHp)
     , _invulnerabilityPeriodAfterDamage(invulnerabilityPeriod)
     , _invulnerabilityRemaining(0)
+    , _damageLayer(damageLayer)
 {
 
 }
@@ -97,4 +98,14 @@ void ecs::components::DamageableComponent::setInvulnerabilityRemaining(long invu
 bool ecs::components::DamageableComponent::isInvulnerable() const
 {
     return _invulnerabilityRemaining > 0;
+}
+
+int ecs::components::DamageableComponent::getDamageLayer() const
+{
+    return _damageLayer;
+}
+
+void ecs::components::DamageableComponent::setDamageLayer(int damageLayer)
+{
+    _damageLayer = damageLayer;
 }

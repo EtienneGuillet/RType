@@ -1023,10 +1023,13 @@ class ecs::components::DamageableComponent {
     + long getInvulnerabilityRemaining() const
     + void setInvulnerabilityRemaining(long invulnerabilityRemaining)
     + bool isInvulnerable() const
+    + int getDamageLayer() const
+    + void setDamageLayer(int damageLayer)
     - int _hp
     - int _maxHp
     - long _invulnerabilityPeriodAfterDamage
     - long _invulnerabilityRemaining
+    - int _damageLayer
 }
 
 ecs::AComponent <|-- ecs::components::DamageableComponent
@@ -1125,8 +1128,11 @@ class ecs::components::DamagerComponent {
     + void setDamages(uint32_t damages)
     + bool isDestroyOnHit() const
     + void setDestroyOnHit(bool destroyOnHit)
+    + int getDamageLayer() const
+    + void setDamageLayer(int damageLayer)
     - uint32_t _damages
     - bool _destroyOnHit
+    - int _damageLayer
 }
 
 ecs::AComponent <|-- ecs::components::DamagerComponent

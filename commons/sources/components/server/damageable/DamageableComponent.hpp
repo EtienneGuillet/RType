@@ -26,7 +26,7 @@ namespace ecs {
             const ecs::Version &getVersion() const override;
 
         public:
-            explicit DamageableComponent(int hp = 3, int maxHp = 3, long invulnerabilityPeriod = 0);
+            explicit DamageableComponent(int hp = 3, int maxHp = 3, long invulnerabilityPeriod = 0, int damageLayer = 0xffff);
             ~DamageableComponent() = default;
             DamageableComponent(const DamageableComponent &other) = default;
             DamageableComponent &operator=(const DamageableComponent &rhs) = default;
@@ -95,12 +95,23 @@ namespace ecs {
              * @return true if invulnerable
              */
             bool isInvulnerable() const;
+            /*!
+             * @brief Get the damage layer mask
+             * @return the damage layer mask
+             */
+            int getDamageLayer() const;
+            /*!
+             * @brief Set the damage layer mask
+             * @param damageLayer the damage layer mask
+             */
+            void setDamageLayer(int damageLayer);
 
         private:
             int _hp; /*!< The hp of this damageable component */
             int _maxHp; /*!< The maximal amount of hp */
             long _invulnerabilityPeriodAfterDamage; /*!< Amount of time after damage in ms for invulnerability */
             long _invulnerabilityRemaining; /*!< Amount of time remaining in ms for invulnerability */
+            int _damageLayer; /*!< The damage layer 0b1 allies 0b10 enemies */
         };
     }
 }

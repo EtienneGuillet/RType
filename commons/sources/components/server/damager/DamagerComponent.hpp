@@ -26,7 +26,7 @@ namespace ecs {
             const ecs::Version &getVersion() const override;
 
         public:
-            DamagerComponent(uint32_t damages = 1, bool destroyOnHit = true);
+            DamagerComponent(uint32_t damages = 1, bool destroyOnHit = true, int layer = 0xffff);
             ~DamagerComponent() = default;
             DamagerComponent(const DamagerComponent &other) = default;
             DamagerComponent &operator=(const DamagerComponent &rhs) = default;
@@ -52,10 +52,21 @@ namespace ecs {
              * @param destroyOnHit destroy on hit
              */
             void setDestroyOnHit(bool destroyOnHit);
+            /*!
+             * @brief Get the damage layer mask
+             * @return the damage layer mask
+             */
+            int getDamageLayer() const;
+            /*!
+             * @brief Set the damage layer mask
+             * @param damageLayer the damage layer mask
+             */
+            void setDamageLayer(int damageLayer);
 
         private:
             uint32_t _damages; /*!< The damages inflicted by this entity */
             bool _destroyOnHit; /*!< Should the entity be deleted on hit */
+            int _damageLayer; /*!< The damage layer 0b1 allies 0b10 enemies */
         };
     }
 }
