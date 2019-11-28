@@ -25,4 +25,7 @@ if (UNIX)
 	)
 endif (UNIX)
 
+file(MAKE_DIRECTORY ${CLIENT_ENTITIES_FOLDER})
+file(MAKE_DIRECTORY ${CLIENT_SYSTEMS_FOLDER})
+
 add_subdirectory(tests)
