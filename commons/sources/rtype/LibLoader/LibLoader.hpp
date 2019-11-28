@@ -6,6 +6,7 @@
 #include <ecs/IECS/IECS.hpp>
 #include <filesystem>
 #include <map>
+#include "where.hpp"
 #include <ecs/DLLoader/DLLoader.hpp>
 #include <rtype/FsNotifier/FsNotifier.hpp>
 /*!

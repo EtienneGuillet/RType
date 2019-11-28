@@ -12,8 +12,7 @@
 
 #include <exception>
 #include <string>
-
-#define WHERE (std::string(__FILE__) + " " + std::to_string(__LINE__))
+#include "where.hpp"
 
 /*!
  * @namespace b12software
