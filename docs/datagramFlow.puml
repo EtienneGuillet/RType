@@ -1,0 +1,103 @@
+@startuml
+title RFC 69420 - Datagram Flow
+
+== Connection ==
+
+Client -> Server : Datagram 100
+alt successful
+    Server -> Client : Datagram 101
+else malformed packet
+    Server -> Client : Datagram 302
+else username already used
+    Server -> Client : Datagram 303
+end
+
+== Check connectivity ==
+alt Client->Server
+    Client -> Server : Datagram 102
+    Server -> Client : Datagram 103
+else Server->Client
+    Server -> Client : Datagram 102
+    Client -> Server : Datagram 103
+end
+
+== Disconnect ==
+Client -> Server : Datagram 104
+Server -> Client : Datagram 105
+alt was in room
+    Server -> OtherClientsInRoom : Datagram 106
+    OtherClientsInRoom -> Server : Datagram 107
+end
+
+== Get room list ==
+Client -> Server : Datagram 110
+alt successful
+    Server -> Client : Datagram 111
+else client not logged
+    Server -> Client : Datagram 309
+end
+
+== Create a room ==
+Client -> Server : Datagram 112
+alt successful
+    Server -> Client : Datagram 113
+else client not logged
+    Server -> Client : Datagram 309
+else malformed packet
+    Server -> Client : Datagram 302
+else room name already used
+    Server -> Client : Datagram 304
+end
+
+== Quit room / Game ==
+Client -> Server : Datagram 114
+alt successful
+    Server -> Client : Datagram 115
+else client not logged
+    Server -> Client : Datagram 309
+else not in a room/game
+    Server -> Client : Datagram 305
+end
+Server -> OtherClientsInRoom : Datagram 106
+OtherClientsInRoom -> Server : Datagram 107
+
+== Join room ==
+Client -> Server : Datagram 116
+alt successful
+    Server -> Client : Datagram 117
+else client not logged
+    Server -> Client : Datagram 309
+else packet malformed
+    Server -> Client : Datagram 302
+else room not found
+    Server -> Client : Datagram 306
+else invalid room password
+    Server -> Client : Datagram 307
+else room full
+    Server -> Client : Datagram 308
+end
+Server -> OtherClientsInRoom : Datagram 108
+OtherClientsInRoom -> Server : Datagram 109
+
+== Start game ==
+Server -> Client : Datagram 270
+Client -> Server : Datagram 280
+
+== End game ==
+Server -> Client : Datagram 250
+Client -> Server : Datagram 260
+
+== In game datagrams ==
+alt in no order/sequence/number
+    Server -> Client : Datagram 210
+    Server -> Client : Datagram 220
+    Server -> Client : Datagram 230
+    Server -> Client : Datagram 240
+    Client -> Server : Datagram 200
+end
+alt client crash/disconnect
+    Server -> OtherClientsInRoom : Datagram 106
+    OtherClientsInRoom -> Server : Datagram 107
+end
+
+@enduml

@@ -8,68 +8,62 @@
 /* Created the 07/11/2019 at 18:05 by julian.frabel@epitech.eu */
 
 #include <csignal>
-#include <iostream>
+#include <thread>
 #include <memory>
-#include <ecs/IWorld/IWorld.hpp>
-#include <ecs/IECS/IECS.hpp>
-#include <ecs/IECS/ECS.hpp>
-#include <filesystem>
-#include <exception/B12SoftwareException.hpp>
-#include <rtype/LibLoader/LibLoader.hpp>
+#include "config/Configuration.hpp"
+#include "exception/B12SoftwareException.hpp"
 #include "logger/DefaultLogger.hpp"
 #include "logger/StandardLogger.hpp"
-
-namespace fs = std::filesystem;
+#include "RTypeServer.hpp"
 
 namespace {
     volatile std::sig_atomic_t gSignalStatus;
-}
 
-void signalHandler(int s)
-{
-    std::cout << "Caught signal " << s << std::endl;
-    gSignalStatus = s;
-}
-
-void updateWorld(std::shared_ptr<ecs::IWorld> &world)
-{
-    static auto start = std::chrono::system_clock::now();
-    static auto end = start;
-
-    end = std::chrono::system_clock::now();
-    auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    if (deltaTime >= 10) {
-        start = std::chrono::system_clock::now();
-        world->tick(deltaTime);
+    void signalHandler(int s)
+    {
+        gSignalStatus = s;
     }
 }
 
-int runMain(int ac, char **av)
+void runMain(const rtype::Configuration &config)
 {
-    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
-    if (ac < 2) {
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelFatal, std::string("Please specify server dynamic libraries folder: ") + av[0] + " folderPath");
-        return 84;
-    }
-    std::signal(SIGINT, signalHandler);
+    auto server = std::make_unique<rtype::RTypeServer>(config.getPort(), config.getLibsFolder());
 
-    try {
-        auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
-        auto world = ecs->createWorld();
-        auto libLoader = rtype::LibLoader(ecs, world, std::string(av[1]));
-
-        while (gSignalStatus == 0) {
-            libLoader.checkForChanges();
-            updateWorld(world);
-        }
-        world = std::shared_ptr<ecs::IWorld>();
-        ecs = std::unique_ptr<ecs::IECS>();
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << std::endl << std::flush;
+    while (gSignalStatus == 0) {
+        server->run();
+        std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
 }
 
 int main(int ac, char **av)
 {
-    return runMain(ac, av);
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
+    std::signal(SIGINT, signalHandler);
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Logger and signal handler set");
+
+    rtype::Configuration config(ac, av);
+    if (config.hasError()) {
+        config.displayErrors();
+        config.displayHelp(true);
+        return 84;
+    } else if (config.shouldDisplayHelp()) {
+        config.displayHelp();
+        return 0;
+    }
+
+    try {
+        runMain(config);
+    } catch (b12software::exception::B12SoftwareException &e) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelFatal, e.what());
+        return 84;
+    } catch (std::exception &e) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelFatal, e.what());
+        return 84;
+    } catch (...) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelFatal, "An unknown error occurred.");
+        return 84;
+    }
+
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Exit gracefully");
+    return 0;
 }

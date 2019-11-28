@@ -543,3 +543,18 @@ Test(initPacket, T_308_ROOM_FULL,
     cr_assert(compareArrays(expected, static_cast<const unsigned char *>(datagram.getData()), 2));
     cr_assert_eq(datagram.getType(), rtype::network::T_308_ROOM_FULL);
 }
+
+Test(initPacket, T_309_OPERATION_NOT_PERMITTED,
+     .timeout=10,
+     .description="Test the serialisation of the T_309_OPERATION_NOT_PERMITTED packet",
+     .init=init,
+     .fini=fini
+)
+{
+    rtype::network::RTypeDatagram datagram;
+    datagram.initSingleOpCodeDatagram(rtype::network::T_309_OPERATION_NOT_PERMITTED);
+    const unsigned char expected[] = {0x1, 0x35};
+    cr_assert_eq(datagram.getDatagramSize(), 2);
+    cr_assert(compareArrays(expected, static_cast<const unsigned char *>(datagram.getData()), 2));
+    cr_assert_eq(datagram.getType(), rtype::network::T_309_OPERATION_NOT_PERMITTED);
+}
