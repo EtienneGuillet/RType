@@ -534,7 +534,7 @@ abstract ecs::AComponent {
     - std::weak_ptr<IEntity> _entity
 }
 
-class ecs::TransformComponent {
+class ecs::components::TransformComponent {
     + TransformComponent(const Vector3 &position, const Vector2 &rotation, const Vector2 &scale)
     + TransformComponent(const TransformComponent &other)
     + TransformComponent &operator=(const TransformComponent &rhs)
@@ -730,7 +730,7 @@ ecs::IECS <|-- ecs::ECS
 
 ecs::IComponent <|-- ecs::AComponent
 
-ecs::AComponent <|-- ecs::TransformComponent
+ecs::AComponent <|-- ecs::components::TransformComponent
 
 ecs::IEntity <|-- ecs::Entity
 
