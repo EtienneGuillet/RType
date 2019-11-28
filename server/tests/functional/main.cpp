@@ -202,7 +202,7 @@ int main()
     }
     socket1->bind(30001);
     socket2->bind(30002);
-    b12software::network::HostInfos serverHost= {"127.0.0.1", 8080};
+    b12software::network::HostInfos serverHost= {"127.0.0.1", 54321};
     connect(serverHost, socket1, "julian");
     connect(serverHost, socket2, "julian2");
     getRooms(serverHost, socket1);

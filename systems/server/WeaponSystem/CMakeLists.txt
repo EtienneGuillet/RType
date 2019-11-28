@@ -12,3 +12,8 @@ target_include_directories(
         ${PROJECT_SOURCE_DIR}/commons/sources
         sources/
 )
+
+add_custom_command(TARGET weapon_system POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:weapon_system> ${SERVER_SYSTEMS_FOLDER}
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:weapon_system> ${CLIENT_SYSTEMS_FOLDER}
+)
