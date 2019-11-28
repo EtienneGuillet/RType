@@ -26,7 +26,7 @@ namespace ecs {
             const ecs::Version &getVersion() const override;
 
         public:
-            explicit DamageableComponent(int hp = 3, int maxHp = 3);
+            explicit DamageableComponent(int hp = 3, int maxHp = 3, long invulnerabilityPeriod = 0);
             ~DamageableComponent() = default;
             DamageableComponent(const DamageableComponent &other) = default;
             DamageableComponent &operator=(const DamageableComponent &rhs) = default;
@@ -70,10 +70,37 @@ namespace ecs {
              * @return maxHp
              */
             int getMaxHp() const;
+            /*!
+             * @brief Get invulnerability period
+             * @return the invulnerability period in ms
+             */
+            long getInvulnerabilityPeriodAfterDamage() const;
+            /*!
+             * @brief Set the invulnerability period
+             * @param invulnerabilityPeriodAfterDamage invulnerability period in ms
+             */
+            void setInvulnerabilityPeriodAfterDamage(long invulnerabilityPeriodAfterDamage);
+            /*!
+             * @brief Get invulnerability time remaining in ms
+             * @return the invulnerability period remaining in ms
+             */
+            long getInvulnerabilityRemaining() const;
+            /*!
+             * @brief Set the invulnerability remaining in seconds
+             * @param invulnerabilityRemaining invulnerability remaining in ms
+             */
+            void setInvulnerabilityRemaining(long invulnerabilityRemaining);
+            /*!
+             * @brief Check if is currently invulnerable
+             * @return true if invulnerable
+             */
+            bool isInvulnerable() const;
 
         private:
             int _hp; /*!< The hp of this damageable component */
             int _maxHp; /*!< The maximal amount of hp */
+            long _invulnerabilityPeriodAfterDamage; /*!< Amount of time after damage in ms for invulnerability */
+            long _invulnerabilityRemaining; /*!< Amount of time remaining in ms for invulnerability */
         };
     }
 }

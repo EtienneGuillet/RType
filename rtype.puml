@@ -1018,8 +1018,15 @@ class ecs::components::DamageableComponent {
     + int getHp() const
     + bool isAlive() const
     + int getMaxHp() const
+    + long getInvulnerabilityPeriodAfterDamage() const
+    + void setInvulnerabilityPeriodAfterDamage(long invulnerabilityPeriodAfterDamage)
+    + long getInvulnerabilityRemaining() const
+    + void setInvulnerabilityRemaining(long invulnerabilityRemaining)
+    + bool isInvulnerable() const
     - int _hp
     - int _maxHp
+    - long _invulnerabilityPeriodAfterDamage
+    - long _invulnerabilityRemaining
 }
 
 ecs::AComponent <|-- ecs::components::DamageableComponent
