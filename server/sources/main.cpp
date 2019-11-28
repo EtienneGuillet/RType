@@ -44,7 +44,7 @@ void updateWorld(std::shared_ptr<ecs::IWorld> &world)
     }
 }
 
-int main(int ac, char **av)
+int runMain(int ac, char **av)
 {
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
     if (ac < 2) {
@@ -67,5 +67,9 @@ int main(int ac, char **av)
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl << std::flush;
     }
-    return 0;
+}
+
+int main(int ac, char **av)
+{
+    return runMain(ac, av);
 }
