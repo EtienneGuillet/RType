@@ -1005,4 +1005,20 @@ rtype::exception::RTypeServerException <|-- rtype::exception::RTypeInvalidPasswo
 rtype::exception::RTypeServerException <|-- rtype::exception::RTypeRoomAlreadyFullException
 rtype::exception::RTypeServerException <|-- rtype::exception::RTypeUnknownRoomException
 
+class ecs::components::DamageableComponent {
+    + DamageableComponent(int hp = 3, int maxHp = 3)
+    + ~DamageableComponent()
+    + DamageableComponent(const DamageableComponent &other)
+    + DamageableComponent &operator=(const DamageableComponent &rhs)
+    + void setHp(int hp)
+    + void setMaxHp(int maxHp)
+    + void heal(int amount)
+    + void damage(int amount)
+    + int getHp() const
+    + bool isAlive() const
+    + int getMaxHp() const
+    - int _hp
+    - int _maxHp
+}
+
 @enduml
