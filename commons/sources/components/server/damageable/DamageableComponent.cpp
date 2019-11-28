@@ -18,6 +18,7 @@ ecs::components::DamageableComponent::DamageableComponent(int hp, int maxHp, lon
     , _invulnerabilityPeriodAfterDamage(invulnerabilityPeriod)
     , _invulnerabilityRemaining(0)
     , _damageLayer(damageLayer)
+    , _lastHitOwner(0)
 {
 
 }
@@ -108,4 +109,14 @@ int ecs::components::DamageableComponent::getDamageLayer() const
 void ecs::components::DamageableComponent::setDamageLayer(int damageLayer)
 {
     _damageLayer = damageLayer;
+}
+
+int ecs::components::DamageableComponent::getLastHitOwner() const
+{
+    return _lastHitOwner;
+}
+
+void ecs::components::DamageableComponent::setLastHitOwner(int lastHitOwner)
+{
+    _lastHitOwner = lastHitOwner;
 }

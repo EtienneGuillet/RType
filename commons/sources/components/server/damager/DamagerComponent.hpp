@@ -62,11 +62,22 @@ namespace ecs {
              * @param damageLayer the damage layer mask
              */
             void setDamageLayer(int damageLayer);
+            /*!
+             * @brief get the owner of this damageable
+             * @return the entity id of the owner
+             */
+            int getOwner() const;
+            /*!
+             * @brief Set the owner of the damager
+             * @param owner the owner of the damager
+             */
+            void setOwner(int owner);
 
         private:
             uint32_t _damages; /*!< The damages inflicted by this entity */
             bool _destroyOnHit; /*!< Should the entity be deleted on hit */
             int _damageLayer; /*!< The damage layer 0b1 allies 0b10 enemies */
+            int _owner; /*!< Id of the owner of this damageable */
         };
     }
 }

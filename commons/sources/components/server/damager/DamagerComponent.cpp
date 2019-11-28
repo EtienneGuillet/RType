@@ -16,6 +16,7 @@ ecs::components::DamagerComponent::DamagerComponent(uint32_t damages, bool destr
     , _damages(damages)
     , _destroyOnHit(destroyOnHit)
     , _damageLayer(layer)
+    , _owner(0)
 {
 
 }
@@ -53,4 +54,14 @@ int ecs::components::DamagerComponent::getDamageLayer() const
 void ecs::components::DamagerComponent::setDamageLayer(int damageLayer)
 {
     _damageLayer = damageLayer;
+}
+
+int ecs::components::DamagerComponent::getOwner() const
+{
+    return _owner;
+}
+
+void ecs::components::DamagerComponent::setOwner(int owner)
+{
+    _owner = owner;
 }

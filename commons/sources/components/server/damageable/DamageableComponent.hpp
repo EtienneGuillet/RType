@@ -105,6 +105,16 @@ namespace ecs {
              * @param damageLayer the damage layer mask
              */
             void setDamageLayer(int damageLayer);
+            /*!
+             * @brief get the entity id of the owner of the last hit
+             * @return the entity of the owner
+             */
+            int getLastHitOwner() const;
+            /*!
+             * @brief set the owner of the last hit
+             * @param lastHitOwner the entity id of the owner
+             */
+            void setLastHitOwner(int lastHitOwner);
 
         private:
             int _hp; /*!< The hp of this damageable component */
@@ -112,6 +122,7 @@ namespace ecs {
             long _invulnerabilityPeriodAfterDamage; /*!< Amount of time after damage in ms for invulnerability */
             long _invulnerabilityRemaining; /*!< Amount of time remaining in ms for invulnerability */
             int _damageLayer; /*!< The damage layer 0b1 allies 0b10 enemies */
+            int _lastHitOwner; /*!< Owner of the person that last hitted this entity */
         };
     }
 }
