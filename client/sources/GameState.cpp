@@ -6,6 +6,7 @@
 */
 
 #include "GameState.hpp"
+#include "exception/GameStateException.hpp"
 
 void rtype::GameState::addEntity(const rtype::EntitiesState &entity)
 {
@@ -29,7 +30,7 @@ const rtype::EntitiesState& rtype::GameState::getEntity(std::uint32_t id) const
             continue;
         return _entities[i];
     }
-    //todo throw a exception
+    throw GameStateException("The id invalid.", WHERE);
 }
 
 const std::vector<rtype::EntitiesState>& rtype::GameState::getEntities() const

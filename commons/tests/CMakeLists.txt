@@ -7,7 +7,7 @@ file(
         *.hpp
 )
 
-add_executable(tests_common ${RTYPE_SOURCES_COMMON_TESTS})
+add_executable(tests_common ${RTYPE_SOURCES_COMMON_TESTS} ../sources/exception/GameStateException.hpp)
 
 target_include_directories(
         tests_common PUBLIC
