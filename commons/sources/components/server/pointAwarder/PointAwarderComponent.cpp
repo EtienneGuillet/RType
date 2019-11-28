@@ -9,6 +9,8 @@
 
 #include "PointAwarderComponent.hpp"
 
+const ecs::Version ecs::components::PointAwarderComponent::Version = ecs::Version("COMPONENT_PointAwarderComponent", 0, 0, 1, 0);
+
 const ecs::Version &ecs::components::PointAwarderComponent::getVersion() const
 {
     return Version;
