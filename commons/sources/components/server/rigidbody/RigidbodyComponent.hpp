@@ -28,7 +28,7 @@ namespace ecs {
             const ecs::Version &getVersion() const override;
 
         public:
-            RigidbodyComponent(float ups = 1, const b12software::maths::Vector2D &direction = b12software::maths::Vector2D());
+            RigidbodyComponent(float ups = 1, const b12software::maths::Vector2D &direction = b12software::maths::Vector2D(), bool lookTowardsDirection = false);
             ~RigidbodyComponent() = default;
             RigidbodyComponent(const RigidbodyComponent &other) = default;
             RigidbodyComponent &operator=(const RigidbodyComponent &other) = default;
@@ -54,10 +54,21 @@ namespace ecs {
              * @param ups the movement speed in unit per second
              */
             void setUps(float ups);
+            /*!
+             * @brief Get if the entity should look toward the direction
+             * @return true or false
+             */
+            bool shouldLookTowardsDirection() const;
+            /*!
+             * @brief Set if the entity should look toward the direction
+             * @param lookTowardsDirection new value
+             */
+            void setLookTowardsDirection(bool lookTowardsDirection);
 
         private:
             b12software::maths::Vector2D _direction; /*!< The direction of this rb */
             float _ups; /*!< movement unit per second */
+            bool _lookTowardsDirection; /*!< Should the entity look towards the direction pointer */
         };
     }
 }

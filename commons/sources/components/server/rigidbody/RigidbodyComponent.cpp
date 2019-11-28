@@ -11,10 +11,11 @@
 
 const ecs::Version ecs::components::RigidbodyComponent::Version = ecs::Version("COMPONENT_RigidbodyComponent", 0, 0, 1, 0);
 
-ecs::components::RigidbodyComponent::RigidbodyComponent(float ups, const b12software::maths::Vector2D &direction)
+ecs::components::RigidbodyComponent::RigidbodyComponent(float ups, const b12software::maths::Vector2D &direction, bool lookTowardsDirection)
     : AComponent()
     , _direction(direction)
     , _ups(ups)
+    , _lookTowardsDirection(lookTowardsDirection)
 {
 
 }
@@ -42,4 +43,14 @@ void ecs::components::RigidbodyComponent::setUps(float ups)
 const ecs::Version &ecs::components::RigidbodyComponent::getVersion() const
 {
     return Version;
+}
+
+bool ecs::components::RigidbodyComponent::shouldLookTowardsDirection() const
+{
+    return _lookTowardsDirection;
+}
+
+void ecs::components::RigidbodyComponent::setLookTowardsDirection(bool lookTowardsDirection)
+{
+    _lookTowardsDirection = lookTowardsDirection;
 }

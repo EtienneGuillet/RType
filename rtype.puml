@@ -1078,8 +1078,11 @@ class ecs::components::RigidbodyComponent {
     + void setDirection(const b12software::maths::Vector2D &direction)
     + float getUps() const
     + void setUps(float ups)
+    + bool shouldLookTowardsDirection() const
+    + void setLookTowardsDirection(bool lookTowardsDirection)
     - b12software::maths::Vector2D _direction
     - float _ups
+    - bool _lookTowardsDirection
 }
 
 ecs::AComponent <|-- ecs::components::RigidbodyComponent
