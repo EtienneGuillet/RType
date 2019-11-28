@@ -8,10 +8,10 @@
 #ifndef _TTL_COMPONENT_HPP_
 #define _TTL_COMPONENT_HPP_
 
-#include "ecs/IComponent/IComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 #include <SFML/Graphics.hpp>
 #include <chrono>
+#include <ecs/IComponent/AComponent.hpp>
 
 /*!
  * @namespace rtype
@@ -23,7 +23,7 @@ namespace rtype {
      * @class TTLComponent
      * @brief This class is a component allowing to choose the position the scale and the rotation of an entity.
      */
-    class TTLComponent : public ecs::IComponent {
+    class TTLComponent : public ecs::AComponent {
 
     public:
         static const ecs::Version Version;

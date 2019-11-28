@@ -8,7 +8,7 @@
 #ifndef _SPRITE_COMPONENT_HPP_
 #define _SPRITE_COMPONENT_HPP_
 
-#include "ecs/IComponent/IComponent.hpp"
+#include "ecs/IComponent/AComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -22,7 +22,7 @@ namespace rtype {
      * @class SpriteComponent
      * @brief This class is a component allowing to display a sprite.
      */
-    class SpriteComponent : public ecs::IComponent {
+    class SpriteComponent : public ecs::AComponent {
 
     public:
         static const ecs::Version Version;
