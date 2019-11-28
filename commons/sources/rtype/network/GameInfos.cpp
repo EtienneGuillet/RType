@@ -10,7 +10,8 @@
 #include "GameInfos.hpp"
 
 rtype::GameInfos::GameInfos()
-    : _nbPlayers(4)
+    : enable_shared_from_this<GameInfos>()
+    , _nbPlayers(4)
     , _players()
     , _entities()
 {
@@ -100,7 +101,8 @@ void rtype::GameInfos::removeEntities(const std::function<bool(const rtype::Enti
 }
 
 rtype::GameInfos::GameInfos(const rtype::GameInfos &other)
-    : _nbPlayers(static_cast<int>(other._nbPlayers))
+    : enable_shared_from_this<GameInfos>(other)
+    , _nbPlayers(static_cast<int>(other._nbPlayers))
     , _players()
     , _entities(other._entities)
 {
