@@ -133,3 +133,8 @@ void rtype::GameInfos::reset()
     _players[3] = emptyPlayer;
     _entities.clear();
 }
+
+std::weak_ptr<rtype::GameInfos> rtype::GameInfos::getWeak()
+{
+    return weak_from_this();
+}

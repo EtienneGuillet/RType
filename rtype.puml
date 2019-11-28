@@ -962,6 +962,7 @@ class rtype::GameInfos {
     + void removeEntity(uint32_t id)
     + void removeEntity(const rtype::EntityInfos &entity)
     + void removeEntities(const std::function<bool(const rtype::EntityInfos &)> &func)
+    + std::weak_ptr<GameInfos> getWeak()
     - std::atomic_int _nbPlayers
     - PlayerInfos _players[4]
     - b12software::containers::ThreadSafeList<rtype::EntityInfos> _entities
