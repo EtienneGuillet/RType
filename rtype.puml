@@ -1099,4 +1099,19 @@ class ecs::components::PlayerComponent {
 
 ecs::AComponent <|-- ecs::components::PlayerComponent
 
+class ecs::components::DamagerComponent {
+    + DamagerComponent(uint32_t damages = 1, bool destroyOnHit = true)
+    + ~DamagerComponent()
+    + DamagerComponent(const DamagerComponent &other)
+    + DamagerComponent &operator=(const DamagerComponent &rhs)
+    + uint32_t getDamages() const
+    + void setDamages(uint32_t damages)
+    + bool isDestroyOnHit() const
+    + void setDestroyOnHit(bool destroyOnHit)
+    - uint32_t _damages
+    - bool _destroyOnHit
+}
+
+ecs::AComponent <|-- ecs::components::DamagerComponent
+
 @enduml
