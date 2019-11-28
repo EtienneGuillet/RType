@@ -53,6 +53,13 @@ namespace ecs {
         [[nodiscard]] virtual std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components) const = 0;
 
         /*!
+         * @brief Return the entity that has a given id
+         * @param id the id seached.
+         * @return entity that match this is
+         */
+        [[nodiscard]] virtual std::weak_ptr<IEntity> getEntityById(int id) const = 0;
+
+        /*!
          * @brief Apply a rule to every entities that has the set of components given as parameter.
          * @param components the set of components.
          * @param toApply the function to apply.

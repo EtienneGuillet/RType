@@ -100,3 +100,13 @@ std::weak_ptr<ecs::ISystem> ecs::World::getSystem(const ecs::Version &systemType
     }
     return std::weak_ptr<ISystem>();
 }
+
+std::weak_ptr<ecs::IEntity> ecs::World::getEntityById(int id) const
+{
+    for (auto &entity : _entities) {
+        if (entity->getID() == id) {
+           return entity;
+        }
+    }
+    return std::weak_ptr<IEntity>();
+}

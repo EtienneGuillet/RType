@@ -604,6 +604,7 @@ interface ecs::IWorld {
     + {abstract} tick(long deltatime)
     + {abstract} std::weak_ptr<IEntity> pushEntity(const std::shared_ptr<IEntity> &entity)
     + {abstract} std::shared_ptr<IEntity> popEntity(int id)
+    + {abstract} std::weak_ptr<IEntity> getEntityById(int id) const
     + {abstract} std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components)
     + {abstract} void applyToEach(const std::vector<Version> &componentTypes, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply)
     + {abstract} std::weak_ptr<ISystem> addSystem(const std::shared_ptr<ISystem> &system)
