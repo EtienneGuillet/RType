@@ -53,7 +53,6 @@ int main(int ac, char **av)
     }
     std::signal(SIGINT, signalHandler);
 
-
     try {
         auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
         auto world = ecs->createWorld();

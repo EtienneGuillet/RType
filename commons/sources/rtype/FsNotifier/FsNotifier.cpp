@@ -114,7 +114,7 @@ void rtype::FsNotifier::checkNotifier(int fdNotifier, const std::map<int, Handle
                         auto it = std::find_if(map.begin(), map.end(), [event] (const std::pair<int, Handler> &pair) {
                             return event->wd == pair.first;
                         });
-                        if (it != map.end())
+                        if (it != map.end() && map.size() != 0)
                             it->second(_folderPath.string() + "/" + std::string(event->name));
                     }
                 }
