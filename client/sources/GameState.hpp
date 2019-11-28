@@ -80,7 +80,7 @@ namespace rtype {
          * @param ids The ids of the entities wanted.
          * @return A copied vector of the entities found with the ids specified.
          */
-        std::vector<rtype::EntitiesState> getEntities(const std::vector<std::uint32_t > &ids);
+        std::vector<rtype::EntitiesState> getEntities(const std::vector<std::uint32_t> &ids);
 
         /*
          * @brief Sort the vector of entities by there Position in Z axe.
