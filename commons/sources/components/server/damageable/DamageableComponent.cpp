@@ -10,7 +10,8 @@
 #include "DamageableComponent.hpp"
 
 ecs::components::DamageableComponent::DamageableComponent(int hp, int maxHp)
-    : _hp(hp)
+    : AComponent()
+    , _hp(hp)
     , _maxHp(maxHp)
 {
 

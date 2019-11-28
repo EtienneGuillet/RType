@@ -16,6 +16,10 @@ namespace ecs {
 
     namespace components {
 
+        /*!
+         * @class DamageableComponent
+         * @brief A damageable component
+         */
         class DamageableComponent : public ecs::AComponent {
         public:
             explicit DamageableComponent(int hp = 3, int maxHp = 3);
