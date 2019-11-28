@@ -1035,4 +1035,23 @@ class ecs::components::NetworkIdentityComponent {
 
 ecs::AComponent <|-- ecs::components::NetworkIdentityComponent
 
+class ecs::components::WeaponComponent {
+    + WeaponComponent(WeaponType type = WEAPON_TYPE_STANDARD_WAVE_CANON, uint32_t rps = 1)
+    + ~WeaponComponent()
+    + WeaponComponent(const WeaponComponent &other)
+    + WeaponComponent &operator=(const WeaponComponent &rhs)
+    + WeaponType getType() const
+    + void setType(WeaponType type)
+    + uint32_t getRps() const
+    + void setRps(uint32_t rps)
+    - WeaponType _type
+    - uint32_t _rps
+}
+
+ecs::AComponent <|-- ecs::components::WeaponComponent
+
+enum ecs::components::WeaponComponent::WeaponType {
+    WEAPON_TYPE_STANDARD_WAVE_CANON
+}
+
 @enduml
