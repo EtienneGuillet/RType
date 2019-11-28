@@ -7,66 +7,62 @@
 
 #include "SpriteComponent.hpp"
 
-namespace rtype {
+    const ecs::Version rtype::SpriteComponent::Version = ecs::Version("SpriteComponent", 0, 0, 0, 1);
 
-    const ecs::Version SpriteComponent::Version = ecs::Version("SpriteComponent", 0, 0, 0, 1);
+rtype::SpriteComponent::SpriteComponent(const int assetId) :_isRepeat(false), _isSpriteSet(false), _assetId(assetId)
+{
+}
 
-    SpriteComponent::SpriteComponent(const int assetId)
-        :_isRepeat(false), _isSpriteSet(false), _assetId(assetId)
-    {
-    }
+void rtype::SpriteComponent::setEntity(const std::weak_ptr<ecs::IEntity> &entity)
+{
+    _entity = entity;
+}
 
-    void SpriteComponent::setEntity(const std::weak_ptr<ecs::IEntity> &entity)
-    {
-        _entity = entity;
-    }
+const ecs::Version &rtype::SpriteComponent::getVersion() const
+{
+    return SpriteComponent::Version;
+}
 
-    const ecs::Version &SpriteComponent::getVersion() const
-    {
-        return SpriteComponent::Version;
-    }
+bool rtype::SpriteComponent::isRepeated() const
+{
+    return _isRepeat;
+}
 
-    bool SpriteComponent::isRepeated() const
-    {
-        return _isRepeat;
-    }
+void rtype::SpriteComponent::setRepeated(const bool isRepeat)
+{
+    sf::Texture texture = (*_sprite.getTexture());
+    texture.setRepeated(isRepeat);
+    _sprite.setTexture(texture);
+    _isRepeat = isRepeat;
+}
 
-    void SpriteComponent::setRepeated(const bool isRepeat)
-    {
-        sf::Texture texture = (*_sprite.getTexture());
-        texture.setRepeated(isRepeat);
-        _sprite.setTexture(texture);
-        _isRepeat = isRepeat;
-    }
+const sf::IntRect &rtype::SpriteComponent::getTextureRect() const
+{
+    return _sprite.getTextureRect();
+}
 
-    const sf::IntRect &SpriteComponent::getTextureRect() const
-    {
-        return _sprite.getTextureRect();
-    }
+void rtype::SpriteComponent::setTextureRect(const sf::IntRect &rect)
+{
+    _sprite.setTextureRect(rect);
+}
 
-    void SpriteComponent::setTextureRect(const sf::IntRect &rect)
-    {
-        _sprite.setTextureRect(rect);
-    }
+sf::Sprite &rtype::SpriteComponent::getSprite()
+{
+    return _sprite;
+}
 
-    sf::Sprite &SpriteComponent::getSprite()
-    {
-        return _sprite;
-    }
+void rtype::SpriteComponent::setSprite(const sf::Sprite &sprite)
+{
+    _sprite = sprite;
+    _isSpriteSet = true;
+}
 
-    void SpriteComponent::setSprite(const sf::Sprite &sprite)
-    {
-        _sprite = sprite;
-        _isSpriteSet = true;
-    }
+int rtype::SpriteComponent::getAssetId() const
+{
+    return _assetId;
+}
 
-    int SpriteComponent::getAssetId() const
-    {
-        return _assetId;
-    }
-
-    bool SpriteComponent::isSpriteSetted() const
-    {
-        return _isSpriteSet;
-    }
-} /* rtype */
+bool rtype::SpriteComponent::isSpriteSetted() const
+{
+    return _isSpriteSet;
+}

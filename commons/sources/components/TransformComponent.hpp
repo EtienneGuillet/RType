@@ -8,7 +8,7 @@
 #ifndef _TRANSFORM_COMPONENT_HPP_
 #define _TRANSFORM_COMPONENT_HPP_
 
-#include "ecs/IComponent/IComponent.hpp"
+#include "ecs/IComponent/AComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -22,7 +22,7 @@ namespace rtype {
      * @class TransformComponent
      * @brief This class is a component allowing to choose the position the scale and the rotation of an entity.
      */
-    class TransformComponent : public ecs::IComponent {
+    class TransformComponent : public ecs::AComponent {
 
     public:
         static const ecs::Version Version;

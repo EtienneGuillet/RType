@@ -8,7 +8,7 @@
 #ifndef R_TYPE_INTCOMPONENT_HPP
 #define R_TYPE_INTCOMPONENT_HPP
 
-#include <ecs/IEntity/AComponent.hpp>
+#include <ecs/IComponent/AComponent.hpp>
 #include "logger/DefaultLogger.hpp"
 
 

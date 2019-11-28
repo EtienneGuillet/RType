@@ -15,12 +15,12 @@ static void init()
 static void fini()
 {}
 
-Test(none, none,
-    .timeout=10,
-    .description="none",
-    .init=init,
-    .fini=fini
-)
-{
-    cr_assert(true);
-}
+//Test(none, none,
+//    .timeout=10,
+//    .description="none",
+//    .init=init,
+//    .fini=fini
+//)
+//{
+//    cr_assert(true);
+//}

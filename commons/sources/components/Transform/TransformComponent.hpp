@@ -2,10 +2,9 @@
 #define R_TYPE_TRANSFORMCOMPONENT_HPP
 
 #include <maths/Vectors.hpp>
-#include <ecs/IEntity/AComponent.hpp>
+#include <ecs/IComponent/AComponent.hpp>
 
 class TransformComponent : public ecs::AComponent {
-private:
 public:
     using Vector2 = b12software::maths::Vector2D;
     using Vector3 = b12software::maths::Vector3D;
