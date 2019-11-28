@@ -17,7 +17,7 @@
 #include <thread>
 #include "client/Client.hpp"
 #include "network/udp/IUdpSocket.hpp"
-#include "GameInfos.hpp"
+#include "rtype/network/GameInfos.hpp"
 
 /*!
  * @namespace rtype

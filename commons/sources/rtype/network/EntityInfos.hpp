@@ -11,6 +11,8 @@
 #define R_TYPE_ENTITYINFOS_HPP
 
 #include <atomic>
+        "bits/atomic_base.h"
+        "bits/move.h"
 #include "maths/Vectors.hpp"
 
 namespace rtype {
