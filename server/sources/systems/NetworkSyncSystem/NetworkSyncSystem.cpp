@@ -88,10 +88,8 @@ void systems::NetworkSyncSystem::tick(long deltatime)
                 if (lockedRb) {
                     lockedRb->setDirection(b12software::maths::Vector2D(infos.isMovingRight() - infos.isMovingLeft(), infos.isMovingUp() - infos.isMovingDown()).normalized());
                 }
-                float newCharge = lockedPlayer->getCharge() + infos.isShooting() * deltatime / 1000.0f;
-                lockedPlayer->setCharge(newCharge);
                 lockedPlayer->setShotPressed(infos.isShooting());
-                infos.setCharge(newCharge);
+                infos.setCharge(lockedPlayer->getCharge());
                 infos.setScore(lockedPlayer->getScore());
                 if (lockedDisplayable) {
                     infos.setType(lockedDisplayable->getType());

@@ -1266,4 +1266,25 @@ class systems::NetworkSyncSystemApi {
 }
 
 ecs::ISystemAPI <|-- systems::NetworkSyncSystemApi
+
+class systems::WeaponSystem {
+    + WeaponSystem()
+    + ~WeaponSystem()
+    + WeaponSystem(const WeaponSystem &other)
+    + WeaponSystem &operator=(const WeaponSystem &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ASystem <|-- systems::WeaponSystem
+
+class systems::WeaponSystemApi {
+    + WeaponSystemApi()
+    + ~WeaponSystemApi()
+    + WeaponSystemApi(const WeaponSystemApi &other)
+    + WeaponSystemApi &operator=(const WeaponSystemApi &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ISystemAPI <|-- systems::WeaponSystemApi
+
 @enduml
