@@ -1114,4 +1114,16 @@ class ecs::components::DamagerComponent {
 
 ecs::AComponent <|-- ecs::components::DamagerComponent
 
+class ecs::components::DisplayableComponent {
+    + DisplayableComponent(uint32_t type = rtype::ET_UNKNOWN)
+    + ~DisplayableComponent()
+    + DisplayableComponent(const DisplayableComponent &other)
+    + DisplayableComponent &operator=(const DisplayableComponent &rhs)
+    + uint32_t getType() const
+    + void setType(uint32_t type)
+    - uint32_t _type
+}
+
+ecs::AComponent <|-- ecs::components::DisplayableComponent
+
 @enduml
