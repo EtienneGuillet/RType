@@ -9,6 +9,8 @@
 
 #include "PlayerComponent.hpp"
 
+const ecs::Version ecs::components::PlayerComponent::Version = ecs::Version("COMPONENT_PlayerComponent", 0, 0, 1, 0);
+
 ecs::components::PlayerComponent::PlayerComponent(uint32_t score, uint8_t charge)
     : AComponent()
     , _score(score)
@@ -35,4 +37,9 @@ uint8_t ecs::components::PlayerComponent::getCharge() const
 void ecs::components::PlayerComponent::setCharge(uint8_t charge)
 {
     _charge = charge;
+}
+
+const ecs::Version &ecs::components::PlayerComponent::getVersion() const
+{
+    return Version;
 }

@@ -22,6 +22,10 @@ namespace ecs {
          */
         class PlayerComponent : public ecs::AComponent {
         public:
+            static const ecs::Version Version;
+            const ecs::Version &getVersion() const override;
+
+        public:
             PlayerComponent(uint32_t score = 0, uint8_t charge = 0);
             ~PlayerComponent() = default;
             PlayerComponent(const PlayerComponent &other) = default;

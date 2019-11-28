@@ -9,6 +9,8 @@
 
 #include "WeaponComponent.hpp"
 
+const ecs::Version ecs::components::WeaponComponent::Version = ecs::Version("COMPONENT_WeaponComponent", 0, 0, 1, 0);
+
 ecs::components::WeaponComponent::WeaponComponent(ecs::components::WeaponComponent::WeaponType type, uint32_t rps)
     : AComponent()
     , _type(type)
@@ -35,4 +37,9 @@ uint32_t ecs::components::WeaponComponent::getRps() const
 void ecs::components::WeaponComponent::setRps(uint32_t rps)
 {
     _rps = rps;
+}
+
+const ecs::Version &ecs::components::WeaponComponent::getVersion() const
+{
+    return Version;
 }

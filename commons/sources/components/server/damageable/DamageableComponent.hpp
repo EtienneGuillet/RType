@@ -22,6 +22,10 @@ namespace ecs {
          */
         class DamageableComponent : public ecs::AComponent {
         public:
+            static const ecs::Version Version;
+            const ecs::Version &getVersion() const override;
+
+        public:
             explicit DamageableComponent(int hp = 3, int maxHp = 3);
             ~DamageableComponent() = default;
             DamageableComponent(const DamageableComponent &other) = default;

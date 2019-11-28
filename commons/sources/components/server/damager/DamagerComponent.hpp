@@ -22,6 +22,10 @@ namespace ecs {
          */
         class DamagerComponent : public ecs::AComponent {
         public:
+            static const ecs::Version Version;
+            const ecs::Version &getVersion() const override;
+
+        public:
             DamagerComponent(uint32_t damages = 1, bool destroyOnHit = true);
             ~DamagerComponent() = default;
             DamagerComponent(const DamagerComponent &other) = default;

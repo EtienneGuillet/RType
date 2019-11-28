@@ -22,6 +22,10 @@ namespace ecs {
          */
         class NetworkIdentityComponent : ecs::AComponent {
         public:
+            static const ecs::Version Version;
+            const ecs::Version &getVersion() const override;
+
+        public:
             NetworkIdentityComponent(uint32_t id = 0);
             ~NetworkIdentityComponent() = default;
             NetworkIdentityComponent(const NetworkIdentityComponent &other) = default;

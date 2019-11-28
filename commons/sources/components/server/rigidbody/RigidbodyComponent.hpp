@@ -24,6 +24,10 @@ namespace ecs {
          */
         class RigidbodyComponent : public ecs::AComponent {
         public:
+            static const ecs::Version Version;
+            const ecs::Version &getVersion() const override;
+
+        public:
             RigidbodyComponent(float ups = 1, const b12software::maths::Vector2D &direction = b12software::maths::Vector2D());
             ~RigidbodyComponent() = default;
             RigidbodyComponent(const RigidbodyComponent &other) = default;

@@ -9,6 +9,8 @@
 
 #include "DamagerComponent.hpp"
 
+const ecs::Version ecs::components::DamagerComponent::Version = ecs::Version("COMPONENT_DamagerComponent", 0, 0, 1, 0);
+
 ecs::components::DamagerComponent::DamagerComponent(uint32_t damages, bool destroyOnHit)
     : AComponent()
     , _damages(damages)
@@ -35,4 +37,9 @@ bool ecs::components::DamagerComponent::isDestroyOnHit() const
 void ecs::components::DamagerComponent::setDestroyOnHit(bool destroyOnHit)
 {
     _destroyOnHit = destroyOnHit;
+}
+
+const ecs::Version &ecs::components::DamagerComponent::getVersion() const
+{
+    return Version;
 }

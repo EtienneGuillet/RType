@@ -9,6 +9,8 @@
 
 #include "RigidbodyComponent.hpp"
 
+const ecs::Version ecs::components::RigidbodyComponent::Version = ecs::Version("COMPONENT_RigidbodyComponent", 0, 0, 1, 0);
+
 ecs::components::RigidbodyComponent::RigidbodyComponent(float ups, const b12software::maths::Vector2D &direction)
     : AComponent()
     , _direction(direction)
@@ -35,4 +37,9 @@ float ecs::components::RigidbodyComponent::getUps() const
 void ecs::components::RigidbodyComponent::setUps(float ups)
 {
     _ups = ups;
+}
+
+const ecs::Version &ecs::components::RigidbodyComponent::getVersion() const
+{
+    return Version;
 }

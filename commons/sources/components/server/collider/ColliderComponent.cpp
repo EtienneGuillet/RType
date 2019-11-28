@@ -9,6 +9,8 @@
 
 #include "ColliderComponent.hpp"
 
+const ecs::Version ecs::components::ColliderComponent::Version = ecs::Version("COMPONENT_ColliderComponent", 0, 0, 1, 0);
+
 ecs::components::ColliderComponent::ColliderComponent(const b12software::maths::Vector2D &size, const b12software::maths::Vector2D &offset)
     : AComponent()
     , _size(size)
@@ -35,4 +37,9 @@ const b12software::maths::Vector2D &ecs::components::ColliderComponent::getOffse
 void ecs::components::ColliderComponent::setOffset(const b12software::maths::Vector2D &offset)
 {
     _offset = offset;
+}
+
+const ecs::Version &ecs::components::ColliderComponent::getVersion() const
+{
+    return Version;
 }

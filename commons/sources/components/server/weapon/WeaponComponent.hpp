@@ -22,6 +22,10 @@ namespace ecs {
          */
         class WeaponComponent : ecs::AComponent {
         public:
+            static const ecs::Version Version;
+            const ecs::Version &getVersion() const override;
+
+        public:
             /*!
              * @enum WeaponType
              * @brief An enum for a default weapon type

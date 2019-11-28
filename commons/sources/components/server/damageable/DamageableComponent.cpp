@@ -9,6 +9,8 @@
 
 #include "DamageableComponent.hpp"
 
+const ecs::Version ecs::components::DamageableComponent::Version = ecs::Version("COMPONENT_DamageableComponent", 0, 0, 1, 0);
+
 ecs::components::DamageableComponent::DamageableComponent(int hp, int maxHp)
     : AComponent()
     , _hp(hp)
@@ -62,4 +64,9 @@ bool ecs::components::DamageableComponent::isAlive() const
 int ecs::components::DamageableComponent::getMaxHp() const
 {
     return _maxHp;
+}
+
+const ecs::Version &ecs::components::DamageableComponent::getVersion() const
+{
+    return Version;
 }

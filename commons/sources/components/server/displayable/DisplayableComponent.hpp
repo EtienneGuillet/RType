@@ -23,6 +23,10 @@ namespace ecs {
          */
         class DisplayableComponent : public ecs::AComponent {
         public:
+            static const ecs::Version Version;
+            const ecs::Version &getVersion() const override;
+
+        public:
             DisplayableComponent(uint32_t type = rtype::ET_UNKNOWN);
             ~DisplayableComponent() = default;
             DisplayableComponent(const DisplayableComponent &other) = default;
