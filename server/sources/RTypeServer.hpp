@@ -32,8 +32,9 @@ namespace rtype {
         /*!
          * @brief ctor
          * @param port The port of the server to use
+         * @param libsFolder The folder containing entities and systems libs
          */
-        explicit RTypeServer(unsigned short port = 54321);
+        explicit RTypeServer(unsigned short port = 54321, std::string libsFolder = "./server");
         /*!
          * @brief dtor
          */
@@ -246,6 +247,8 @@ namespace rtype {
 
         b12software::containers::ThreadSafeList<rtype::Client> _clients; /*!< Connected clients */
         std::list<std::shared_ptr<rtype::Room>> _rooms; /*!< Existing rooms */
+
+        const std::string _libsFolder; /*< The path of the libraries folder */
     };
 }
 

@@ -490,6 +490,42 @@ b12software::network::tcp::ITcpServer <|-- b12software::network::asio::AsioTcpSe
 
 '-Rtype datagram
 
+class rtype::FsNotifier {
+    + typedef std::function<bool (std::filesystem::path)> Handler
+    + FsNotifier(const std::filesystem::path &folderPath)
+    + void update()
+    + void addCreateListener(const Handler &createHandler)
+    + void addDeletedListener(const Handler &deleteHandle)
+    - int computeSet(const std::map<int, Handler> &map, fd_set *set, fd_set *errorSet)
+    - int computeSet(int notifyFd, fd_set *set, fd_set *errorSet)
+    - void checkNotifier(int fdNotifier, const std::map<int, Handler> &map, int mask)
+    - std::filesystem::path _folderPath
+    - int _notifierFdCreate
+    - int _notifierFdDelete
+    - std::map<int, Handler> _mapCreatedEvents
+    - std::map<int, Handler> _mapDeletedEvents
+    - std::map<std::filesystem::path, bool> _indexedPaths
+}
+
+class rtype::LibLoader {
+    + template <typename TypeAPI> MapType = std::map<std::filesystem::path, rtype::LibLoader::LibLoaded<TypeAPI>>
+    + LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder)
+    + void checkForChanges()
+    - template <typename TypeAPI> std::string getEntryPoint()
+    - template <typename TypeAPI> std::string getlibFolder()
+    - template <typename TypeAPI> void loadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs)
+    - template <typename TypeAPI> void unloadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs)
+    - void firstLibrariesLoad()
+    - std::unique_ptr<ecs::IECS> &_ecs
+    - std::shared_ptr<ecs::IWorld> &_world
+    - const std::filesystem::path _entitiesPath
+    - const std::filesystem::path _systemsPath
+    - MapType<ecs::IEntityAPI> _entities
+    - MapType<ecs::ISystemAPI> _systems
+    - rtype::FsNotifier _notifierEntities
+    - rtype::FsNotifier _notifierSystems
+}
+
 b12software::network::udp::Datagram <|-- rtype::network::RTypeDatagram
 
 title R-Type - Class Diagram
@@ -739,7 +775,7 @@ ecs::IWorld <|-- ecs::World
 std::enable_shared_from_this <|-- ecs::World
 
 class rtype::RTypeServer {
-    + RTypeServer(unsigned short port = 54321)
+    + RTypeServer(unsigned short port = 54321, const std::string libsFolder = "./server")
     + ~RTypeServer()
     + void run()
     - void handleDatagrams()
@@ -802,10 +838,12 @@ class rtype::Configuration {
     + Configuration &operator=(const Configuration &rhs)
     + bool shouldDisplayHelp() const
     + unsigned short getPort() const
+    + std::string &getLibsFolder() const
     + void displayHelp(bool onError = false) const
     + bool hasError() const
     + void displayErrors() const
     - std::string _binaryName
+    - std::string _libsFolder
     - bool _help
     - unsigned short _port
     - std::vector<std::string> _errors
@@ -851,7 +889,7 @@ enum rtype::ClientState {
 }
 
 class rtype::Room {
-    + Room()
+    + Room(const std::string libsFolder)
     + ~Room()
     + const std::string &getName() const
     + void setName(const std::string &name)
@@ -877,7 +915,7 @@ class rtype::Room {
     - void syncDisplayLiving(Client &client, const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket, bool living, bool display)
     - void syncScore(Client &client, const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket)
     - void syncCharge(Client &client, const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket)
-    - {static} static void gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos)
+    - {static} void gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos, const std::string libsFolder)
     - std::string _name
     - unsigned char _capacity
     - unsigned char _slotUsed
@@ -890,6 +928,7 @@ class rtype::Room {
     - std::map<std::string, int> _clientPlayerMap
     - std::atomic_bool _threadRunning
     - std::unique_ptr<std::thread> _thread
+    - const std::string _libsFolder
 }
 
 enum rtype::RTypeEntityType {
