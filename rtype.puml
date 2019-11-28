@@ -1156,6 +1156,17 @@ class ecs::components::DisplayableComponent {
 
 ecs::AComponent <|-- ecs::components::DisplayableComponent
 
+class ecs::components::PointAwarderComponent {
+    + {static} const ecs::Version Version
+    + PointAwarderComponent(int points = 500)
+    + ~PointAwarderComponent()
+    + PointAwarderComponent(const PointAwarderComponent &other)
+    + PointAwarderComponent &operator=(const PointAwarderComponent &rhs)
+    + int getPoints() const
+    + void setPoints(int points)
+    - int _points
+}
+
 class systems::MovementSystem {
     + MovementSystem()
     + ~MovementSystem()
