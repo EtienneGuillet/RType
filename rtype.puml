@@ -1054,4 +1054,19 @@ enum ecs::components::WeaponComponent::WeaponType {
     WEAPON_TYPE_STANDARD_WAVE_CANON
 }
 
+class ecs::components::ColliderComponent {
+    + ColliderComponent(const b12software::maths::Vector2D &size = b12software::maths::Vector2D(1, 1), const b12software::maths::Vector2D &offset = b12software::maths::Vector2D())
+    + ~ColliderComponent()
+    + ColliderComponent(const ColliderComponent &other)
+    + ColliderComponent &operator=(const ColliderComponent &rhs)
+    + const b12software::maths::Vector2D &getSize() const
+    + void setSize(const b12software::maths::Vector2D &size)
+    + const b12software::maths::Vector2D &getOffset() const
+    + void setOffset(const b12software::maths::Vector2D &offset)
+    - b12software::maths::Vector2D _size
+    - b12software::maths::Vector2D _offset
+}
+
+ecs::AComponent <|-- ecs::components::ColliderComponent
+
 @enduml
