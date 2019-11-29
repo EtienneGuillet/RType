@@ -8,6 +8,7 @@ const ecs::Version SfmlSystem::Version = ecs::Version("System_Sfml", 0, 1, 0, 0)
 
 void SfmlSystem::start()
 {
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Start");
     try {
         _inputs[Z] = false;
         _inputs[Q] = false;
@@ -78,6 +79,7 @@ void SfmlSystem::stop()
 
 void SfmlSystem::tick(long deltatime)
 {
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Toc");
     sf::Event event;
     (void)deltatime;
 
