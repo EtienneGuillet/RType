@@ -34,7 +34,6 @@ namespace rtype {
          * @brief The sequence to run
          */
         enum NetworkSequence {
-            NS_NONE,
             NS_CONNECT,
             NS_LOBBY,
             NS_GAME,
@@ -55,11 +54,17 @@ namespace rtype {
         void update(long deltatime);
 
     private:
+        using ProtocolMapType = std::map<unsigned short, void (RTypeNetworkClient::*)(rtype::network::RTypeDatagram)>;
+        static const ProtocolMapType protocolMap; /*!< A map used to handle incoming datagram */
+
         static constexpr std::chrono::milliseconds processDatagramsMaxTime = std::chrono::milliseconds(10); /*!< Allowed time to process datagrams per update */
         static constexpr long lobbyDatagramRetrySyncRate = 500; /*!< In ms */
         static constexpr long gameDatagramSyncRate = 100; /*!< In ms */
         static constexpr long serverConnectivityPingThreshHold = 2500; /*!< In ms */
         static constexpr long serverConnectionLostThreshHold = 5000; /*!< In ms */
+
+    private:
+        void resetDatagram(rtype::network::RTypeDatagramType type);
 
     private:
         /*!
@@ -73,12 +78,57 @@ namespace rtype {
         void processDatagram(rtype::network::RTypeDatagram &dg);
         /*!
          * @brief Sync datagram send in _datagrams
+         * @param deltatime the elapsed time since last update
          */
         void sendDatagrams(long deltatime);
         /*!
          * @brief Connection sequence
+         * @param deltatime the elapsed time since last update
          */
-        void connectionSequence();
+        void connectionSequence(long deltatime);
+        /*!
+         * @brief Lobby sequence
+         * @param deltatime the elapsed time since last update
+         */
+        void lobbySequence(long deltatime);
+        /*!
+         * @brief Game sequence
+         * @param deltatime the elapsed time since last update
+         */
+        void gameSequence(long deltatime);
+        /*!
+         * @brief Lost connection sequence
+         * @param deltatime the elapsed time since last update
+         */
+        void lostConnectionSequence(long deltatime);
+
+        /*!
+         * @brief check if the client lost connection to server
+         */
+        void checkLostConnection();
+
+    private:
+        /*!
+         * @brief Default handler called when an unknown datagram type comes in
+         * @param dg the received datagram
+         */
+        void unknownDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief Send an invalid datagram to the client
+         * @param dg the received datagram
+         */
+        void invalidDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that does nothing
+         * @param dg the received datagram
+         */
+        void emptyDatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief Default handler called when an unknown datagram type comes in
+         * @param dg the received datagram
+         * This function should be removed by the correct handler
+         */
+        void nyiDatagramHandler(rtype::network::RTypeDatagram dg);
 
     private:
         std::unique_ptr<b12software::network::INetworkManager> _nm;
