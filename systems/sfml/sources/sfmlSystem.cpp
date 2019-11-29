@@ -34,17 +34,16 @@ void SfmlSystem::loadTextures()
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 
     for (int i = 0; i < NBR_TEXTURE; i++) {
-        sf::Texture texture;
+        _textures[i].first = std::make_shared<sf::Texture>();
         std::string path;
         path.append(PATH_TO_ASSETS);
         path.append(filename);
         path.append(std::to_string(i + 1));
         path.append(extension);
-        if (!texture.loadFromFile(path)) {
+        if (!_textures[i].first->loadFromFile(path)) {
             throw SfmlSystemException("Texture didn't load, file " + path + " not found.", WHERE);
         }
         std::map<int, sf::IntRect> mapRectTexture = getMapRectTexture();
-        _textures[i].first = std::make_shared<sf::Texture>(texture);
         auto it = mapRectTexture.find(i + 1);
         if (it != mapRectTexture.end()) {
             _textures[i].second = mapRectTexture[i + 1];
@@ -61,31 +60,33 @@ void SfmlSystem::loadFonts()
 
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
     for (int i = 0; i < NBR_FONT; i++) {
-        sf::Font font;
+        _fonts[i] = std::make_shared<sf::Font>();
         std::string path;
         path.append(PATH_TO_FONTS);
         path.append(filename);
         path.append(std::to_string(i + 1));
         path.append(extension);
-        if (!font.loadFromFile(path)) {
+        if (!_fonts[i]->loadFromFile(path)) {
             throw SfmlSystemException("Font didn't load, file " + path + " not found.", WHERE);
         }
-        _fonts[i] = std::make_shared<sf::Font>(font);
     }
 }
 
 void SfmlSystem::stop()
 {
     auto lockedWorld = _world.lock();
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Stop");
 
-    lockedWorld->applyToEach({rtype::SpriteComponent::Version, rtype::TransformComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+    lockedWorld->applyToEach({rtype::SpriteComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
         spriteComponent->invalidateSprite();
     });
-    lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+    lockedWorld->applyToEach({rtype::TextComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
         textComponent->invalidateText();
     });
+    _fonts.clear();
+    _textures.clear();
     _window.close();
 }
 
