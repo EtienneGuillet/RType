@@ -17,7 +17,7 @@ void SfmlSystem::start()
         _inputs[SPACE] = false;
         _inputs[ESCAPE] = false;
         _inputs[ENTER] = false;
-        _window.create(sf::VideoMode(800, 600, 32), "R-Type");
+        _window.create(sf::VideoMode(1920, 1080, 32), "R-Type");
         _window.setFramerateLimit(60);
         this->loadTextures();
         this->loadFonts();
@@ -79,7 +79,6 @@ void SfmlSystem::stop()
 
 void SfmlSystem::tick(long deltatime)
 {
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Toc");
     sf::Event event;
     (void)deltatime;
 
@@ -136,10 +135,12 @@ void SfmlSystem::renderEntities()
 
 void SfmlSystem::renderSprites(const std::shared_ptr<ecs::IWorld> &lockedWorld)
 {
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "AYAYA");
     lockedWorld->applyToEach({rtype::SpriteComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
         std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
 
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Entity detected");
         (void)entity;
         if (!spriteComponent->isSpriteSetted()) {
             sf::Sprite sprite;

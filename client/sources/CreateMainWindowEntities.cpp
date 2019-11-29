@@ -7,11 +7,9 @@
 
 #include "CreateMainWindowEntities.hpp"
 
-rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::weak_ptr<ecs::IWorld> world)
+rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world)
 {
-    auto lockedWorld = world.lock();
+    std::shared_ptr<ecs::IEntity> title = std::make_shared<ecs::Entity>("TitleSpriteEntity");
 
-    if (lockedWorld) {
-        //lockedWorld->pushEntity();
-    }
+    world->pushEntity(std::static_pointer_cast<TitleSpriteEntity>(title));
 }

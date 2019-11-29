@@ -2,7 +2,8 @@
 #define R_TYPE_TITLESPRITEENTITY_HPP
 
 #include "ecs/IEntity/Entity.hpp"
-
+#include <components/SpriteComponent.hpp>
+#include <components/TransformComponent.hpp>
 
 class TitleSpriteEntity : public ecs::Entity {
 

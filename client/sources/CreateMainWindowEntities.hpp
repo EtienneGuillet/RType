@@ -10,15 +10,21 @@
 
 #include <memory>
 #include "ecs/IWorld/IWorld.hpp"
+#include "../../entities/TitleSprite/sources/TitleSpriteEntity.hpp"
+#include "../../entities/button/sources/ButtonEntity.hpp"
+#include "../../entities/example/sources/ExampleEntity.hpp"
+
+//todo changer le path absolue
 
 namespace rtype {
 
     class CreateMainWindowEntities {
 
-        CreateMainWindowEntities(std::weak_ptr<ecs::IWorld> world);
+        public:
+
+        CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world);
 
         ~CreateMainWindowEntities() = default;
-
 
     };
 }
