@@ -12,6 +12,7 @@ namespace rtype {
     const ecs::Version ScrollComponent::Version = ecs::Version("ScrollComponent", 0, 0, 0, 1);
 
     ScrollComponent::ScrollComponent()
+    : _scrollValues()
     {
     }
 

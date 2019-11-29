@@ -15,6 +15,7 @@
 #include "components/TransformComponent.hpp"
 #include "components/RectangleShapeComponent.hpp"
 #include "components/CircleShapeComponent.hpp"
+#include "components/ScrollComponent.hpp"
 #include "components/ConvexShapeComponent.hpp"
 #include <SFML/Window.hpp>
 #include <map>

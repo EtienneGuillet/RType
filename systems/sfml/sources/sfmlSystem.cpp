@@ -198,6 +198,18 @@ void SfmlSystem::renderEntities()
 
 void SfmlSystem::renderSprites(const std::shared_ptr<ecs::IWorld> &lockedWorld)
 {
+    lockedWorld->applyToEach({rtype::SpriteComponent::Version, rtype::TransformComponent::Version, rtype::ScrollComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components[0].lock());
+        std::shared_ptr<rtype::ScrollComponent> scrollComponent = std::dynamic_pointer_cast<rtype::ScrollComponent>(components[2].lock());
+        if (spriteComponent && scrollComponent) {
+            if (spriteComponent->isSpriteSetted()) {
+                sf::IntRect rect = spriteComponent->getSprite().getTextureRect();
+                rect.left += scrollComponent->getScrollValues().x;
+                rect.top += scrollComponent->getScrollValues().y;
+                spriteComponent->getSprite().setTextureRect(rect);
+            }
+        }
+    });
     lockedWorld->applyToEach({rtype::SpriteComponent::Version, rtype::TransformComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
         std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());

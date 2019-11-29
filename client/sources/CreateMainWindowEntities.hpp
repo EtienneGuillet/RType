@@ -15,6 +15,7 @@
 #include "../../entities/button/sources/ButtonEntity.hpp"
 #include "../../entities/example/sources/ExampleEntity.hpp"
 #include <components/HoverComponent.hpp>
+#include <components/ScrollComponent.hpp>
 
 //todo changer le path absolue
 

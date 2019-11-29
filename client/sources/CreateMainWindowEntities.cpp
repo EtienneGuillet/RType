@@ -18,11 +18,15 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
     if (entityBackground) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityBackground->getComponent(rtype::TransformComponent::Version).lock());
         auto sprite = std::dynamic_pointer_cast<rtype::SpriteComponent>(entityBackground->getComponent(rtype::SpriteComponent::Version).lock());
+        auto scroll = std::dynamic_pointer_cast<rtype::ScrollComponent>(entityBackground->getComponent(rtype::ScrollComponent::Version).lock());
         if (tr) {
             tr->setScale(3, 3);
         }
         if (sprite) {
             sprite->setRepeated(true);
+        }
+        if (scroll) {
+            scroll->setScrollValues(sf::Vector2<float>(1, 0));
         }
         lockedWorld->pushEntity(entityBackground);
     }
