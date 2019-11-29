@@ -37,4 +37,10 @@ namespace ecs {
     };
 } /* ecs */
 
+#else
+
+namespace ecs {
+    class ISystemAPI;
+}
+
 #endif /* _I_SYSTEM_API_HPP_ */

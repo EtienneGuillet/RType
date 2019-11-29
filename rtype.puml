@@ -621,6 +621,16 @@ interface ecs::IEntityAPI {
     + {abstract} [[nodiscard]] bool isSpawnable() const
 }
 
+abstract ecs::AUnspawnableEntityAPI {
+    + [[nodiscard]] bool isSpawnable() const
+}
+
+abstract ecs::ASpawnableEntityAPI {
+    + [[nodiscard]] bool isSpawnable() const
+}
+
+
+
 interface ecs::ISystem {
     + {abstract} ~ISystem() = default
     + {abstract} void tick(long deltatime)
@@ -770,6 +780,9 @@ ecs::IECS <|-- ecs::ECS
 ecs::IComponent <|-- ecs::AComponent
 
 ecs::AComponent <|-- ecs::components::TransformComponent
+
+ecs::IEntityAPI <|-- ecs::AUnspawnableEntityAPI
+ecs::IEntityAPI <|-- ecs::ASpawnableEntityAPI
 
 ecs::IEntity <|-- ecs::Entity
 

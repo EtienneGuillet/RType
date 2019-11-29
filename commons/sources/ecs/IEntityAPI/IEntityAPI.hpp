@@ -43,4 +43,10 @@ namespace ecs {
     };
 } /* ecs */
 
+#else
+
+namespace ecs {
+    class IEntityAPI;
+}
+
 #endif /* _I_ENTITY_API_HPP_ */

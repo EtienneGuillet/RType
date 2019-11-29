@@ -2,9 +2,9 @@
 #define R_TYPE_EXAMPLEENTITYAPI_HPP
 
 
-#include <ecs/IEntityAPI/IEntityAPI.hpp>
+#include <ecs/IEntityAPI/AUnspawnableEntityAPI.hpp>
 
-class ExampleEntityAPI : public ecs::IEntityAPI {
+class ExampleEntityAPI : public ecs::AUnspawnableEntityAPI {
 public:
     const ecs::Version &getVersion() const override;
 
