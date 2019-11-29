@@ -62,19 +62,19 @@ namespace rtype {
          * @brief Set the position the entity.
          * @param position Vector3 containing the position of the entity
          */
-        void setPosition(sf::Vector3<float> &position);
+        void setPosition(float x, float y, float z);
 
         /*!
          * @brief Set the rotation the entity.
          * @param rotation Vector2 containing the rotation of the entity
          */
-        void setRotation(sf::Vector2<float> &rotation);
+        void setRotation(float x, float y);
 
         /*!
          * @brief Set the scale the entity.
          * @param scale Vector2 containing the scale of the entity
          */
-        void setScale(sf::Vector2<float> &scale);
+        void setScale(float x, float y);
 
     private:
         std::weak_ptr<ecs::IEntity> _entity;

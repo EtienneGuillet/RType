@@ -70,6 +70,11 @@ namespace rtype {
         bool isTextSet() const;
 
         /*!
+         * @brief invalid the Text of the component.
+         */
+        void invalidateText();
+
+        /*!
          * @brief return the id of the font used to display the text.
          */
         int getFontId() const;

@@ -43,18 +43,18 @@ namespace rtype {
         return (_scale);
     }
 
-    void TransformComponent::setPosition(sf::Vector3<float> &position)
+    void TransformComponent::setPosition(float x, float y, float z)
     {
-        _pos = position;
+        _pos = sf::Vector3f(x, y, z);
     }
 
-    void TransformComponent::setRotation(sf::Vector2<float> &rotation)
+    void TransformComponent::setRotation(float x, float y)
     {
-        _rot = rotation;
+        _rot = sf::Vector2f(x, y);
     }
 
-    void TransformComponent::setScale(sf::Vector2<float> &scale)
+    void TransformComponent::setScale(float x, float y)
     {
-        _scale = scale;
+        _scale = sf::Vector2f(x, y);
     }
 } /* rtype */

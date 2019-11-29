@@ -12,4 +12,8 @@ target_include_directories(
         ${PROJECT_SOURCE_DIR}/commons/sources
 )
 
+add_custom_command(TARGET button_entity POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:button_entity> ${CLIENT_ENTITIES_FOLDER}
+        )
+
 add_subdirectory(tests)

@@ -79,6 +79,11 @@ namespace rtype {
         int getAssetId() const;
 
         /*!
+         * @brief invalid the sprite of the component.
+         */
+        void invalidateSprite();
+
+        /*!
          * @brief Return a boolean indicating if the sprite is set or not.
          */
         bool isSpriteSetted() const;

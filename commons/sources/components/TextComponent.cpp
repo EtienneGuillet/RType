@@ -53,6 +53,11 @@ namespace rtype {
         return _textIsSet;
     }
 
+    void TextComponent::invalidateText()
+    {
+        _textIsSet = false;
+    }
+
     int TextComponent::getFontId() const
     {
         return _fontId;

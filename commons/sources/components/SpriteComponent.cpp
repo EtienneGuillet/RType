@@ -7,7 +7,7 @@
 
 #include "SpriteComponent.hpp"
 
-    const ecs::Version rtype::SpriteComponent::Version = ecs::Version("SpriteComponent", 0, 0, 0, 1);
+const ecs::Version rtype::SpriteComponent::Version = ecs::Version("SpriteComponent", 0, 0, 0, 1);
 
 rtype::SpriteComponent::SpriteComponent(const int assetId) :_isRepeat(false), _isSpriteSet(false), _assetId(assetId)
 {
@@ -60,6 +60,11 @@ void rtype::SpriteComponent::setSprite(const sf::Sprite &sprite)
 int rtype::SpriteComponent::getAssetId() const
 {
     return _assetId;
+}
+
+void rtype::SpriteComponent::invalidateSprite()
+{
+    _isSpriteSet = false;
 }
 
 bool rtype::SpriteComponent::isSpriteSetted() const
