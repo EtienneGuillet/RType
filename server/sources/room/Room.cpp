@@ -11,6 +11,7 @@
 #include <rtype/game/RTypeEntityType.hpp>
 #include <rtype/LibLoader/LibLoader.hpp>
 #include <ecs/IECS/ECS.hpp>
+#include <systems/NetworkSyncSystem/NetworkSyncSystem.hpp>
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -350,7 +351,7 @@ void rtype::Room::endGame()
 void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos, const std::string libsFolder)
 {
     threadRunning = true;
-    auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
+    std::shared_ptr<ecs::IECS> ecs = std::make_shared<ecs::ECS>();
     auto world = ecs->createWorld();
     auto libLoader = rtype::LibLoader(ecs, world, libsFolder);
     auto start = std::chrono::system_clock::now();

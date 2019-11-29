@@ -9,11 +9,11 @@
 
 #include <logger/DefaultLogger.hpp>
 #include <ecs/exceptions/ECSException.hpp>
+#include <ecs/IECS/IECS.hpp>
 #include "World.hpp"
 
-ecs::World::World()
-    : _entities(), _systems()
-{
+ecs::World::World(std::weak_ptr<ecs::IECS> ecs)
+    : _entities(), _systems(), _ecs(ecs) {
 
 }
 
@@ -109,4 +109,8 @@ std::weak_ptr<ecs::IEntity> ecs::World::getEntityById(int id) const
         }
     }
     return std::weak_ptr<IEntity>();
+}
+
+const std::weak_ptr<ecs::IECS> &ecs::World::getEcs() const {
+    return _ecs;
 }

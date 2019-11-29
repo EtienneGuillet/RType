@@ -110,4 +110,10 @@ namespace ecs {
     };
 } /* ecs */
 
+#else
+
+namespace ecs {
+    class IECS;
+}
+
 #endif /* _I_ECS_HPP_ */

@@ -3,6 +3,7 @@
 
 #include "ecs/IEntity/IEntity.hpp"
 #include "ecs/ISystem/ISystem.hpp"
+#include "ecs/IECS/IECS.hpp"
 #include "ecs/Version/Version.hpp"
 #include <iostream>
 #include <functional>
@@ -83,6 +84,11 @@ namespace ecs {
          * @param system the version of the system to remove.
          */
         virtual std::weak_ptr<ISystem> getSystem(const Version &system) = 0;
+
+        /*!
+         * @brief Return the ecs that owns this world.
+         */
+        virtual const std::weak_ptr<ecs::IECS> &getEcs() const = 0;
     };
 } /* ecs */
 

@@ -18,7 +18,7 @@
  */
 namespace ecs {
 
-    class ECS : public IECS {
+class ECS : public IECS, public std::enable_shared_from_this<ECS> {
     public:
         /*!
          * @brief ctor

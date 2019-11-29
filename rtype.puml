@@ -658,6 +658,7 @@ interface ecs::IWorld {
     + {abstract} std::weak_ptr<ISystem> addSystem(const std::shared_ptr<ISystem> &system)
     + {abstract} void removeSystem(const Version &system)
     + {abstract} std::weak_ptr<ISystem> getSystem(const Version &system)
+    + {abstract} const std::weak_ptr<ecs::IECS> &getEcs() const
 }
 
 class ecs::Version {

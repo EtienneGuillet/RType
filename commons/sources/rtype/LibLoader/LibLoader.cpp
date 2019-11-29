@@ -4,7 +4,7 @@
 #include <cstring>
 #include <map>
 
-rtype::LibLoader::LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder) : _ecs(ecs), _world(world), _entitiesPath(libFolder + "/entities"), _systemsPath(libFolder + "/systems"), _notifierEntities(_entitiesPath), _notifierSystems(_systemsPath) {
+rtype::LibLoader::LibLoader(std::shared_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder) : _ecs(ecs), _world(world), _entitiesPath(libFolder + "/entities"), _systemsPath(libFolder + "/systems"), _notifierEntities(_entitiesPath), _notifierSystems(_systemsPath) {
     _notifierEntities.addCreateListener([this] (const std::filesystem::path &path) {
         try {
             loadLib<ecs::IEntityAPI>(path, _entities);

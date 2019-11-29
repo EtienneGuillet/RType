@@ -27,7 +27,7 @@ namespace ecs {
         /*!
          * @brief ctor
          */
-        World();
+        World(std::weak_ptr<ecs::IECS> ecs);
         /*!
          * @brief no cpy ctor
          * @param other the other world
@@ -54,10 +54,11 @@ namespace ecs {
         std::weak_ptr<ISystem> addSystem(const std::shared_ptr<ISystem> &system) override;
         void removeSystem(const Version &system) override;
         std::weak_ptr<ISystem> getSystem(const Version &system) override;
-
+        const std::weak_ptr<ecs::IECS> &getEcs() const override;
     private:
         std::vector<std::shared_ptr<IEntity>> _entities; /*!< this world entities */
         std::vector<std::shared_ptr<ISystem>> _systems; /*!< this world systems */
+        std::weak_ptr<ecs::IECS> _ecs; /*!< The ECS owning this world */
     };
 }
 
