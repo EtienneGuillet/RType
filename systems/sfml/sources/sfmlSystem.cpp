@@ -48,6 +48,8 @@ void SfmlSystem::loadTextures()
         auto it = mapRectTexture.find(i + 1);
         if (it != mapRectTexture.end()) {
             _textures[i].second = mapRectTexture[i + 1];
+        } else {
+            _textures[i].second = sf::IntRect(-1, -1, -1, -1);
         }
     }
 }
@@ -88,6 +90,8 @@ void SfmlSystem::tick(long deltatime)
                 stop();
                 break;
             }
+            if (event.type == sf::Event::TextEntered)
+
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 _mouseInput.first = sf::Mouse::getPosition().x;
                 _mouseInput.second = sf::Mouse::getPosition().y;
@@ -135,20 +139,23 @@ void SfmlSystem::renderEntities()
 
 void SfmlSystem::renderSprites(const std::shared_ptr<ecs::IWorld> &lockedWorld)
 {
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "AYAYA");
     lockedWorld->applyToEach({rtype::SpriteComponent::Version, rtype::TransformComponent::Version}, [this] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
         std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
 
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Entity detected");
         (void)entity;
         if (!spriteComponent->isSpriteSetted()) {
             sf::Sprite sprite;
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Entity detected");
             auto it = _textures.find(spriteComponent->getAssetId() - 1);
             if (it == _textures.end())
                 return;
-            sprite.setTexture(*(it->second.first));
-            sprite.setTextureRect(it->second.second);
+            sprite.setTexture(*(it->second.first), true);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Sprite set");
+            if (it->second.second != sf::IntRect(-1, -1, -1, -1)) {
+                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Set texture rect");
+                sprite.setTextureRect(it->second.second);
+            }
             spriteComponent->setSprite(sprite);
         }
         spriteComponent->getSprite().setRotation(transformComponent->getRotation().y);

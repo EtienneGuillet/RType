@@ -33,7 +33,7 @@ namespace rtype {
          * @param rot Vectore2 indicating the rotation of the entity
          * @param scale Vectore2 indicating the scale of the entity
          */
-        TransformComponent(sf::Vector3<float> pos = sf::Vector3<float>(), sf::Vector2<float> rot = sf::Vector2<float>(), sf::Vector2<float> scale = sf::Vector2<float>());
+        TransformComponent(sf::Vector3<float> pos = sf::Vector3<float>(), sf::Vector2<float> rot = sf::Vector2<float>(), sf::Vector2<float> scale = sf::Vector2<float>(1, 1));
 
         /*!
          * @brief Dtor.

@@ -10,6 +10,7 @@
 
 #include <memory>
 #include "ecs/IWorld/IWorld.hpp"
+#include "ecs/IECS/IECS.hpp"
 #include "../../entities/TitleSprite/sources/TitleSpriteEntity.hpp"
 #include "../../entities/button/sources/ButtonEntity.hpp"
 #include "../../entities/example/sources/ExampleEntity.hpp"
@@ -22,7 +23,7 @@ namespace rtype {
 
         public:
 
-        CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world);
+        CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world, ecs::IECS &ecs);
 
         ~CreateMainWindowEntities() = default;
 

@@ -8,13 +8,11 @@ const ecs::Version &ExampleSystem::getType() const {
     return ExampleSystem::Version;
 }
 
-void ExampleSystem::tick(long deltatime) {
-    std::cout << "[ExampleSystem] Tick (dt=" << deltatime << ")" << std::endl;
+void ExampleSystem::tick([[maybe_unused]]long deltatime) {
     auto world = _world.lock();
 
-    world->applyToEach({IntComponent::Version}, [] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+    world->applyToEach({IntComponent::Version}, [] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         auto intComponent = std::dynamic_pointer_cast<IntComponent>(components.front().lock());
-        (void)entity;
         std::cout << "[ExampleSystem] " << std::to_string(intComponent->operator++()) << std::endl;
     });
 }

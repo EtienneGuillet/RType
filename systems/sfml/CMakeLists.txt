@@ -17,4 +17,8 @@ target_include_directories(
         ${PROJECT_SOURCE_DIR}/commons/sources
 )
 
+add_custom_command(TARGET sfml_system POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sfml_system> ${CLIENT_SYSTEMS_FOLDER}
+        )
+
 add_subdirectory(tests)

@@ -34,7 +34,7 @@ void runMain(const std::string &libsFolder)
     auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
     auto world = ecs->createWorld();
     auto libLoader = rtype::LibLoader(ecs, world, libsFolder);
-    rtype::CreateMainWindowEntities MainWindow(world);
+    rtype::CreateMainWindowEntities MainWindow(world, *ecs);
 
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Starting world");
     while (gSignalStatus == 0) {
