@@ -85,7 +85,7 @@ namespace rtype {
         void setColorText(const sf::Color &color);
 
         /*!
-         * @brief Set the color of the text.
+         * @brief Set the outline color of the text.
          */
         void setOutlineColorText(const sf::Color &color);
 
