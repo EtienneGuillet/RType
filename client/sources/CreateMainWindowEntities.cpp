@@ -7,6 +7,21 @@
 
 #include "CreateMainWindowEntities.hpp"
 
+void rtype::CreateMainWindowEntities::GameScene()
+{
+
+}
+
+void rtype::CreateMainWindowEntities::RoomScene()
+{
+
+}
+
+void rtype::CreateMainWindowEntities::MenuScene()
+{
+
+}
+
 rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world, ecs::IECS &ecs)
 {
     auto entityTitle = ecs.createEntityFromAPI(ecs::Version("Entity_TitleSprite", 0, 1, 0, 0));
@@ -25,10 +40,12 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
     }
     if (entityButtonPlay) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlay->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonPlay->getComponent(rtype::HoverComponent::Version).lock());
         if (tr) {
             tr->setPosition(0, 0, 0);
             tr->setScale(2, 2);
         }
+        hv->setFunctionPointer(&rtype::CreateMainWindowEntities::RoomScene);
         world->pushEntity(entityButtonPlay);
     }
     else {

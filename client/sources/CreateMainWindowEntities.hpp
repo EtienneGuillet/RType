@@ -14,6 +14,7 @@
 #include "../../entities/TitleSprite/sources/TitleSpriteEntity.hpp"
 #include "../../entities/button/sources/ButtonEntity.hpp"
 #include "../../entities/example/sources/ExampleEntity.hpp"
+#include <components/HoverComponent.hpp>
 
 //todo changer le path absolue
 
@@ -27,6 +28,9 @@ namespace rtype {
 
         ~CreateMainWindowEntities() = default;
 
+        static void RoomScene();
+        static void MenuScene();
+        static void GameScene();
     };
 }
 

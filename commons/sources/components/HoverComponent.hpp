@@ -42,9 +42,12 @@ namespace rtype {
 
         void setHoverable(const bool isHoverable);
         bool getHoverable() const;
+
+        void setFunctionPointer(void (*functionPointer)());
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         bool _isHoverable;
+        void (*_functionPointer)();
     };
 } /* r-type */
 

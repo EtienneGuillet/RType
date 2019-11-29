@@ -33,3 +33,8 @@ bool rtype::HoverComponent::getHoverable() const
 {
     return _isHoverable;
 }
+
+void rtype::HoverComponent::setFunctionPointer(void (*functionPointer)())
+{
+    _functionPointer = functionPointer;
+}
