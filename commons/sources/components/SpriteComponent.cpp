@@ -30,9 +30,6 @@ bool rtype::SpriteComponent::isRepeated() const
 
 void rtype::SpriteComponent::setRepeated(const bool isRepeat)
 {
-    sf::Texture texture = (*_sprite->getTexture());
-    texture.setRepeated(isRepeat);
-    _sprite->setTexture(texture);
     _isRepeat = isRepeat;
 }
 

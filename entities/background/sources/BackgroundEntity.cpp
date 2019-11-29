@@ -8,5 +8,4 @@ BackgroundEntity::BackgroundEntity()
 {
     addComponent(std::make_shared<rtype::SpriteComponent>(43));
     addComponent(std::make_shared<rtype::TransformComponent>());
-    addComponent(std::make_shared<rtype::TTLComponent>());
 }

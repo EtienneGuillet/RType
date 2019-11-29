@@ -9,8 +9,8 @@
 #define R_TYPE_CREATEMAINWINDOWENTITIES_HPP
 
 #include <memory>
-#include "ecs/IWorld/IWorld.hpp"
-#include "ecs/IECS/IECS.hpp"
+#include "ecs/IWorld/World.hpp"
+#include "ecs/IECS/ECS.hpp"
 #include "../../entities/TitleSprite/sources/TitleSpriteEntity.hpp"
 #include "../../entities/button/sources/ButtonEntity.hpp"
 #include "../../entities/example/sources/ExampleEntity.hpp"
@@ -22,15 +22,18 @@ namespace rtype {
 
     class CreateMainWindowEntities {
 
-        public:
+    public:
 
         CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world, ecs::IECS &ecs);
 
         ~CreateMainWindowEntities() = default;
 
-        static void RoomScene();
-        static void MenuScene();
-        static void GameScene();
+        static void menuSceneLaunch();
+        static void roomSceneLaunch();
+        static void gameSceneLaunch();
+    private:
+        static std::weak_ptr<ecs::IWorld> _world;
+        static ecs::IECS *_ecs;
     };
 }
 

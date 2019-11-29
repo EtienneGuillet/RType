@@ -207,6 +207,9 @@ void SfmlSystem::renderSprites(const std::shared_ptr<ecs::IWorld> &lockedWorld)
             auto it = _textures.find(spriteComponent->getAssetId() - 1);
             if (it == _textures.end())
                 return;
+            if (spriteComponent->isRepeated()) {
+                it->second.first->setRepeated(true);
+            }
             sprite.setTexture(*(it->second.first), true);
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Sprite set");
             if (it->second.second != sf::IntRect(-1, -1, -1, -1)) {
