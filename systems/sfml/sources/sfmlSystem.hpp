@@ -11,6 +11,7 @@
 #include "ecs/ASystem/ASystem.hpp"
 #include "components/SpriteComponent.hpp"
 #include "components/TextComponent.hpp"
+#include "components/HoverComponent.hpp"
 #include "components/TransformComponent.hpp"
 #include "components/RectangleShapeComponent.hpp"
 #include "components/CircleShapeComponent.hpp"
