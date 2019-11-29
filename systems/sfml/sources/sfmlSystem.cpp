@@ -89,6 +89,26 @@ void SfmlSystem::stop()
     _window.close();
 }
 
+void SfmlSystem::manageMouseEvents(sf::Event event)
+{
+    auto lockedWorld = _world.lock();
+
+    event = event;
+    _mouseInput.first = sf::Mouse::getPosition().x;
+    _mouseInput.second = sf::Mouse::getPosition().y;
+    lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
+        if (true/* la hitbox du composant text correspond à la souris*/) {
+            textComponent->setOutlineColorText(sf::Color::White);
+            textComponent->setColorText(sf::Color::Red);
+        }
+        else {
+            textComponent->setOutlineColorText(sf::Color::Red);
+            textComponent->setColorText(sf::Color::White);
+        }
+    });
+}
+
 void SfmlSystem::tick([[maybe_unused]]long deltatime)
 {
     sf::Event event;
@@ -98,10 +118,6 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
             if (event.type == sf::Event::Closed) {
                 stop();
                 break;
-            }
-            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                _mouseInput.first = sf::Mouse::getPosition().x;
-                _mouseInput.second = sf::Mouse::getPosition().y;
             }
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z) {
                 _inputs[Z] = true;
@@ -123,6 +139,27 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
             }
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
                 _inputs[ENTER] = true;
+            }
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Z) {
+                _inputs[Z] = false;
+            }
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Q) {
+                _inputs[Q] = false;
+            }
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::S) {
+                _inputs[S] = false;
+            }
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::D) {
+                _inputs[D] = false;
+            }
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
+                _inputs[SPACE] = false;
+            }
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape) {
+                _inputs[ESCAPE] = false;
+            }
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+                _inputs[ENTER] = false;
             }
         }
     this->renderEntities();

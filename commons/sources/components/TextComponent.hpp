@@ -79,6 +79,16 @@ namespace rtype {
          */
         int getFontId() const;
 
+        /*!
+         * @brief Set the color of the text.
+         */
+        void setColorText(sf::Color color);
+
+        /*!
+         * @brief Set the color of the text.
+         */
+        void setOutlineColorText(sf::Color color);
+
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         sf::Text _text; /*!< The text displayed */

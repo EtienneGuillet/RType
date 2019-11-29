@@ -97,6 +97,14 @@ class SfmlSystem : public ecs::ASystem {
      */
     void loadFonts();
 
+    /*
+     * @brief Used to manage the mouse on the sfml window.
+     */
+    void manageMouseEvents(sf::Event event);
+
+    /*
+     * @brief Lock the world and call every rendering methods.
+     */
     void renderEntities();
 
     /*

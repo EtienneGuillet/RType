@@ -62,5 +62,15 @@ namespace rtype {
     {
         return _fontId;
     }
+
+    void TextComponent::setColorText(sf::Color color)
+    {
+        _text.setFillColor(color);
+    }
+
+    void TextComponent::setOutlineColorText(sf::Color color)
+    {
+        _text.setOutlineColor(color);
+    }
 }
 
