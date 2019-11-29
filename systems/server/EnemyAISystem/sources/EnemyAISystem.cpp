@@ -2,11 +2,16 @@
 // Created by Lilian on 28/11/2019.
 //
 
+#include <components/AIComponent/AIComponent.hpp>
+#include <logger/ILogger.hpp>
+#include <logger/DefaultLogger.hpp>
+#include <logger/StandardLogger.hpp>
 #include "EnemyAISystem.hpp"
 
 const ecs::Version systems::EnemyAISystem::Version = ecs::Version("SYSTEM_EnemyAI", 1, 0, 0, 0);
 
 systems::EnemyAISystem::EnemyAISystem() : ASystem(), _elapsedTime(0), _computeEvery(50) {
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 }
 
 void systems::EnemyAISystem::tick(long deltatime) {
@@ -15,6 +20,11 @@ void systems::EnemyAISystem::tick(long deltatime) {
         auto lockedWorld = _world.lock();
 
         if (lockedWorld) {
+            lockedWorld->applyToEach({ecs::components::AIComponent::Version}, [] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+                auto AIComponent = std::dynamic_pointer_cast<ecs::components::AIComponent>(components.front().lock());
+                auto lockedEntity = entity.lock();
+                AIComponent->operator()(lockedEntity);
+            });
         }
         _elapsedTime -= _computeEvery;
     }

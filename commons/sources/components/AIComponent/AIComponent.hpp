@@ -2,6 +2,7 @@
 #define R_TYPE_AIComponent_HPP
 
 #include <ecs/IEntity/AComponent.hpp>
+#include <functional>
 
 namespace ecs {
 
@@ -9,15 +10,17 @@ namespace ecs {
 
         class AIComponent : public ecs::AComponent {
         public:
+            typedef std::function<void (std::shared_ptr<IEntity> &entity)> Handler;
+        public:
             static const ecs::Version Version;
-            const ecs::Version &getVersion() const override;
+            [[nodiscard]] const ecs::Version &getVersion() const override;
 
         public:
 
             /*!
              * @brief ctor
              */
-            AIComponent();
+            AIComponent(Handler);
 
             /*!
              * @brief cpy ctor
@@ -32,7 +35,9 @@ namespace ecs {
              */
             AIComponent &operator=(const AIComponent &rhs);
 
+            void operator() (std::shared_ptr<IEntity> &entity);
         private:
+            Handler _handler;
         };
     }
 }

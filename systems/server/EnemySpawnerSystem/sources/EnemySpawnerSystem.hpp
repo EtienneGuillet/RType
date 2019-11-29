@@ -6,6 +6,7 @@
 #define R_TYPE_ENEMYSPAWNERSYSTEM_HPP
 
 #include <ecs/ASystem/ASystem.hpp>
+#include <map>
 
 namespace systems {
 
@@ -26,10 +27,13 @@ namespace systems {
         void stop() override;
 
     private:
+        void computeSpawn(std::shared_ptr<ecs::IEntityAPI> &entityApi, std::shared_ptr<ecs::IWorld> lockedWorld);
 
     private:
         long _elapsedTime; /*!< The passed elapsed time in ms */
         long _computeEvery; /*!< Compute actual damages every x ms*/
+
+        std::map<ecs::Version, long> _timeBeforeSpawnMap; /*< A map for each spawnable entity version and remaining time before spawn */
     };
 }
 
