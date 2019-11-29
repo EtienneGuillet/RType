@@ -11,7 +11,8 @@
 #include "rtype/network/RTypeDatagram.hpp"
 #include "network/asio/AsioNetworkManager.hpp"
 
-static void handleLoopingResponse(const b12software::network::HostInfos &serverHost, const std::shared_ptr<b12software::network::udp::IUdpSocket> &socket, rtype::network::RTypeDatagram response)
+static void
+handleLoopingResponse(const b12software::network::HostInfos &serverHost, const std::shared_ptr<b12software::network::udp::IUdpSocket> &socket, rtype::network::RTypeDatagram response)
 {
     rtype::network::RTypeDatagram dg(serverHost);
     std::string username;
@@ -35,6 +36,11 @@ static void handleLoopingResponse(const b12software::network::HostInfos &serverH
         std::cout << "Received game started" << std::endl;
     } else {
         std::cout << "Received datagram " << response.getType() << std::endl;
+        rtype::network::RTypeDatagramAction datagramAction;
+        datagramAction.shot = true;
+
+        dg.init200ActionDatagram(datagramAction);
+        socket->send(dg);
     }
 }
 
@@ -214,10 +220,10 @@ int main()
     while (std::chrono::system_clock::now() - start <= std::chrono::seconds(10)) {
         auto dg = socket2->receive();
         if (dg.isValid())
-            handleLoopingResponse(serverHost, socket2, dg);
+            handleLoopingResponse(serverHost, socket1, dg);
         auto dg2 = socket1->receive();
         if (dg2.isValid())
-            handleLoopingResponse(serverHost, socket1, dg2);
+            handleLoopingResponse(serverHost, socket2, dg2);
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     quitRoom(serverHost, socket1);

@@ -368,7 +368,9 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     }
     auto     networkApi = std::make_shared<systems::NetworkSyncSystemApi>();
     ecs->learnSystem(networkApi);
-    world->addSystem(networkApi->createNewSystem());
+    auto system = networkApi->createNewSystem();
+    system->start();
+    world->addSystem(system);
 
     while (shouldGameBeRunning && threadRunning) {
         end = std::chrono::system_clock::now();
