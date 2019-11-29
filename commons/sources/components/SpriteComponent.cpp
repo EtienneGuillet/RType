@@ -30,30 +30,30 @@ bool rtype::SpriteComponent::isRepeated() const
 
 void rtype::SpriteComponent::setRepeated(const bool isRepeat)
 {
-    sf::Texture texture = (*_sprite.getTexture());
+    sf::Texture texture = (*_sprite->getTexture());
     texture.setRepeated(isRepeat);
-    _sprite.setTexture(texture);
+    _sprite->setTexture(texture);
     _isRepeat = isRepeat;
 }
 
 const sf::IntRect &rtype::SpriteComponent::getTextureRect() const
 {
-    return _sprite.getTextureRect();
+    return _sprite->getTextureRect();
 }
 
 void rtype::SpriteComponent::setTextureRect(const sf::IntRect &rect)
 {
-    _sprite.setTextureRect(rect);
+    _sprite->setTextureRect(rect);
 }
 
 sf::Sprite &rtype::SpriteComponent::getSprite()
 {
-    return _sprite;
+    return *_sprite;
 }
 
 void rtype::SpriteComponent::setSprite(const sf::Sprite &sprite)
 {
-    _sprite = sprite;
+    _sprite = std::make_unique<sf::Sprite>(sprite);
     _isSpriteSet = true;
 }
 
@@ -65,6 +65,7 @@ int rtype::SpriteComponent::getAssetId() const
 void rtype::SpriteComponent::invalidateSprite()
 {
     _isSpriteSet = false;
+    _sprite = std::unique_ptr<sf::Sprite>();
 }
 
 bool rtype::SpriteComponent::isSpriteSetted() const

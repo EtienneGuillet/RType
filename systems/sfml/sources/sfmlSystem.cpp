@@ -91,16 +91,10 @@ void SfmlSystem::stop()
 
 bool SfmlSystem::isHovering(const sf::Vector3<float> &position)
 {
-    std::cout << "START FUNCTION" << std::endl << std::flush;
-    float startX = position.x;
-    float finishX = position.x + 120;
-    float startY = position.y;
-    float finishY = position.y + 30;
-
-    std::cout << startY << "    " << sf::Mouse::getPosition().y << "    " << finishY << std::endl << std::flush;
-    if (startX < sf::Mouse::getPosition().x && sf::Mouse::getPosition().x < finishX && startY < sf::Mouse::getPosition().y)
-        return true;
-    return false;
+    return position.x < sf::Mouse::getPosition().x &&
+        position.x + 140 > sf::Mouse::getPosition().x &&
+        position.y + 70 < sf::Mouse::getPosition().y &&
+        position.y + 130 > sf::Mouse::getPosition().y;
 }
 
 void SfmlSystem::manageMouseEvents(sf::Event event)

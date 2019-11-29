@@ -2,6 +2,7 @@
 #define R_TYPE_ACOMPONENT_HPP
 
 #include <ecs/IComponent/IComponent.hpp>
+#include <memory>
 
 namespace ecs {
     class AComponent : public ecs::IComponent {

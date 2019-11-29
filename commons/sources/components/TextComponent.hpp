@@ -91,7 +91,7 @@ namespace rtype {
 
     private:
         std::weak_ptr<ecs::IEntity> _entity;
-        sf::Text _text; /*!< The text displayed */
+        std::unique_ptr<sf::Text> _text; /*!< The text displayed */
         bool _textIsSet; /*!< Bool indicating if the font has been set */
         std::string _string; /*!< String with the content of the text */
         int _fontId; /*!< Id of the font to use */

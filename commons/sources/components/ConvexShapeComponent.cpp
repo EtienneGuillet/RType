@@ -12,13 +12,13 @@ namespace rtype {
     const ecs::Version ConvexShapeComponent::Version = ecs::Version("ConvexShapeComponent", 0, 0, 0, 1);
 
     ConvexShapeComponent::ConvexShapeComponent(const sf::ConvexShape&shape)
-    :_shape(shape)
+    :_shape(std::make_unique<sf::ConvexShape>(shape))
     {
     }
 
     void ConvexShapeComponent::setTexture(const sf::Texture &texture)
     {
-        _shape.setTexture(&texture);
+        _shape->setTexture(&texture);
     }
 
     void ConvexShapeComponent::setEntity(const std::weak_ptr<ecs::IEntity> &entity)
@@ -33,41 +33,41 @@ namespace rtype {
 
     const sf::Texture &ConvexShapeComponent::getTexture() const
     {
-        return (*_shape.getTexture());
+        return (*_shape->getTexture());
     }
 
     void ConvexShapeComponent::setColor(const sf::Color &color)
     {
-        _shape.setFillColor(color);
+        _shape->setFillColor(color);
     }
 
     const sf::Color &ConvexShapeComponent::getColor() const
     {
-        return _shape.getFillColor();
+        return _shape->getFillColor();
     }
 
     void ConvexShapeComponent::setOutlineThickness(const float &outlineThickness)
     {
-        _shape.setOutlineThickness(outlineThickness);
+        _shape->setOutlineThickness(outlineThickness);
     }
 
     float ConvexShapeComponent::getOutlineThickness() const
     {
-        return _shape.getOutlineThickness();
+        return _shape->getOutlineThickness();
     }
 
     void ConvexShapeComponent::setOutlineColor(const sf::Color &color)
     {
-        _shape.setOutlineColor(color);
+        _shape->setOutlineColor(color);
     }
 
     const sf::Color &ConvexShapeComponent::getOutlineColor() const
     {
-        return _shape.getOutlineColor();
+        return _shape->getOutlineColor();
     }
 
     sf::ConvexShape& ConvexShapeComponent::getShape()
     {
-        return _shape;
+        return *_shape;
     }
 } /* rtype */
