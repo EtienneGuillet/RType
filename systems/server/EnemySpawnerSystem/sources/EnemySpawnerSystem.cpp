@@ -2,6 +2,7 @@
 // Created by Lilian on 28/11/2019.
 //
 
+#include <logger/DefaultLogger.hpp>
 #include "EnemySpawnerSystem.hpp"
 
 const ecs::Version systems::EnemySpawnerSystem::Version = ecs::Version("SYSTEM_EnemySpawner", 1, 0, 0, 0);
@@ -15,6 +16,15 @@ void systems::EnemySpawnerSystem::tick(long deltatime) {
         auto lockedWorld = _world.lock();
 
         if (lockedWorld) {
+            auto lockedEcs = lockedWorld->getEcs().lock();
+
+            if (lockedEcs) {
+                auto entityAPIs = lockedEcs->getKnownEntities();
+
+                for (auto &entityAPI : entityAPIs) {
+                    std::cout << "[" << entityAPI->getVersion().getType() << "] Spawnable: " << (entityAPI->isSpawnable() ? "true" : "false") << std::endl;
+                }
+            }
         }
         _elapsedTime -= _computeEvery;
     }
