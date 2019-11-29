@@ -13,7 +13,7 @@ namespace rtype {
         0, 0, 1);
 
     TextComponent::TextComponent(const int fontId, const std::string &string)
-        : _textIsSet(false), _string(string), _fontId(fontId)
+        : _text(std::unique_ptr<sf::Text>()), _textIsSet(false), _string(string), _fontId(fontId)
     {
     }
 

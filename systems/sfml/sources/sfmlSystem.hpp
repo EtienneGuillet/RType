@@ -123,7 +123,7 @@ class SfmlSystem : public ecs::ASystem {
      */
     void renderShapes(const std::shared_ptr<ecs::IWorld> &lockedWorld);
 
-    bool isHovering(const sf::Vector3<float> &position);
+    static bool isHovering(const sf::Vector3<float> &position);
 
     static const ecs::Version Version;
     std::pair</*x*/float, /*y*/float> _mouseInput;

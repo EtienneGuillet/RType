@@ -9,7 +9,8 @@
 
 const ecs::Version rtype::SpriteComponent::Version = ecs::Version("SpriteComponent", 0, 0, 0, 1);
 
-rtype::SpriteComponent::SpriteComponent(const int assetId) :_isRepeat(false), _isSpriteSet(false), _assetId(assetId)
+rtype::SpriteComponent::SpriteComponent(const int assetId)
+: _sprite(std::unique_ptr<sf::Sprite>()), _isRepeat(false), _isSpriteSet(false), _assetId(assetId)
 {
 }
 

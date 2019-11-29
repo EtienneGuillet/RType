@@ -35,31 +35,34 @@ rtype::LibLoader::LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs
 template <typename TypeAPI>
 void rtype::LibLoader::loadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs) {
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Loading lib] ") + libPath.string());
-    try {
-        std::shared_ptr<ecs::DLLoader> loader(new ecs::DLLoader(libPath.string()));
-        auto api = loader->loadAPI<TypeAPI>(getEntryPoint<TypeAPI>());
-        libs.insert(std::make_pair(libPath, LibLoaded<TypeAPI> {
-                api->getVersion(),
-                api,
-                loader
-        }));
-        if constexpr (std::is_same<TypeAPI, ecs::IEntityAPI>::value) {
-          _ecs->learnEntity(api);
-        } else if (std::is_same<TypeAPI, ecs::ISystemAPI>::value) {
-            auto systemApi = std::dynamic_pointer_cast<ecs::ISystemAPI>(api);
-            _ecs->learnSystem(api);
-            _world->addSystem(systemApi->createNewSystem());
-            auto lockedSystem = _world->getSystem(api->getVersion()).lock();
-            if (lockedSystem) {
-                lockedSystem->start();
+    auto lib = libs.find(libPath);
+    if (lib == libs.end()) {
+        try {
+            std::shared_ptr<ecs::DLLoader> loader(new ecs::DLLoader(libPath.string()));
+            auto api = loader->loadAPI<TypeAPI>(getEntryPoint<TypeAPI>());
+            libs.insert(std::make_pair(libPath, LibLoaded<TypeAPI> {
+                    api->getVersion(),
+                    api,
+                    loader
+            }));
+            if constexpr (std::is_same<TypeAPI, ecs::IEntityAPI>::value) {
+                _ecs->learnEntity(api);
+            } else if (std::is_same<TypeAPI, ecs::ISystemAPI>::value) {
+                auto systemApi = std::dynamic_pointer_cast<ecs::ISystemAPI>(api);
+                _ecs->learnSystem(api);
+                _world->addSystem(systemApi->createNewSystem());
+                auto lockedSystem = _world->getSystem(api->getVersion()).lock();
+                if (lockedSystem) {
+                    lockedSystem->start();
+                }
+            } else {
+                throw b12software::exception::B12SoftwareException(std::string("Invalid API type used: ") + typeid(TypeAPI).name() , WHERE);
             }
-        } else {
-            throw b12software::exception::B12SoftwareException(std::string("Invalid API type used: ") + typeid(TypeAPI).name() , WHERE);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib loaded] ") + libPath.string());
+        } catch (const ecs::DLLoaderException &e) {
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, std::string("[Failed to load lib] ") + e.what() + ": " + e.where());
+            throw e;
         }
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Lib loaded] ") + libPath.string());
-    } catch (const ecs::DLLoaderException &e) {
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, std::string("[Failed to load lib] ") + e.what() + ": " + e.where());
-        throw e;
     }
 }
 
