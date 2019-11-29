@@ -5,6 +5,7 @@
 ** Created by tpautier,
 */
 
+#include <components/TextComponent.hpp>
 #include "CreateMainWindowEntities.hpp"
 
 rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world, ecs::IECS &ecs)
@@ -26,9 +27,13 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
     }
     if (entityButtonPlay) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlay->getComponent(rtype::TransformComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonPlay->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(850, 470, 0);
+            tr->setPosition(850, 570, 0);
             tr->setScale(2, 2);
+        }
+        if (rt) {
+            rt->setString("PLAY");
         }
         world->pushEntity(entityButtonPlay);
     }
@@ -37,9 +42,13 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
     }
     if (entityButtonQuit) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonQuit->getComponent(rtype::TransformComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonQuit->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(850, 470, 0);
+            tr->setPosition(850, 670, 0);
             tr->setScale(2, 2);
+        }
+        if (rt) {
+            rt->setString("QUIT");
         }
         world->pushEntity(entityButtonQuit);
     }
