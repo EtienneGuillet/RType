@@ -3,6 +3,7 @@
 
 #include <ecs/IEntity/AComponent.hpp>
 #include <functional>
+#include <ecs/IWorld/IWorld.hpp>
 
 namespace ecs {
 
@@ -10,7 +11,7 @@ namespace ecs {
 
         class AIComponent : public ecs::AComponent {
         public:
-            typedef std::function<void (std::shared_ptr<IEntity> &entity)> Handler;
+            typedef std::function<void (std::shared_ptr<IEntity> &entity, std::shared_ptr<ecs::IWorld> world)> Handler;
         public:
             static const ecs::Version Version;
             [[nodiscard]] const ecs::Version &getVersion() const override;
@@ -35,7 +36,7 @@ namespace ecs {
              */
             AIComponent &operator=(const AIComponent &rhs);
 
-            void operator() (std::shared_ptr<IEntity> &entity);
+            void operator ()(std::shared_ptr<IEntity> &entity, std::shared_ptr<ecs::IWorld> world);
         private:
             Handler _handler;
         };

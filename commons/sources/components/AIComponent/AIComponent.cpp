@@ -18,6 +18,6 @@ const ecs::Version &ecs::components::AIComponent::getVersion() const
     return Version;
 }
 
-void ecs::components::AIComponent::operator ()(std::shared_ptr<IEntity> &entity) {
-    _handler(entity);
+void ecs::components::AIComponent::operator ()(std::shared_ptr<IEntity> &entity, std::shared_ptr<ecs::IWorld> world) {
+    _handler(entity, world);
 }

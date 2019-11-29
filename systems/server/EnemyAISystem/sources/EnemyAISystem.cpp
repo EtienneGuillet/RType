@@ -20,10 +20,10 @@ void systems::EnemyAISystem::tick(long deltatime) {
         auto lockedWorld = _world.lock();
 
         if (lockedWorld) {
-            lockedWorld->applyToEach({ecs::components::AIComponent::Version}, [] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            lockedWorld->applyToEach({ecs::components::AIComponent::Version}, [lockedWorld] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
                 auto AIComponent = std::dynamic_pointer_cast<ecs::components::AIComponent>(components.front().lock());
                 auto lockedEntity = entity.lock();
-                AIComponent->operator()(lockedEntity);
+                AIComponent->operator ()(lockedEntity, lockedWorld);
             });
         }
         _elapsedTime -= _computeEvery;
