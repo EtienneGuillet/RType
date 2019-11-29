@@ -98,7 +98,8 @@ void SfmlSystem::manageMouseEvents(sf::Event event)
     _mouseInput.second = sf::Mouse::getPosition().y;
     lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
-        if (true/* la hitbox du composant text correspond à la souris*/) {
+        //todo la hitbox du composant text correspond à la souris
+        if (true) {
             textComponent->setOutlineColorText(sf::Color::White);
             textComponent->setColorText(sf::Color::Red);
         }

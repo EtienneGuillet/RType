@@ -46,17 +46,17 @@ namespace rtype {
         /*!
          * @brief Return a Vector3 with the position of the entity.
          */
-        sf::Vector3<float> getPosition() const;
+        const sf::Vector3<float> &getPosition() const;
 
         /*!
          * @brief Return a Vector2 with the rotation of the entity.
          */
-        sf::Vector2<float> getRotation() const;
+        const sf::Vector2<float> &getRotation() const;
 
         /*!
          * @brief Return a Vector2 with the scale of the entity.
          */
-        sf::Vector2<float> getScale() const;
+        const sf::Vector2<float> &getScale() const;
 
         /*!
          * @brief Set the position the entity.
@@ -76,9 +76,16 @@ namespace rtype {
          */
         void setScale(float x, float y);
 
+        /*!
+         * @brief Get the old position of the entity.
+         * @return The old position of the entity.
+         */
+        const sf::Vector3f &getOldPos() const;
+
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         sf::Vector3<float> _pos; /*!< The position of the entity */
+        sf::Vector3<float> _oldPos; /*!< The old position of the entity */
         sf::Vector2<float> _rot; /*!< The rotation of the entity */
         sf::Vector2<float> _scale; /*!< The scale of the entity */
     };
