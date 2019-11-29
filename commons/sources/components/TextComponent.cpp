@@ -35,7 +35,8 @@ namespace rtype {
     void TextComponent::setString(const std::string &string)
     {
         _string = string;
-        _text->setString(_string);
+        if (_text)
+            _text->setString(_string);
     }
 
     sf::Text &TextComponent::getText()

@@ -216,7 +216,6 @@ void SfmlSystem::renderSprites(const std::shared_ptr<ecs::IWorld> &lockedWorld)
 
         if (!spriteComponent->isSpriteSetted()) {
             sf::Sprite sprite;
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Entity detected");
             auto it = _textures.find(spriteComponent->getAssetId() - 1);
             if (it == _textures.end())
                 return;

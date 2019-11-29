@@ -5,6 +5,7 @@
 ** Created by tpautier,
 */
 
+#include <components/TextComponent.hpp>
 #include "CreateMainWindowEntities.hpp"
 
 std::weak_ptr<ecs::IWorld> rtype::CreateMainWindowEntities::_world;
@@ -61,11 +62,16 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     if (entityButtonPlay) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlay->getComponent(rtype::TransformComponent::Version).lock());
         auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonPlay->getComponent(rtype::HoverComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonPlay->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(850, 470, 0);
+            tr->setPosition(850, 570, 0);
             tr->setScale(2, 2);
         }
         hv->setFunctionPointer(&rtype::CreateMainWindowEntities::roomSceneLaunch);
+        lockedWorld->pushEntity(entityButtonPlay);
+        if (rt) {
+            rt->setString("PLAY");
+        }
         lockedWorld->pushEntity(entityButtonPlay);
     }
     else {
@@ -73,9 +79,14 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     }
     if (entityButtonQuit) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonQuit->getComponent(rtype::TransformComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonQuit->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(850, 470, 0);
+            tr->setPosition(850, 670, 0);
             tr->setScale(2, 2);
+        }
+        lockedWorld->pushEntity(entityButtonQuit);
+        if (rt) {
+            rt->setString("QUIT");
         }
         lockedWorld->pushEntity(entityButtonQuit);
     }
@@ -88,5 +99,5 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
 {
     _world = world;
     _ecs = &ecs;
-    gameSceneLaunch();
+    menuSceneLaunch();
 }
