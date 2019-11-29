@@ -14,6 +14,7 @@
 #include <systems/NetworkSyncSystem/NetworkSyncSystem.hpp>
 #include <entities/PlayerEntity/PlayerEntityApi.hpp>
 #include <entities/PlayerEntity/PlayerEntity.hpp>
+#include <systems/NetworkSyncSystem/NetworkSyncSystemApi.hpp>
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -365,6 +366,9 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     for (int j = 0; j < infos.getNbPlayers(); ++j) {
         world->pushEntity(std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j)));
     }
+    auto     networkApi = std::make_shared<systems::NetworkSyncSystemApi>();
+    ecs->learnSystem(networkApi);
+    world->addSystem(networkApi->createNewSystem());
 
     while (shouldGameBeRunning && threadRunning) {
         end = std::chrono::system_clock::now();
