@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2022
-** TextComponent.hpp
-** File description:
-** Created by tpautier,
-*/
-
 #ifndef _CIRCLE_SHAPE_COMPONENT_HPP_
 #define _CIRCLE_SHAPE_COMPONENT_HPP_
 

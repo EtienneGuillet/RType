@@ -6,4 +6,3 @@
 */
 
 #include <criterion/criterion.h>
-

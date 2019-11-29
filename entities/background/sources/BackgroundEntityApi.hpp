@@ -10,7 +10,7 @@ public:
 
     std::shared_ptr<ecs::IEntity> createNewEntity() const override;
 
-public:
+    public:
     static const ecs::Version Version;
 };
 
