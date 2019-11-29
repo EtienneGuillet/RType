@@ -49,6 +49,10 @@ void rtype::LibLoader::loadLib(const std::filesystem::path &libPath, MapType <Ty
             auto systemApi = std::dynamic_pointer_cast<ecs::ISystemAPI>(api);
             _ecs->learnSystem(api);
             _world->addSystem(systemApi->createNewSystem());
+            auto lockedSystem = _world->getSystem(api->getVersion()).lock();
+            if (lockedSystem) {
+                lockedSystem->start();
+            }
         } else {
             throw b12software::exception::B12SoftwareException(std::string("Invalid API type used: ") + typeid(TypeAPI).name() , WHERE);
         }
