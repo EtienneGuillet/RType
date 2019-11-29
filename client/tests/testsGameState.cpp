@@ -6,11 +6,11 @@
 */
 
 #include <criterion/criterion.h>
-#include "GameState.hpp"
+#include "NetworkState.hpp"
 
 Test(GameState, add_get_entity)
 {
-    rtype::GameState gameTest;
+    rtype::NetworkState gameTest;
     rtype::EntitiesState entityTest;
 
     gameTest.addEntity(entityTest);
@@ -21,7 +21,7 @@ Test(GameState, add_get_entity)
 
 Test(GameState, remove_entity)
 {
-    rtype::GameState gameTest;
+    rtype::NetworkState gameTest;
     rtype::EntitiesState entityTest;
     rtype::EntitiesState entityTest2;
 
@@ -37,7 +37,7 @@ Test(GameState, remove_entity)
 
 Test(GameState, get_list_entities_by_ids)
 {
-    rtype::GameState gameTest;
+    rtype::NetworkState gameTest;
     rtype::EntitiesState entityTest;
     rtype::EntitiesState entityTest2;
     rtype::EntitiesState entityTest3;
@@ -56,7 +56,7 @@ Test(GameState, get_list_entities_by_ids)
 
 Test(GameState, sort_by_z_index)
 {
-    rtype::GameState gameTest;
+    rtype::NetworkState gameTest;
     rtype::EntitiesState entityTest;
     rtype::EntitiesState entityTest2;
     rtype::EntitiesState entityTest3;

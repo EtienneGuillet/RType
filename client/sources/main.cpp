@@ -16,6 +16,7 @@
 #include <csignal>
 #include <rtype/LibLoader/LibLoader.hpp>
 #include "CreateMainWindowEntities.hpp"
+#include "RTypeNetworkClient.hpp"
 
 namespace {
     volatile std::sig_atomic_t gSignalStatus;
@@ -29,6 +30,13 @@ void signalHandler(int s)
 
 void runMain(const std::string &libsFolder)
 {
+    rtype::NetworkState state;
+    std::unique_ptr<rtype::RTypeNetworkClient> networkClient;
+    try {
+        networkClient = std::make_unique<rtype::RTypeNetworkClient>(state);
+    } catch (b12software::exception::B12SoftwareException &e) {
+        throw b12software::exception::B12SoftwareException(std::string("Fail to setup network ") + e.what(), WHERE);
+    }
     auto start = std::chrono::system_clock::now();
     auto end = start;
     auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
@@ -44,6 +52,7 @@ void runMain(const std::string &libsFolder)
             start = std::chrono::system_clock::now();
             libLoader.checkForChanges();
             world->tick(deltaTime);
+            networkClient->update(deltaTime);
         }
     }
     world = std::shared_ptr<ecs::IWorld>();
