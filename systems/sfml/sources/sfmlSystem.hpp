@@ -11,9 +11,11 @@
 #include "ecs/ASystem/ASystem.hpp"
 #include "components/SpriteComponent.hpp"
 #include "components/TextComponent.hpp"
+#include "components/HoverComponent.hpp"
 #include "components/TransformComponent.hpp"
 #include "components/RectangleShapeComponent.hpp"
 #include "components/CircleShapeComponent.hpp"
+#include "components/ScrollComponent.hpp"
 #include "components/ConvexShapeComponent.hpp"
 #include <SFML/Window.hpp>
 #include <map>
@@ -97,6 +99,14 @@ class SfmlSystem : public ecs::ASystem {
      */
     void loadFonts();
 
+    /*
+     * @brief Used to manage the mouse on the sfml window.
+     */
+    void manageMouseEvents(sf::Event event);
+
+    /*
+     * @brief Lock the world and call every rendering methods.
+     */
     void renderEntities();
 
     /*
@@ -113,6 +123,8 @@ class SfmlSystem : public ecs::ASystem {
      * @brief Render all entities on the screen that has a transformComponent and a circleComponent, a rectangleComponent or a ConvexComponent.
      */
     void renderShapes(const std::shared_ptr<ecs::IWorld> &lockedWorld);
+
+    static bool isHovering(const sf::Vector3<float> &position);
 
     static const ecs::Version Version;
     std::pair</*x*/float, /*y*/float> _mouseInput;

@@ -8,7 +8,7 @@
 #ifndef _TEXT_COMPONENT_HPP_
 #define _TEXT_COMPONENT_HPP_
 
-#include "ecs/IComponent/IComponent.hpp"
+#include "ecs/IComponent/AComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -22,7 +22,7 @@ namespace rtype {
      * @class TextComponent
      * @brief This class is a component allowing to display a text.
      */
-    class TextComponent : public ecs::IComponent {
+    class TextComponent : public ecs::AComponent {
 
     public:
         static const ecs::Version Version;
@@ -70,13 +70,28 @@ namespace rtype {
         bool isTextSet() const;
 
         /*!
+         * @brief invalid the Text of the component.
+         */
+        void invalidateText();
+
+        /*!
          * @brief return the id of the font used to display the text.
          */
         int getFontId() const;
 
+        /*!
+         * @brief Set the color of the text.
+         */
+        void setColorText(const sf::Color &color);
+
+        /*!
+         * @brief Set the outline color of the text.
+         */
+        void setOutlineColorText(const sf::Color &color);
+
     private:
         std::weak_ptr<ecs::IEntity> _entity;
-        sf::Text _text; /*!< The text displayed */
+        std::unique_ptr<sf::Text> _text; /*!< The text displayed */
         bool _textIsSet; /*!< Bool indicating if the font has been set */
         std::string _string; /*!< String with the content of the text */
         int _fontId; /*!< Id of the font to use */

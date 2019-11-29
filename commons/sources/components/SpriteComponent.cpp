@@ -7,9 +7,10 @@
 
 #include "SpriteComponent.hpp"
 
-    const ecs::Version rtype::SpriteComponent::Version = ecs::Version("SpriteComponent", 0, 0, 0, 1);
+const ecs::Version rtype::SpriteComponent::Version = ecs::Version("SpriteComponent", 0, 0, 0, 1);
 
-rtype::SpriteComponent::SpriteComponent(const int assetId) :_isRepeat(false), _isSpriteSet(false), _assetId(assetId)
+rtype::SpriteComponent::SpriteComponent(const int assetId)
+: _sprite(std::unique_ptr<sf::Sprite>()), _isRepeat(false), _isSpriteSet(false), _assetId(assetId)
 {
 }
 
@@ -30,36 +31,39 @@ bool rtype::SpriteComponent::isRepeated() const
 
 void rtype::SpriteComponent::setRepeated(const bool isRepeat)
 {
-    sf::Texture texture = (*_sprite.getTexture());
-    texture.setRepeated(isRepeat);
-    _sprite.setTexture(texture);
     _isRepeat = isRepeat;
 }
 
 const sf::IntRect &rtype::SpriteComponent::getTextureRect() const
 {
-    return _sprite.getTextureRect();
+    return _sprite->getTextureRect();
 }
 
 void rtype::SpriteComponent::setTextureRect(const sf::IntRect &rect)
 {
-    _sprite.setTextureRect(rect);
+    _sprite->setTextureRect(rect);
 }
 
 sf::Sprite &rtype::SpriteComponent::getSprite()
 {
-    return _sprite;
+    return *_sprite;
 }
 
 void rtype::SpriteComponent::setSprite(const sf::Sprite &sprite)
 {
-    _sprite = sprite;
+    _sprite = std::make_unique<sf::Sprite>(sprite);
     _isSpriteSet = true;
 }
 
 int rtype::SpriteComponent::getAssetId() const
 {
     return _assetId;
+}
+
+void rtype::SpriteComponent::invalidateSprite()
+{
+    _isSpriteSet = false;
+    _sprite = std::unique_ptr<sf::Sprite>();
 }
 
 bool rtype::SpriteComponent::isSpriteSetted() const

@@ -75,7 +75,7 @@ namespace rtype {
 
         private:
         std::weak_ptr<ecs::IEntity> _entity;
-        sf::CircleShape _shape; /*!< The CircleShape displayed */
+        std::unique_ptr<sf::CircleShape> _shape; /*!< The CircleShape displayed */
     };
 } /*rtype */
 

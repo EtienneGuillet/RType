@@ -81,7 +81,7 @@ namespace rtype {
         sf::RectangleShape &getShape();
     private:
         std::weak_ptr<ecs::IEntity> _entity;
-        sf::RectangleShape _shape; /*!< The RectangleShape displayed */
+        std::unique_ptr<sf::RectangleShape> _shape; /*!< The RectangleShape displayed */
     };
 } /*rtype */
 

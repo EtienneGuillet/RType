@@ -28,33 +28,39 @@ namespace rtype {
         return TransformComponent::Version;
     }
 
-    sf::Vector3<float> TransformComponent::getPosition() const
+    const sf::Vector3<float> &TransformComponent::getPosition() const
     {
         return (_pos);
     }
 
-    sf::Vector2<float> TransformComponent::getRotation() const
+    const sf::Vector2<float> &TransformComponent::getRotation() const
     {
         return (_rot);
     }
 
-    sf::Vector2<float> TransformComponent::getScale() const
+    const sf::Vector2<float> &TransformComponent::getScale() const
     {
         return (_scale);
     }
 
-    void TransformComponent::setPosition(sf::Vector3<float> &position)
+    void TransformComponent::setPosition(float x, float y, float z)
     {
-        _pos = position;
+        _oldPos = _pos;
+        _pos = sf::Vector3f(x, y, z);
     }
 
-    void TransformComponent::setRotation(sf::Vector2<float> &rotation)
+    void TransformComponent::setRotation(float x, float y)
     {
-        _rot = rotation;
+        _rot = sf::Vector2f(x, y);
     }
 
-    void TransformComponent::setScale(sf::Vector2<float> &scale)
+    void TransformComponent::setScale(float x, float y)
     {
-        _scale = scale;
+        _scale = sf::Vector2f(x, y);
+    }
+
+    const sf::Vector3f& TransformComponent::getOldPos() const
+    {
+        return _oldPos;
     }
 } /* rtype */
