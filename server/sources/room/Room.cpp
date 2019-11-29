@@ -12,6 +12,8 @@
 #include <rtype/LibLoader/LibLoader.hpp>
 #include <ecs/IECS/ECS.hpp>
 #include <systems/NetworkSyncSystem/NetworkSyncSystem.hpp>
+#include <entities/PlayerEntity/PlayerEntityApi.hpp>
+#include <entities/PlayerEntity/PlayerEntity.hpp>
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -356,7 +358,13 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     auto libLoader = rtype::LibLoader(ecs, world, libsFolder);
     auto start = std::chrono::system_clock::now();
     auto end = start;
-    //TODO Force add NetworkSyncSystem
+
+    auto playerApi = std::make_shared<PlayerEntityAPI>();
+    ecs->learnEntity(playerApi);
+
+    for (int j = 0; j < infos.getNbPlayers(); ++j) {
+        world->pushEntity(std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j)));
+    }
 
     while (shouldGameBeRunning && threadRunning) {
         end = std::chrono::system_clock::now();
