@@ -35,18 +35,18 @@ namespace rtype {
     void TextComponent::setString(const std::string &string)
     {
         _string = string;
-        _text.setString(_string);
+        _text->setString(_string);
     }
 
     sf::Text &TextComponent::getText()
     {
-        return _text;
+        return *_text;
     }
 
     void TextComponent::setText(const sf::Text &text)
     {
         _textIsSet = true;
-        _text = text;
+        _text = std::make_unique<sf::Text>(text);
     }
 
     bool TextComponent::isTextSet() const
@@ -56,6 +56,7 @@ namespace rtype {
 
     void TextComponent::invalidateText()
     {
+        _text = std::unique_ptr<sf::Text>();
         _textIsSet = false;
     }
 
@@ -66,12 +67,15 @@ namespace rtype {
 
     void TextComponent::setColorText(const sf::Color &color)
     {
-        _text.setFillColor(color);
+        if (_text)
+            _text->setFillColor(color);
     }
 
     void TextComponent::setOutlineColorText(const sf::Color &color)
     {
-        _text.setOutlineThickness(3);
-        _text.setOutlineColor(color);
+        if (_text) {
+            _text->setOutlineThickness(3);
+            _text->setOutlineColor(color);
+        }
     }
 }

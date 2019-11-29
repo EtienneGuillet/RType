@@ -89,7 +89,7 @@ namespace rtype {
         bool isSpriteSetted() const;
     private:
         std::weak_ptr<ecs::IEntity> _entity;
-        sf::Sprite _sprite; /*!< The sprite displayed */
+        std::unique_ptr<sf::Sprite> _sprite; /*!< The sprite displayed */
         bool _isRepeat; /*!< The bool indicating of the texture of the sprite should be repeat or not */
         bool _isSpriteSet; /*!< The bool indicating if the sprite is set or not */
         int _assetId; /*!< The id of the asset used to display the sprite */

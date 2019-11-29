@@ -11,6 +11,7 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
 {
     auto entityTitle = ecs.createEntityFromAPI(ecs::Version("Entity_TitleSprite", 0, 1, 0, 0));
     auto entityButtonPlay = ecs.createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    auto entityButtonQuit = ecs.createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
 
     if (entityTitle) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTitle->getComponent(rtype::TransformComponent::Version).lock());
@@ -26,12 +27,23 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
     if (entityButtonPlay) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlay->getComponent(rtype::TransformComponent::Version).lock());
         if (tr) {
-            tr->setPosition(0, 0, 0);
+            tr->setPosition(850, 470, 0);
             tr->setScale(2, 2);
         }
         world->pushEntity(entityButtonPlay);
     }
     else {
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find TitleSprite_entity");
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find Entity_Button");
+    }
+    if (entityButtonQuit) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonQuit->getComponent(rtype::TransformComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(850, 470, 0);
+            tr->setScale(2, 2);
+        }
+        world->pushEntity(entityButtonQuit);
+    }
+    else {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find Entity_Button");
     }
 }

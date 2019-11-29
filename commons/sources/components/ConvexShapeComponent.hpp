@@ -81,7 +81,7 @@ namespace rtype {
         sf::ConvexShape &getShape();
     private:
         std::weak_ptr<ecs::IEntity> _entity;
-        sf::ConvexShape _shape; /*!< The ConvexShape displayed */
+        std::unique_ptr<sf::ConvexShape> _shape; /*!< The ConvexShape displayed */
     };
 } /*rtype */
 
