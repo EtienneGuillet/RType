@@ -6,10 +6,11 @@
 
 class SpawnableEntityAPI : public ecs::ASpawnableEntityAPI {
 public:
-    const ecs::Version &getVersion() const override;
+    [[nodiscard]] const ecs::Version &getVersion() const override;
 
-    std::shared_ptr<ecs::IEntity> createNewEntity() const override;
+    [[nodiscard]] std::shared_ptr<ecs::IEntity> createNewEntity() const override;
 
+    [[nodiscard]] long getSpawnFreq() const override;
 public:
     static const ecs::Version Version;
 };

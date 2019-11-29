@@ -11,6 +11,7 @@ namespace ecs {
     class AUnspawnableEntityAPI : public ecs::IEntityAPI {
     public:
         bool isSpawnable() const override;
+        long getSpawnFreq() const override;
     };
 }
 

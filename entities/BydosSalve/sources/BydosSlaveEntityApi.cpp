@@ -10,3 +10,7 @@ const ecs::Version &BydosSlaveEntityAPI::getVersion() const {
 std::shared_ptr<ecs::IEntity> BydosSlaveEntityAPI::createNewEntity() const {
     return std::shared_ptr<ecs::IEntity>(new BydosSlaveEntity);
 }
+
+long BydosSlaveEntityAPI::getSpawnFreq() const {
+    return 1000 * 2;
+}

@@ -10,3 +10,7 @@ const ecs::Version &SpawnableEntityAPI::getVersion() const {
 std::shared_ptr<ecs::IEntity> SpawnableEntityAPI::createNewEntity() const {
     return std::shared_ptr<ecs::IEntity>(new SpawnableEntity);
 }
+
+long SpawnableEntityAPI::getSpawnFreq() const {
+    return 1000 * 1;
+}

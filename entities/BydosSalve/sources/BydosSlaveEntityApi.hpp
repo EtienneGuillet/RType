@@ -10,6 +10,7 @@ public:
 
     [[nodiscard]] std::shared_ptr<ecs::IEntity> createNewEntity() const override;
 
+    [[nodiscard]] long getSpawnFreq() const override;
 public:
     static const ecs::Version Version;
 };

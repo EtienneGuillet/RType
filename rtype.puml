@@ -619,6 +619,7 @@ interface ecs::IEntityAPI {
     + {abstract} [[nodiscard]] const Version &getVersion() const
     + {abstract} [[nodiscard]] std::shared_ptr<IEntity> createNewEntity()
     + {abstract} [[nodiscard]] bool isSpawnable() const
+    + {abstract} [[nodiscard]] virtual long getSpawnFreq() const
 }
 
 abstract ecs::AUnspawnableEntityAPI {

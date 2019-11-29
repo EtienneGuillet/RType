@@ -36,6 +36,12 @@ namespace ecs {
         [[nodiscard]] virtual std::shared_ptr<IEntity> createNewEntity() const = 0;
 
         /*!
+         * @brief Get the spawn rate of the entity
+         * @return The spawn frequency in ms
+         */
+        [[nodiscard]] virtual long getSpawnFreq() const = 0;
+
+        /*!
          * @brief Check if the entity is a spawnable monster.
          * @return True if the entity is a spawnable monster false otherwise.
          */

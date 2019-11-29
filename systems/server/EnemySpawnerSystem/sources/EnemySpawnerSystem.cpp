@@ -22,7 +22,7 @@ void systems::EnemySpawnerSystem::tick(long deltatime) {
                 auto entityAPIs = lockedEcs->getKnownEntities();
 
                 for (auto &entityAPI : entityAPIs) {
-                    std::cout << "[" << entityAPI->getVersion().getType() << "] Spawnable: " << (entityAPI->isSpawnable() ? "true" : "false") << std::endl;
+                    std::cout << "[" << entityAPI->getVersion().getType() << "] Spawnable: " << (entityAPI->isSpawnable() ? "true" : "false") << " " << "SpawnFreq: " << entityAPI->getSpawnFreq() << std::endl;
                 }
             }
         }

@@ -7,3 +7,7 @@
 bool ecs::AUnspawnableEntityAPI::isSpawnable() const {
     return false;
 }
+
+long ecs::AUnspawnableEntityAPI::getSpawnFreq() const {
+    return 0;
+}
