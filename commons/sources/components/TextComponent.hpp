@@ -8,7 +8,7 @@
 #ifndef _TEXT_COMPONENT_HPP_
 #define _TEXT_COMPONENT_HPP_
 
-#include "ecs/IComponent/IComponent.hpp"
+#include "ecs/IComponent/AComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -22,7 +22,7 @@ namespace rtype {
      * @class TextComponent
      * @brief This class is a component allowing to display a text.
      */
-    class TextComponent : public ecs::IComponent {
+    class TextComponent : public ecs::AComponent {
 
     public:
         static const ecs::Version Version;
@@ -82,12 +82,12 @@ namespace rtype {
         /*!
          * @brief Set the color of the text.
          */
-        void setColorText(sf::Color color);
+        void setColorText(const sf::Color &color);
 
         /*!
          * @brief Set the color of the text.
          */
-        void setOutlineColorText(sf::Color color);
+        void setOutlineColorText(const sf::Color &color);
 
     private:
         std::weak_ptr<ecs::IEntity> _entity;

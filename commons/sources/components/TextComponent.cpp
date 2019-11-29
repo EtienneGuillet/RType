@@ -45,6 +45,7 @@ namespace rtype {
 
     void TextComponent::setText(const sf::Text &text)
     {
+        _textIsSet = true;
         _text = text;
     }
 
@@ -63,14 +64,14 @@ namespace rtype {
         return _fontId;
     }
 
-    void TextComponent::setColorText(sf::Color color)
+    void TextComponent::setColorText(const sf::Color &color)
     {
         _text.setFillColor(color);
     }
 
-    void TextComponent::setOutlineColorText(sf::Color color)
+    void TextComponent::setOutlineColorText(const sf::Color &color)
     {
+        _text.setOutlineThickness(3);
         _text.setOutlineColor(color);
     }
 }
-

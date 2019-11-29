@@ -26,7 +26,7 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
     if (entityButtonPlay) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlay->getComponent(rtype::TransformComponent::Version).lock());
         if (tr) {
-            tr->setPosition(550, 400, 0);
+            tr->setPosition(0, 0, 0);
             tr->setScale(2, 2);
         }
         world->pushEntity(entityButtonPlay);

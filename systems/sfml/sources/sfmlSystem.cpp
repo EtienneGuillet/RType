@@ -89,6 +89,20 @@ void SfmlSystem::stop()
     _window.close();
 }
 
+bool SfmlSystem::isHovering(const sf::Vector3<float> &position)
+{
+    std::cout << "START FUNCTION" << std::endl << std::flush;
+    float startX = position.x;
+    float finishX = position.x + 120;
+    float startY = position.y;
+    float finishY = position.y + 30;
+
+    std::cout << startY << "    " << sf::Mouse::getPosition().y << "    " << finishY << std::endl << std::flush;
+    if (startX < sf::Mouse::getPosition().x && sf::Mouse::getPosition().x < finishX && startY < sf::Mouse::getPosition().y)
+        return true;
+    return false;
+}
+
 void SfmlSystem::manageMouseEvents(sf::Event event)
 {
     auto lockedWorld = _world.lock();
@@ -96,18 +110,22 @@ void SfmlSystem::manageMouseEvents(sf::Event event)
     event = event;
     _mouseInput.first = sf::Mouse::getPosition().x;
     _mouseInput.second = sf::Mouse::getPosition().y;
-    lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-        std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
-        //todo la hitbox du composant text correspond à la souris
-        if (true) {
-            textComponent->setOutlineColorText(sf::Color::White);
-            textComponent->setColorText(sf::Color::Red);
-        }
-        else {
-            textComponent->setOutlineColorText(sf::Color::Red);
-            textComponent->setColorText(sf::Color::White);
-        }
-    });
+    if (lockedWorld) {
+        lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
+            std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
+            if (textComponent && transformComponent) {
+                sf::Vector3<float> vec = transformComponent->getPosition();
+                if (isHovering(vec)) {
+                    textComponent->setColorText(sf::Color::Red);
+                    textComponent->setOutlineColorText(sf::Color::White);
+                } else {
+                    textComponent->setColorText(sf::Color::White);
+                    textComponent->setOutlineColorText(sf::Color::Red);
+                }
+            }
+        });
+    }
 }
 
 void SfmlSystem::tick([[maybe_unused]]long deltatime)
@@ -120,6 +138,7 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
                 stop();
                 break;
             }
+            this->manageMouseEvents(event);
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z) {
                 _inputs[Z] = true;
             }
@@ -223,6 +242,8 @@ void SfmlSystem::renderTexts(const std::shared_ptr<ecs::IWorld> &lockedWorld)
             text.setString(textComponent->getString());
             text.setFont(*(_fonts[textComponent->getFontId()]));
             textComponent->setText(text);
+            textComponent->setColorText(sf::Color::White);
+            textComponent->setOutlineColorText(sf::Color::Red);
         }
         textComponent->getText().setRotation(transformComponent->getRotation().y);
         textComponent->getText().setScale(transformComponent->getScale());
