@@ -5,7 +5,8 @@
 ** Created by tpautier,
 */
 
-#include <components/TextComponent.hpp>
+#include "components/TextComponent.hpp"
+#include "components/GameManager/GameManagerComponent.hpp"
 #include "CreateMainWindowEntities.hpp"
 
 std::weak_ptr<ecs::IWorld> rtype::CreateMainWindowEntities::_world;
@@ -70,11 +71,12 @@ void rtype::CreateMainWindowEntities::closeByQuitButton()
     auto lockedWorld = _world.lock();
 
     if (lockedWorld) {
-        auto sfmlSystem = lockedWorld->getSystem(ecs::Version("System_Sfml", 0, 1, 0, 0)).lock();
-        lockedWorld = std::shared_ptr<ecs::IWorld>();
-        if (sfmlSystem) {
-            sfmlSystem->stop();
-        }
+        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+            if (gm) {
+                gm->getShouldClose() = true;
+            }
+        });
     }
 }
 

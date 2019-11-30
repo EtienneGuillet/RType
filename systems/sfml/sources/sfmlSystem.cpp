@@ -3,6 +3,7 @@
 #include <logger/DefaultLogger.hpp>
 #include <logger/StandardLogger.hpp>
 #include <components/RectangleShapeComponent.hpp>
+#include "components/GameManager/GameManagerComponent.hpp"
 
 const ecs::Version SfmlSystem::Version = ecs::Version("System_Sfml", 0, 1, 0, 0);
 
@@ -164,7 +165,15 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
     try {
         while (_window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                stop();
+                auto lockedWorld = _world.lock();
+                if (lockedWorld) {
+                    lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+                        auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+                        if (gm) {
+                            gm->getShouldClose() = true;
+                        }
+                    });
+                }
                 break;
             }
             this->manageMouseEvents(event);

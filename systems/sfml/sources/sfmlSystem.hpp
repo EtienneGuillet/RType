@@ -21,21 +21,12 @@
 #include <map>
 #include <logger/DefaultLogger.hpp>
 #include <SFML/Graphics.hpp>
+#include "rtype/client/NetworkState.hpp"
 
 #define PATH_TO_ASSETS "./bin/assets/"
 #define PATH_TO_FONTS "./bin/fonts/"
 #define NBR_TEXTURE 44
 #define NBR_FONT 2
-
-enum Keys {
-    Z,
-    Q,
-    S,
-    D,
-    SPACE,
-    ESCAPE,
-    ENTER
-};
 
 class SfmlSystem : public ecs::ASystem {
 
@@ -129,7 +120,7 @@ class SfmlSystem : public ecs::ASystem {
     static bool isHovering(const sf::Text &text);
 
     std::pair</*x*/float, /*y*/float> _mouseInput;
-    std::map<Keys, bool> _inputs;
+    std::map<NetworkStateKeys, bool> _inputs;
     sf::Clock _clock;
     sf::RenderWindow _window;
     std::map<int, std::shared_ptr<sf::Font>> _fonts;
