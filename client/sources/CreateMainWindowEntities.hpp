@@ -16,6 +16,7 @@
 #include "../../entities/example/sources/ExampleEntity.hpp"
 #include <components/HoverComponent.hpp>
 #include <components/ScrollComponent.hpp>
+#include <components/UpdateTextComponent.hpp>
 
 //todo changer les path absolue
 

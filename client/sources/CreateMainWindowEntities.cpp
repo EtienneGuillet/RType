@@ -135,6 +135,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
 
     if (entityTitle) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTitle->getComponent(rtype::TransformComponent::Version).lock());
+
         if (tr) {
             tr->setPosition(550, -200, 0);
             tr->setScale(2, 2);
@@ -147,6 +148,13 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     if (entityTextboxUsername) {
         auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxUsername->getComponent(rtype::TextComponent::Version).lock());
         auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxUsername->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxUsername->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxUsername->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
         if (transformComponent) {
             transformComponent->setPosition(50, 400, 0);
             transformComponent->setScale(1.5, 1.5);
@@ -193,6 +201,13 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     if (entityTextboxPort) {
         auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxPort->getComponent(rtype::TextComponent::Version).lock());
         auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxPort->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxPort->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxPort->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
         if (transformComponent) {
             transformComponent->setPosition(50, 550, 0);
             transformComponent->setScale(1.5, 1.5);
@@ -206,6 +221,13 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     if (entityTextboxAddress) {
         auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxAddress->getComponent(rtype::TextComponent::Version).lock());
         auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxAddress->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxAddress->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxAddress->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
         if (transformComponent) {
             transformComponent->setPosition(50, 700, 0);
             transformComponent->setScale(1.5, 1.5);

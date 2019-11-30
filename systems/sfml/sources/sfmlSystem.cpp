@@ -154,6 +154,20 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
                 }
             }
         });
+        lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version, rtype::UpdateTextComponent::Version}, [this, lockedWorld] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
+            std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
+            std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
+            std::shared_ptr<rtype::UpdateTextComponent> updateTextComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(components[3].lock());
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && isHovering(textComponent->getText())) {
+                lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version, rtype::UpdateTextComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entityShadow, std::vector<std::weak_ptr<ecs::IComponent>> componentsShadow) {
+                    std::shared_ptr<rtype::UpdateTextComponent> updateTComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(componentsShadow[3].lock());
+                    updateTComponent->setUpdatable(false);
+                });
+                updateTextComponent->setUpdatable(true);
+            }
+        });
     }
 }
 
@@ -164,16 +178,19 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
     if (lockedWorld) {
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::UpdateTextComponent::Version}, [this, &event] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
+            std::shared_ptr<rtype::UpdateTextComponent> updateTextComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(components[2].lock());
             auto text = textComponent->getText();
             auto string = text.getString().toAnsiString();
 
-            if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode <= 'Z') || (event.text.unicode >= '0' && event.text.unicode <= '9') || (event.text.unicode == '.')) {
-                text.setString(string + static_cast<char>(event.text.unicode));
-                textComponent->setText(text);
-            } else if (event.text.unicode == 8) {
-                if (string.size() > (string.find(":") + 7)) {
-                    string.erase(string.size() - 1, string.size());
-                    textComponent->setString(string);
+            if (updateTextComponent && updateTextComponent->getUpdatable()) {
+                if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode <= 'Z') || (event.text.unicode >= '0' && event.text.unicode <= '9') || (event.text.unicode == '.')) {
+                    text.setString(string + static_cast<char>(event.text.unicode));
+                    textComponent->setText(text);
+                } else if (event.text.unicode == 8) {
+                    if (string.size() > (string.find(":") + 7)) {
+                        string.erase(string.size() - 1, string.size());
+                        textComponent->setString(string);
+                    }
                 }
             }
         });
@@ -245,7 +262,20 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
                 _inputs[ENTER] = false;
             }
         }
-    this->renderEntities();
+        auto lockedWorld = _world.lock();
+        if (lockedWorld) {
+            lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this]([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+                auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+                if (gm) {
+                    gm->getState().setInput(Z, _inputs[Z]);
+                    gm->getState().setInput(S, _inputs[S]);
+                    gm->getState().setInput(D, _inputs[D]);
+                    gm->getState().setInput(Q, _inputs[Q]);
+                    gm->getState().setInput(SPACE, _inputs[SPACE]);
+                }
+            });
+        }
+        this->renderEntities();
     } catch (SfmlSystemException &e) {
         std::cerr << e.what() << e.where() << std::endl;
     }
