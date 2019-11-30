@@ -14,11 +14,10 @@
 #include "../../entities/TitleSprite/sources/TitleSpriteEntity.hpp"
 #include "../../entities/button/sources/ButtonEntity.hpp"
 #include "../../entities/example/sources/ExampleEntity.hpp"
-#include "../../systems/sfml/sources/sfmlSystem.hpp"
 #include <components/HoverComponent.hpp>
 #include <components/ScrollComponent.hpp>
 
-//todo changer le path absolue
+//todo changer les path absolue
 
 namespace rtype {
 
