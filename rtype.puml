@@ -611,6 +611,8 @@ interface ecs::IEntity {
     + {abstract} const std::string &getName() const
     + {abstract} void addComponent(const std::shared_ptr<IComponent> &component)
     + {abstract} std::shared_ptr<IComponent> removeComponent(const Version &version)
+    + {abstract} bool shouldBeKeeped() const
+    + {abstract} void setShouldBeKeeped(bool value)
 }
 
 interface ecs::IEntityAPI {
@@ -687,6 +689,7 @@ class ecs::Entity {
     - int _id
     - std::string _name
     - std::vector<std::shared_ptr<IComponent>> _components
+    - bool _shouldBeKeeped
 }
 
 class ecs::World {
