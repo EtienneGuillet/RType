@@ -9,6 +9,8 @@
 
 #include "GameManagerComponent.hpp"
 
+const ecs::Version rtype::GameManagerComponent::Version = ecs::Version("GameManagerComponent", 0, 0, 1, 0);
+
 rtype::GameManagerComponent::GameManagerComponent(rtype::NetworkState &state, bool &shouldClose)
     : _state(state)
     , _shouldClose(shouldClose)
@@ -24,4 +26,9 @@ rtype::NetworkState &rtype::GameManagerComponent::getState()
 bool &rtype::GameManagerComponent::getShouldClose()
 {
     return _shouldClose;
+}
+
+const ecs::Version &rtype::GameManagerComponent::getVersion() const
+{
+    return Version;
 }

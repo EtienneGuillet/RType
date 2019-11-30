@@ -21,10 +21,16 @@ namespace rtype {
 
     class GameManagerComponent : public ecs::AComponent {
     public:
+        static const ecs::Version Version;
+
+    public:
         GameManagerComponent(NetworkState &state, bool &shouldClose);
         ~GameManagerComponent() = default;
         GameManagerComponent(const GameManagerComponent &other) = default;
         GameManagerComponent &operator=(const GameManagerComponent &rhs) = default;
+
+    public:
+        const ecs::Version &getVersion() const override;
 
     public:
         /*!

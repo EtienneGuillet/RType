@@ -6,15 +6,16 @@
 */
 
 #include <iostream>
-#include <ecs/IECS/IECS.hpp>
-#include <memory>
-#include <ecs/DLLoader/DLLoader.hpp>
-#include <ecs/IECS/ECS.hpp>
-#include <logger/DefaultLogger.hpp>
-#include <logger/StandardLogger.hpp>
 #include <chrono>
 #include <csignal>
-#include <rtype/LibLoader/LibLoader.hpp>
+#include <memory>
+#include "ecs/IECS/IECS.hpp"
+#include "ecs/DLLoader/DLLoader.hpp"
+#include "ecs/IECS/ECS.hpp"
+#include "logger/DefaultLogger.hpp"
+#include "logger/StandardLogger.hpp"
+#include "rtype/LibLoader/LibLoader.hpp"
+#include "components/GameManager/GameManagerComponent.hpp"
 #include "CreateMainWindowEntities.hpp"
 #include "RTypeNetworkClient.hpp"
 
@@ -30,6 +31,7 @@ void signalHandler(int s)
 
 void runMain(const std::string &libsFolder)
 {
+    bool shouldClose = false;
     rtype::NetworkState state;
     std::unique_ptr<rtype::RTypeNetworkClient> networkClient;
     try {
@@ -42,10 +44,15 @@ void runMain(const std::string &libsFolder)
     auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
     auto world = ecs->createWorld();
     auto libLoader = rtype::LibLoader(ecs, world, libsFolder);
+
+    auto gameManager = std::make_shared<ecs::Entity>("GameManager");
+    gameManager->setShouldBeKeeped(true);
+    gameManager->addComponent(std::make_shared<rtype::GameManagerComponent>(state, shouldClose));
+
     rtype::CreateMainWindowEntities MainWindow(world, *ecs);
 
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Starting world");
-    while (gSignalStatus == 0) {
+    while (gSignalStatus == 0 && !shouldClose) {
         end = std::chrono::system_clock::now();
         auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         if (deltaTime >= 10) {
@@ -55,7 +62,6 @@ void runMain(const std::string &libsFolder)
             networkClient->update(deltaTime);
         }
     }
-    std::cout << "WOWOWOWOW" << std::endl << std::flush;
     world = std::shared_ptr<ecs::IWorld>();
     ecs = std::unique_ptr<ecs::IECS>();
 }
