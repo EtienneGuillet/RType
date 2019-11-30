@@ -20,7 +20,7 @@ rtype::EntityInfos::EntityInfos(bool hasDisplay, bool hasHp)
     , _scaleX(1)
     , _scaleY(1)
     , _type(0)
-    , _hp(0)
+    , _hp(100)
     , _id(0)
 {
 
