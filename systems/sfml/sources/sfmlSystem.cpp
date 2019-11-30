@@ -131,18 +131,20 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
             std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
 
             if (textComponent && transformComponent && hoverComponent) {
-                if (isHovering(textComponent->getText())) {
-                    textComponent->setColorText(sf::Color::Red);
-                    textComponent->setOutlineColorText(sf::Color::White);
-                } else {
-                    textComponent->setColorText(sf::Color::White);
-                    textComponent->setOutlineColorText(sf::Color::Red);
-                }
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && isHovering(textComponent->getText())) {
-                    const auto &func = hoverComponent->getFunctionPointer();
-                    if (func) {
-                        std::cout << "Calling func" << std::endl << std::flush;
-                        func();
+                if (textComponent->isTextSet()) {
+                    if (isHovering(textComponent->getText())) {
+                        textComponent->setColorText(sf::Color::Red);
+                        textComponent->setOutlineColorText(sf::Color::White);
+                    } else {
+                        textComponent->setColorText(sf::Color::White);
+                        textComponent->setOutlineColorText(sf::Color::Red);
+                    }
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
+                        isHovering(textComponent->getText())) {
+                        const auto &func = hoverComponent->getFunctionPointer();
+                        if (func) {
+                            func();
+                        }
                     }
                 }
             }
