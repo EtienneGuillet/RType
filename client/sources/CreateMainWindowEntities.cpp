@@ -126,11 +126,14 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     auto entityTitle = _ecs->createEntityFromAPI(ecs::Version("Entity_TitleSprite", 0, 1, 0, 0));
     auto entityButtonPlay = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto entityButtonQuit = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    auto entityTextboxUsername = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+    auto entityTextboxPort = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+    auto entityTextboxAdresse = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
 
-    if (entityTitle) {
+        if (entityTitle) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTitle->getComponent(rtype::TransformComponent::Version).lock());
         if (tr) {
-            tr->setPosition(550, 0, 0);
+            tr->setPosition(550, -200, 0);
             tr->setScale(2, 2);
         }
         lockedWorld->pushEntity(entityTitle);
@@ -138,12 +141,51 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     else {
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find TitleSprite_entity");
     }
+    if (entityTextboxUsername) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxUsername->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxUsername->getComponent(rtype::TransformComponent::Version).lock());
+        if (transformComponent) {
+            transformComponent->setPosition(50, 400, 0);
+            transformComponent->setScale(1.5, 1.5);
+        }
+        if (textComponent) {
+            textComponent->setColorText(sf::Color::Blue);
+            textComponent->setString("Username : ");
+        }
+    }
+    lockedWorld->pushEntity(entityTextboxUsername);
+    if (entityTextboxPort) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxPort->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxPort->getComponent(rtype::TransformComponent::Version).lock());
+        if (transformComponent) {
+            transformComponent->setPosition(50, 550, 0);
+            transformComponent->setScale(1.5, 1.5);
+        }
+        if (textComponent) {
+            textComponent->setColorText(sf::Color::Blue);
+            textComponent->setString("Port : ");
+        }
+    }
+    lockedWorld->pushEntity(entityTextboxPort);
+    if (entityTextboxAdresse) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxAdresse->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxAdresse->getComponent(rtype::TransformComponent::Version).lock());
+        if (transformComponent) {
+            transformComponent->setPosition(50, 700, 0);
+            transformComponent->setScale(1.5, 1.5);
+        }
+        if (textComponent) {
+            textComponent->setColorText(sf::Color::Blue);
+            textComponent->setString("IP address : ");
+        }
+    }
+    lockedWorld->pushEntity(entityTextboxAdresse);
     if (entityButtonPlay) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlay->getComponent(rtype::TransformComponent::Version).lock());
         auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonPlay->getComponent(rtype::HoverComponent::Version).lock());
         auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonPlay->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(850, 570, 0);
+            tr->setPosition(350, 900, 0);
             tr->setScale(2, 2);
         }
         if (hv) {
@@ -163,7 +205,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
         auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonQuit->getComponent(rtype::HoverComponent::Version).lock());
         auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonQuit->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(850, 670, 0);
+            tr->setPosition(1350, 900, 0);
             tr->setScale(2, 2);
         }
         if (hv) {

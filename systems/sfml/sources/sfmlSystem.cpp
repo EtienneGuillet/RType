@@ -135,8 +135,8 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
             std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
             std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
 
-            if (textComponent && transformComponent && hoverComponent->getHoverable()) {
-                if (textComponent->isTextSet() && hoverComponent) {
+            if (textComponent && transformComponent && hoverComponent) {
+                if (textComponent->isTextSet() && hoverComponent->getHoverable()) {
                     if (isHovering(textComponent->getText())) {
                         textComponent->setColorText(sf::Color::Red);
                         textComponent->setOutlineColorText(sf::Color::White);
