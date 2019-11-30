@@ -5,8 +5,8 @@
 ** Created by tpautier,
 */
 
-#ifndef _HOVER_COMPONENT_HPP_
-#define _HOVER_COMPONENT_HPP_
+#ifndef _UPDATE_COMPONENT_HPP_
+#define _UPDATE_COMPONENT_HPP_
 
 #include "ecs/IComponent/AComponent.hpp"
 #include "logger/DefaultLogger.hpp"
@@ -50,4 +50,4 @@ namespace rtype {
     };
 } /* r-type */
 
-#endif // _SPRITE_COMPONENT_HPP_
+#endif // _UPDATE_COMPONENT_HPP_

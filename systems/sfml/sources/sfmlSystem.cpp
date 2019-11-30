@@ -15,7 +15,6 @@ SfmlSystem::SfmlSystem()
     , _textures()
     , _started(false)
 {
-
 }
 
 void SfmlSystem::start()
@@ -157,13 +156,16 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
     auto lockedWorld = _world.lock();
 
     if (lockedWorld) {
-        std::cout << "/* message */" << '\n';
-        if (event.type == sf::Event::TextEntered) {
-            if (event.text.unicode)
-                std::cout << "ASCII character typed: " << static_cast<char>(event.text.unicode) << std::endl;
-        }
-        lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this, &event] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::UpdateTextComponent::Version}, [this, &event] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
+            auto text = textComponent->getText();
+
+            if (event.text.unicode < 128) {
+                text.setString(text.getString().toAnsiString() + static_cast<char>(event.text.unicode));
+                textComponent->setText(text);
+            } else if (event.text.unicode ) {
+
+            }
         });
     }
 }
@@ -179,7 +181,7 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
                 break;
             }
             this->manageMouseEvents(event);
-            if (event.type == sf::Event::KeyPressed) {
+            if (event.type == sf::Event::TextEntered) {
                 this->manageKeyboardEvents(event);
             }
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z) {

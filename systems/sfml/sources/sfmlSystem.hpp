@@ -17,6 +17,7 @@
 #include "components/CircleShapeComponent.hpp"
 #include "components/ScrollComponent.hpp"
 #include "components/ConvexShapeComponent.hpp"
+#include "components/UpdateTextComponent.hpp"
 #include <SFML/Window.hpp>
 #include <map>
 #include <logger/DefaultLogger.hpp>
