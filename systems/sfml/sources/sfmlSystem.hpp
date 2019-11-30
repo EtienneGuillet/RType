@@ -17,6 +17,7 @@
 #include "components/CircleShapeComponent.hpp"
 #include "components/ScrollComponent.hpp"
 #include "components/ConvexShapeComponent.hpp"
+#include "components/UpdateTextComponent.hpp"
 #include <SFML/Window.hpp>
 #include <map>
 #include <logger/DefaultLogger.hpp>
@@ -96,6 +97,8 @@ class SfmlSystem : public ecs::ASystem {
      * @brief Used to manage the mouse on the sfml window.
      */
     void manageMouseEvents(sf::Event event);
+
+    void manageKeyboardEvents(sf::Event event);
 
     /*
      * @brief Lock the world and call every rendering methods.
