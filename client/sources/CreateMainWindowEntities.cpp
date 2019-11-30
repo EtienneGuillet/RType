@@ -46,7 +46,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     auto entityButtonCreateRoom = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto entityButtonRefresh = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto background = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
-    auto entityTextboxUsername = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0
+    auto entityTextboxUsername = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
 
     if (entityTextboxUsername) {
         auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxUsername->getComponent(rtype::TextComponent::Version).lock());

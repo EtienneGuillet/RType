@@ -32,7 +32,7 @@ namespace rtype {
         static void closeByQuitButton();
         static void menuSceneLaunch();
         static void roomSceneLaunch();
-        static void asfForRooms();
+        static void askForRooms();
         static void createRoom();
         static void gameSceneLaunch();
     private:
