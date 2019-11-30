@@ -51,7 +51,7 @@ namespace rtype {
          * @param world The world into which we want to add systems
          * @param libFolder The folder containing server and entities folder which contains shared libraries
          */
-        LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder);
+        LibLoader(std::shared_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder);
 
         /*!
          * @brief The method to use to check for new libraries to load or libraries removed to delete
@@ -97,7 +97,7 @@ namespace rtype {
          */
         void firstLibrariesLoad();
     private:
-        std::unique_ptr<ecs::IECS> &_ecs; /*< The ecs which should learn loaded systems */
+        std::shared_ptr<ecs::IECS> &_ecs; /*< The ecs which should learn loaded systems */
         std::shared_ptr<ecs::IWorld> &_world; /*< The world into which we want to add systems */
 
         const std::filesystem::path _entitiesPath; /*< The path of the folder containing the entities libraries */

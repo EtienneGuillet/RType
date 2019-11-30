@@ -21,7 +21,7 @@
  */
 namespace rtype {
 
-    class GameInfos {
+    class GameInfos : public std::enable_shared_from_this<GameInfos> {
     public:
         GameInfos();
         ~GameInfos();
@@ -101,6 +101,12 @@ namespace rtype {
          * @param func the function to use
          */
         void removeEntities(const std::function<bool(const rtype::EntityInfos &)> &func);
+
+        /*!
+         * @brief Get a weak ptr to this object
+         * @return A weak ptr to this object
+         */
+        std::weak_ptr<GameInfos> getWeak();
 
     private:
         std::atomic_int _nbPlayers; /*!< Number of players */

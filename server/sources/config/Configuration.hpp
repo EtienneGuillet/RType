@@ -88,12 +88,19 @@ namespace rtype {
          */
         void displayErrors() const;
 
+        /*!
+         * @brief Return true if the debug mode is active
+         * @returns true if the debug mode is active
+         */
+        bool isDebug() const;
+
     private:
 #ifdef __linux__
         static constexpr struct option longOptions[] = {
             {"help", no_argument, 0, 'h'},
             {"port", required_argument, 0, 'p'},
             {"libs", required_argument, 0, 'l'},
+            {"debug", no_argument, 0, 'D'},
         };
 #endif
 
@@ -103,6 +110,7 @@ namespace rtype {
         bool _help; /*!< Should the program display help */
         unsigned short _port; /*!< The port this program should start on */
         std::vector<std::string> _errors; /*!< Unknown parameters */
+        bool _debug; /*!< True if the debug mode is actived (simply runs a room empty) */
     };
 }
 

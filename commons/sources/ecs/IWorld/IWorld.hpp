@@ -3,6 +3,7 @@
 
 #include "ecs/IEntity/IEntity.hpp"
 #include "ecs/ISystem/ISystem.hpp"
+#include "ecs/IECS/IECS.hpp"
 #include "ecs/Version/Version.hpp"
 #include <iostream>
 #include <functional>
@@ -53,6 +54,13 @@ namespace ecs {
         [[nodiscard]] virtual std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components) const = 0;
 
         /*!
+         * @brief Return the entity that has a given id
+         * @param id the id seached.
+         * @return entity that match this is
+         */
+        [[nodiscard]] virtual std::weak_ptr<IEntity> getEntityById(int id) const = 0;
+
+        /*!
          * @brief Apply a rule to every entities that has the set of components given as parameter.
          * @param components the set of components.
          * @param toApply the function to apply.
@@ -76,6 +84,11 @@ namespace ecs {
          * @param system the version of the system to remove.
          */
         virtual std::weak_ptr<ISystem> getSystem(const Version &system) = 0;
+
+        /*!
+         * @brief Return the ecs that owns this world.
+         */
+        virtual const std::weak_ptr<ecs::IECS> &getEcs() const = 0;
     };
 } /* ecs */
 

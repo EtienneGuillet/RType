@@ -9,11 +9,11 @@
 
 #include <logger/DefaultLogger.hpp>
 #include <ecs/exceptions/ECSException.hpp>
+#include <ecs/IECS/IECS.hpp>
 #include "World.hpp"
 
-ecs::World::World()
-    : _entities(), _systems()
-{
+ecs::World::World(std::weak_ptr<ecs::IECS> ecs)
+    : _entities(), _systems(), _ecs(ecs) {
 
 }
 
@@ -25,7 +25,7 @@ ecs::World::~World()
 void ecs::World::tick(long deltatime)
 {
     for (auto &system : _systems) {
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[World] Tick (dt=" + std::to_string(deltatime) + ")");
+//        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[World] Tick (dt=" + std::to_string(deltatime) + ")");
         system->tick(deltatime);
     }
 }
@@ -99,4 +99,18 @@ std::weak_ptr<ecs::ISystem> ecs::World::getSystem(const ecs::Version &systemType
         }
     }
     return std::weak_ptr<ISystem>();
+}
+
+std::weak_ptr<ecs::IEntity> ecs::World::getEntityById(int id) const
+{
+    for (auto &entity : _entities) {
+        if (entity->getID() == id) {
+           return entity;
+        }
+    }
+    return std::weak_ptr<IEntity>();
+}
+
+const std::weak_ptr<ecs::IECS> &ecs::World::getEcs() const {
+    return _ecs;
 }

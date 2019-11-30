@@ -1,0 +1,6 @@
+add_subdirectory(MovementSystem)
+add_subdirectory(DamageSystem)
+add_subdirectory(LifeSystem)
+add_subdirectory(WeaponSystem)
+add_subdirectory(EnemySpawnerSystem)
+add_subdirectory(EnemyAISystem)

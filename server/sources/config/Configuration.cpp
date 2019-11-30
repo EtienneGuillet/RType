@@ -12,7 +12,7 @@
 #include "Configuration.hpp"
 
 rtype::Configuration::Configuration(int nbArgs, char * const *args)
-    : _binaryName(args[0]), _libsFolder("./server"), _help(false), _port(54321), _errors()
+    : _binaryName(args[0]), _libsFolder("./server"), _help(false), _port(54321), _errors(), _debug(false)
 {
 #ifdef __linux__
     int optionIdx = 0;
@@ -37,6 +37,8 @@ rtype::Configuration::Configuration(int nbArgs, char * const *args)
         case '?': _errors.emplace_back("Missing argument");
             break;
         case 'l': _libsFolder = optarg;
+            break;
+        case 'D': _debug = true;
             break;
         default: _errors.push_back(std::string("Unknown code ") + std::to_string(c));
             break;
@@ -120,4 +122,8 @@ void rtype::Configuration::displayErrors() const
 
 const std::string & rtype::Configuration::getLibsFolder() const {
     return _libsFolder;
+}
+
+bool rtype::Configuration::isDebug() const {
+    return _debug;
 }
