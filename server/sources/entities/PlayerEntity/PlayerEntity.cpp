@@ -19,7 +19,7 @@ PlayerEntity::PlayerEntity(rtype::RTypeEntityType playerId) : Entity("PlayerEnti
     addComponent(std::make_shared<ecs::components::TransformComponent>());
     addComponent(std::make_shared<ecs::components::WeaponComponent>());
     addComponent(std::make_shared<ecs::components::ColliderComponent>());
-    addComponent(std::make_shared<ecs::components::RigidbodyComponent>());
+    addComponent(std::make_shared<ecs::components::RigidbodyComponent>(0));
     addComponent(std::make_shared<ecs::components::PlayerComponent>());
     addComponent(std::make_shared<ecs::components::DisplayableComponent>(playerId));
 }
