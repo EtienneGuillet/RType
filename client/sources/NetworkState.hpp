@@ -44,7 +44,7 @@ namespace rtype {
         /*!
          * @brief Ctor.
          */
-        NetworkState() = default;
+        NetworkState();
 
         /*!
          * @brief Dtor.
