@@ -1,3 +1,4 @@
 add_subdirectory(example)
 add_subdirectory(Spawnable)
 add_subdirectory(BydosSalve)
+add_subdirectory(Kamikaze)
