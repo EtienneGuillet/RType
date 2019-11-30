@@ -45,9 +45,30 @@ namespace rtype {
          */
         bool &getShouldClose();
 
+        /*!
+         * @brief Set the display size
+         * @param width the display width
+         * @param height the display height
+         */
+        void setDisplaySize(int width, int height);
+
+        /*!
+         * @brief Get the display size width
+         * @return the width
+         */
+        int getDisplayWidth() const;
+
+        /*!
+         * @brief Get the display size height
+         * @return the height
+         */
+        int getDisplayHeight() const;
+
     private:
         NetworkState &_state; /*!< The network state to sync */
         bool &_shouldClose; /*!< Should the program close */
+        int _displayWidth; /*!< The display width */
+        int _displayHeight; /*!< The display height */
     };
 }
 

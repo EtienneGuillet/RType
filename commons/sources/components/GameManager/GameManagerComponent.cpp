@@ -14,6 +14,8 @@ const ecs::Version rtype::GameManagerComponent::Version = ecs::Version("GameMana
 rtype::GameManagerComponent::GameManagerComponent(rtype::NetworkState &state, bool &shouldClose)
     : _state(state)
     , _shouldClose(shouldClose)
+    , _displayWidth(0)
+    , _displayHeight(0)
 {
 
 }
@@ -31,4 +33,20 @@ bool &rtype::GameManagerComponent::getShouldClose()
 const ecs::Version &rtype::GameManagerComponent::getVersion() const
 {
     return Version;
+}
+
+void rtype::GameManagerComponent::setDisplaySize(int width, int height)
+{
+    _displayWidth = width;
+    _displayHeight = height;
+}
+
+int rtype::GameManagerComponent::getDisplayWidth() const
+{
+    return _displayWidth;
+}
+
+int rtype::GameManagerComponent::getDisplayHeight() const
+{
+    return _displayHeight;
 }
