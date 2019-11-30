@@ -47,7 +47,8 @@ void runMain(const std::string &libsFolder)
 
     auto gameManager = std::make_shared<ecs::Entity>("GameManager");
     gameManager->setShouldBeKeeped(true);
-    gameManager->addComponent(std::make_shared<rtype::GameManagerComponent>(state, shouldClose));
+    gameManager->addComponent(std::shared_ptr<rtype::GameManagerComponent>(new rtype::GameManagerComponent(state, shouldClose)));
+    world->pushEntity(gameManager);
 
     rtype::CreateMainWindowEntities MainWindow(world, *ecs);
 

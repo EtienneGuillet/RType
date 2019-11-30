@@ -28,9 +28,8 @@ void ecs::World::tick(long deltatime)
         _entities.erase(std::remove_if(_entities.begin(), _entities.end(), [](const std::shared_ptr<IEntity> &entity) {
             return !entity->shouldBeKeeped();
         }), _entities.end());
-        _entities.clear();
         _entitiesClearCallBack = false;
-        _entities = _afterClear;
+        _entities.insert(std::end(_entities), std::begin(_afterClear), std::end(_afterClear));
         _afterClear.clear();
     }
 
