@@ -399,8 +399,9 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
                     str += std::string("[LEFT:") + (player.isMovingLeft() ? "true" : "false") + "]";
                     str += std::string("[RIGHT:") + (player.isMovingRight() ? "true" : "false") + "]";
                     //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, str);
-                } else {
+                } else if (player.getHp() <= 0) {
                     world->popEntity(playersIdsMap[i]);
+                } else {
                     used--;
                 }
             }
