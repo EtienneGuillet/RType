@@ -156,9 +156,9 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
     auto lockedWorld = _world.lock();
 
     if (lockedWorld) {
+        std::cout << "/* message */" << '\n';
         if (event.type == sf::Event::TextEntered) {
-            std::cout << static_cast<char>(event.text.unicode) << '\n';
-            if (event.text.unicode < 128)
+            if (event.text.unicode)
                 std::cout << "ASCII character typed: " << static_cast<char>(event.text.unicode) << std::endl;
         }
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this, &event] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
