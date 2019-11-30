@@ -31,7 +31,6 @@ namespace rtype {
 
         static void closeByQuitButton();
         static void menuSceneLaunch();
-        
         static void roomSceneLaunch();
         static void asfForRooms();
         static void createRoom();
