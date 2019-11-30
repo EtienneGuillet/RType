@@ -112,10 +112,15 @@ void SfmlSystem::stop()
 
 bool SfmlSystem::isHovering(const sf::Text &text)
 {
-    return text.getGlobalBounds().left < sf::Mouse::getPosition().x &&
-        text.getGlobalBounds().width > sf::Mouse::getPosition().x &&
-        text.getGlobalBounds().top < sf::Mouse::getPosition().y &&
-        text.getGlobalBounds().height < sf::Mouse::getPosition().y;
+    float left = text.getGlobalBounds().left;
+    float width = text.getGlobalBounds().left + text.getGlobalBounds().width;
+    float top = text.getGlobalBounds().top + text.getGlobalBounds().height;
+    float height = text.getGlobalBounds().top + text.getGlobalBounds().height + text.getGlobalBounds().height;
+
+    return left < sf::Mouse::getPosition().x &&
+        width > sf::Mouse::getPosition().x &&
+        top < sf::Mouse::getPosition().y &&
+        height > sf::Mouse::getPosition().y;
 }
 
 void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
