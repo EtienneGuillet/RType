@@ -13,7 +13,7 @@
 ecs::IDGenerator ecs::Entity::Generator;
 
 ecs::Entity::Entity(const std::string &name)
-    : _id(Generator.generateNewID()), _name(name), _components()
+    : _id(Generator.generateNewID()), _name(name), _components(), _shouldBeKeeped(false)
 {
 
 }
@@ -102,4 +102,14 @@ bool ecs::Entity::operator ==(const ecs::Entity &rhs) const {
 
 bool ecs::Entity::operator !=(const ecs::Entity &rhs) const{
     return !(rhs == *this);
+}
+
+bool ecs::Entity::shouldBeKeeped() const
+{
+    return _shouldBeKeeped;
+}
+
+void ecs::Entity::setShouldBeKeeped(bool value)
+{
+    _shouldBeKeeped = value;
 }

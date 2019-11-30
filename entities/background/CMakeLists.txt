@@ -12,6 +12,11 @@ target_include_directories(
         ${PROJECT_SOURCE_DIR}/commons/sources
 )
 
+target_link_libraries(
+        background_entity
+        ${CONAN_LIBS}
+)
+
 add_custom_command(TARGET background_entity POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:background_entity> ${CLIENT_ENTITIES_FOLDER}
         )

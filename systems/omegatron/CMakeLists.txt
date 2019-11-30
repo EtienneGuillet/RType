@@ -7,6 +7,11 @@ file(
 
 add_library(omegatron_system SHARED ${RTYPE_SOURCES_SYSTEM_OMEGATRON} sources/OmegatronSystemAPI.cpp sources/OmegatronSystemAPI.hpp)
 
+target_link_libraries(
+        omegatron_system
+        ${CONAN_LIBS}
+)
+
 target_include_directories(
         omegatron_system PUBLIC
         ${PROJECT_SOURCE_DIR}/commons/sources

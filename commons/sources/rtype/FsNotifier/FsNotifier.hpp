@@ -12,6 +12,7 @@
         #include <unistd.h>
     #endif
 #elif defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64)
+	#define _WINSOCKAPI_
     #include <Windows.h>
     #ifndef WINDOWS
         #define WINDOWS

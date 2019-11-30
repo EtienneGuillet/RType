@@ -8,6 +8,7 @@
 #ifndef _HOVER_COMPONENT_HPP_
 #define _HOVER_COMPONENT_HPP_
 
+#include <functional>
 #include "ecs/IComponent/AComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 #include <SFML/Graphics.hpp>
