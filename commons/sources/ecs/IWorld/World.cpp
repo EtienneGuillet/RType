@@ -25,7 +25,7 @@ ecs::World::~World()
 void ecs::World::tick(long deltatime)
 {
     for (auto &system : _systems) {
-//        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[World] Tick (dt=" + std::to_string(deltatime) + ")");
+        //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[World][") + system->getType().getType() + "] Tick (dt=" + std::to_string(deltatime) + ")");
         system->tick(deltatime);
     }
 }
@@ -35,6 +35,10 @@ std::weak_ptr<ecs::IEntity> ecs::World::pushEntity(const std::shared_ptr<IEntity
     if (!entity) {
         throw ECSException("Can not add an invalid entity", WHERE);
     }
+    if (entity->getID() != -1) {
+        throw ECSException("Can not change ID of an entity", WHERE);
+    }
+    entity->setId(Generator.generateNewID());
     return _entities.emplace_back(entity);
 }
 
@@ -43,6 +47,7 @@ std::shared_ptr<ecs::IEntity> ecs::World::popEntity(int id)
     for (auto it = _entities.begin(); it != _entities.end(); ++it) {
         if ((*it)->getID() == id) {
             std::shared_ptr<IEntity> elem = *it;
+            Generator.freeId(elem->getID());
             _entities.erase(it);
             return elem;
         }

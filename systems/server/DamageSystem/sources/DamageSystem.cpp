@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include <logger/DefaultLogger.hpp>
+#include <logger/StandardLogger.hpp>
 #include "DamageSystem.hpp"
 #include "components/Transform/TransformComponent.hpp"
 #include "components/server/damageable/DamageableComponent.hpp"
@@ -21,7 +22,7 @@ const ecs::Version systems::DamageSystem::Version = ecs::Version("SYSTEM_DamageS
 systems::DamageSystem::DamageSystem()
     : ASystem(), _elapsedTime(0), _computeEvery(200)
 {
-
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 }
 
 void systems::DamageSystem::tick(long deltatime)
@@ -47,7 +48,7 @@ bool systems::DamageSystem::collide(const b12software::maths::Vector2D &colAPos,
     auto aMax = colAPos + (colASize * 0.5f);
     auto bMin = colBPos - (colBSize * 0.5f);
     auto bMax = colBPos + (colBSize * 0.5f);
-    if (aMin.x < bMax.x && aMax.x > bMin.x && aMin.y > bMax.y && aMax.y > bMin.y) {
+    if (aMin.x < bMax.x && aMax.x > bMin.x && aMin.y < bMax.y && aMax.y > bMin.y) {
         return true;
     }
     return false;
@@ -107,6 +108,7 @@ void systems::DamageSystem::computeDamages() const
                 auto damagedBasePos = (damagedTr) ? damagedTr->getPosition() : b12software::maths::Vector3D(0, 0, 0);
                 auto damagedColWorldPos = b12software::maths::Vector2D(damagedBasePos.x, damagedBasePos.y) + damagedCol->getOffset();
                 if (collide(damagerColWorldPos, damagerCol->getSize(), damagedColWorldPos, damagedCol->getSize())) {
+                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[" + lockedDamagerEntity->getName() + ":" + std::to_string(lockedDamagerEntity->getID()) + "][" + lockedDamagedEntity->getName() + ":" + std::to_string(lockedDamagedEntity->getID()) + "] Collision");
                     damagedDmg->damage(damagerDmg->getDamages());
                     damagedDmg->setLastHitOwner(damagerDmg->getOwner());
                     if (damagerDmg->isDestroyOnHit()) {
@@ -117,7 +119,7 @@ void systems::DamageSystem::computeDamages() const
             }
         }
         for (auto &id : toDelete) {
-            lockedWorld->popEntity(id);
+            auto entity = lockedWorld->popEntity(id);
         }
     }
 }

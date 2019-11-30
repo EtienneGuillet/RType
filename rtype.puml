@@ -964,6 +964,7 @@ enum rtype::RTypeEntityType {
     ET_BONUS_MOVING_SPEED_DOWN = 1001
     /*!< Above this value should be the monsters types */
     ET_MONSTER_TYPE_BASE = 100000
+    ET_MONSTER_TYPE_KAMIKAZE = 100001
 }
 
 class rtype::EntityInfos {

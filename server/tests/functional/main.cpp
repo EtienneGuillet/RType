@@ -213,7 +213,7 @@ int main()
     getRooms(serverHost, socket1);
     std::chrono::system_clock::time_point action = std::chrono::system_clock::now();
     auto start = std::chrono::system_clock::now();
-    while (std::chrono::system_clock::now() - start <= std::chrono::seconds(10)) {
+    while (std::chrono::system_clock::now() - start <= std::chrono::seconds(60)) {
         auto dg = socket2->receive();
         if (dg.isValid())
             handleLoopingResponse(serverHost, socket2, dg);
@@ -224,7 +224,11 @@ int main()
         if (std::chrono::system_clock::now() - start >= std::chrono::seconds(4) && std::chrono::system_clock::now() - action >= std::chrono::milliseconds(100)) {
             rtype::network::RTypeDatagram dgA(serverHost);
             rtype::network::RTypeDatagramAction datagramAction;
-            datagramAction.shot = true;
+            datagramAction.shot = false;
+            datagramAction.down = false;
+            datagramAction.up = false;
+            datagramAction.left = false;
+            datagramAction.right = false;
             dgA.init200ActionDatagram(datagramAction);
             socket2->send(dgA);
             std::cout << "Action sned" << std::endl;

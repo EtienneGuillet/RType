@@ -44,7 +44,7 @@ namespace ecs {
         virtual bool hasComponent(const Version &componentType) const = 0;
 
         /*!
-         * @brief Return true or false whether the entity has all the components or not. 
+         * @brief Return true or false whether the entity has all the components or not.
          * @param componentType Version of all the components to check.
          * @return True if the entity has all the components, false otherwise.
          */
@@ -55,6 +55,11 @@ namespace ecs {
          * @return The id.
          */
         virtual int getID() const = 0;
+
+        /*!
+         * @brief Set the id of the entity.
+         */
+        virtual void setId(int id) = 0;
 
         /*!
          * @brief Return the name of the entity.
