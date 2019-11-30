@@ -5,7 +5,7 @@ file(
         sources/*.hpp
 )
 
-add_executable(r-type_client ${RTYPE_SOURCES_CLIENT} ${RTYPE_SOURCES_COMMON} sources/EntitiesState.cpp sources/EntitiesState.hpp sources/NetworkState.cpp sources/NetworkState.hpp sources/CreateMainWindowEntities.cpp sources/CreateMainWindowEntities.hpp)
+add_executable(r-type_client ${RTYPE_SOURCES_CLIENT} ${RTYPE_SOURCES_COMMON})
 
 target_include_directories(
         r-type_client PUBLIC

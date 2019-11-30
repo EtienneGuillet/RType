@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include "NetworkState.hpp"
+#include "rtype/client/NetworkState.hpp"
 
 Test(GameState, add_get_entity)
 {

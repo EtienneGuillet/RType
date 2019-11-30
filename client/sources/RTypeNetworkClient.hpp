@@ -14,7 +14,7 @@
 #include <memory>
 #include "rtype/network/RTypeDatagramType.hpp"
 #include "rtype/network/RTypeDatagram.hpp"
-#include "NetworkState.hpp"
+#include "rtype/client/NetworkState.hpp"
 #include "network/INetworkManager.hpp"
 
 /*!

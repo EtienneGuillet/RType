@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include "EntitiesState.hpp"
+#include "rtype/client/EntitiesState.hpp"
 
 Test(EntitiesState, create_entity)
 {

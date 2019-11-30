@@ -8,8 +8,8 @@
 #ifndef R_TYPE_NETWORKSTATE_HPP
 #define R_TYPE_NETWORKSTATE_HPP
 
-#include "EntitiesState.hpp"
-#include "LobbyState.hpp"
+#include "rtype/client/EntitiesState.hpp"
+#include "rtype/client/LobbyState.hpp"
 #include <vector>
 #include <algorithm>
 
