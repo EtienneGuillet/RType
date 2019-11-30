@@ -373,6 +373,10 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
         transform->setPosition(b12software::maths::Vector3D(10, spawnPos, 0));
         playersIdsMap[j] = player->getID();
         world->pushEntity(player);
+        infos.getPlayer(j).setId(player->getID());
+        infos.getPlayer(j).setHp(3);
+        infos.getPlayer(j).setIsUsed(true);
+        infos.getPlayer(j).setType(j + 1);
     }
     auto     networkApi = std::make_shared<systems::NetworkSyncSystemApi>();
     ecs->learnSystem(networkApi);
@@ -380,6 +384,8 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     system->start();
     system->setGameInfosPtr(infos.getWeak());
     world->addSystem(system);
+
+    std::cout << "Starting game !" << std::endl;
 
     while (shouldGameBeRunning && threadRunning) {
         end = std::chrono::system_clock::now();
@@ -394,6 +400,8 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
             for (int i = 0; i < 4; i++) {
                 auto &player = infos.getPlayer(i);
                 if (player.isUsed()) {
+                    std::cout << "Inputs player " << i + 1 << " [SHOOT:" << infos.getPlayer(i).isShooting() << "][UP:" << infos.getPlayer(i).isMovingUp() << "][DOWN:" << infos.getPlayer(i).isMovingDown()
+                              << "][LEFT:" << infos.getPlayer(i).isMovingLeft() << "][RIGHT:" << infos.getPlayer(i).isMovingRight() << "]" << std::endl;
                     if (player.getHp() <= 0) {
                         alive--;
                     }
@@ -402,11 +410,15 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
                     used--;
                 }
             }
-            if (used == 0 || alive == 0)
+            if (used == 0 || alive == 0) {
+                std::cout << "used " << used << " alive " << alive << std::endl;
                 break;
+            }
         }
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
+
+    std::cout << "Ending game !" << std::endl;
     world = std::shared_ptr<ecs::IWorld>();
     ecs = std::unique_ptr<ecs::IECS>();
     threadRunning = false;

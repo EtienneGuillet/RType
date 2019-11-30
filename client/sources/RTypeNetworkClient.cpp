@@ -322,6 +322,7 @@ void rtype::RTypeNetworkClient::connected101DatagramHandler(rtype::network::RTyp
 {
     if (!_syncTo.isConnnected() && _syncTo.isTryingToConnected()) {
         _syncTo.setConnectionStatus(true);
+        resetDatagram(rtype::network::T_100_CONNECT);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][101] Connection successfull");
     }
 }
@@ -338,6 +339,7 @@ void rtype::RTypeNetworkClient::disconnected105DatagramHandler(rtype::network::R
 {
     if (_syncTo.isConnnected()) {
         //_syncTo.disconnect(); //todo if needed
+        resetDatagram(rtype::network::T_104_DISCONNECT);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][105] Disconnected");
     }
 }
@@ -389,11 +391,9 @@ void rtype::RTypeNetworkClient::roomList111DatagramHandler(rtype::network::RType
             data.push_back(parsed);
         }
         lobbyState.setAvailableLobby(data);
+        resetDatagram(rtype::network::T_110_GET_ROOMS);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][111] Received room update");
     }
-    rtype::network::RTypeDatagram response(dg.getHostInfos());
-    response.initSingleOpCodeDatagram(rtype::network::T_112_CREATE_ROOM);
-    _socket.lock()->send(response);
 }
 
 void rtype::RTypeNetworkClient::roomCreated113DatagramHandler(rtype::network::RTypeDatagram dg)
@@ -401,6 +401,8 @@ void rtype::RTypeNetworkClient::roomCreated113DatagramHandler(rtype::network::RT
     auto &lobbyState = _syncTo.getLobbyState();
     if (lobbyState.isCreatingLobby()) {
         lobbyState.validateCreate();
+        resetDatagram(rtype::network::T_112_CREATE_ROOM);
+        _sequence = NS_LOBBY;
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][113] Room created");
     }
 }
@@ -410,6 +412,8 @@ void rtype::RTypeNetworkClient::roomQuitted115DatagramHandler(rtype::network::RT
     auto &lobbyState = _syncTo.getLobbyState();
     if (lobbyState.isQuittingLobby()) {
         lobbyState.validateQuit();
+        resetDatagram(rtype::network::T_114_QUIT_ROOM);
+        _sequence = NS_LOBBY;
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][115] Room exited");
     }
 }
@@ -421,6 +425,8 @@ void rtype::RTypeNetworkClient::roomJoined117DatagramHandler(rtype::network::RTy
         std::vector<std::string> names;
         dg.extract117RoomJoinedDatagram(names);
         lobbyState.validateJoin(names);
+        resetDatagram(rtype::network::T_116_JOIN_ROOM);
+        _sequence = NS_LOBBY;
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][117] Room Joined there is " + std::to_string(names.size()) + " players inside");
     }
 }
@@ -440,6 +446,7 @@ void rtype::RTypeNetworkClient::display210DatagramHandler(rtype::network::RTypeD
         found.setPos(disp.position.x, disp.position.y, disp.position.z);
         found.setRot(disp.rotation.x, disp.rotation.y);
         found.setScale(disp.scale.x, disp.scale.y);
+        std::cout << "Updated display " << disp.entityId << " " << disp.type << std::endl;
     } catch (rtype::GameStateException &e) {
         EntitiesState state;
         state.setShouldDisplay(true);
@@ -452,6 +459,7 @@ void rtype::RTypeNetworkClient::display210DatagramHandler(rtype::network::RTypeD
         state.setId(disp.entityId);
         state.setHp(-1);
         _syncTo.addEntity(state);
+        std::cout << "Created display " << disp.entityId << " " << disp.type << std::endl;
     }
 }
 
@@ -519,6 +527,7 @@ void rtype::RTypeNetworkClient::startGame270DatagramHandler(rtype::network::RTyp
     if (!_syncTo.isInGame()) {
         _syncTo.setPlayAgain(false);
         _syncTo.setInGame(true);
+        _sequence = NS_GAME;
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][270] Game starting");
     }
     rtype::network::RTypeDatagram response(dg.getHostInfos());
@@ -530,6 +539,7 @@ void rtype::RTypeNetworkClient::error303DatagramHandler(rtype::network::RTypeDat
 {
     if (_syncTo.isTryingToConnected()) {
         _syncTo.setConnectionStatus(false, "Username already used");
+        resetDatagram(rtype::network::T_100_CONNECT);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][303] Failed to connect: username already used");
     }
 }
@@ -538,6 +548,7 @@ void rtype::RTypeNetworkClient::error304DatagramHandler(rtype::network::RTypeDat
 {
     if (_syncTo.getLobbyState().isCreatingLobby()) {
         _syncTo.getLobbyState().invalidateCreate("Room name already used");
+        resetDatagram(rtype::network::T_112_CREATE_ROOM);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][304] Failed to create room: room name already used");
     }
 }
@@ -546,6 +557,7 @@ void rtype::RTypeNetworkClient::error306DatagramHandler(rtype::network::RTypeDat
 {
     if (_syncTo.getLobbyState().isJoiningLobby()) {
         _syncTo.getLobbyState().invalidateJoin("Room not found");
+        resetDatagram(rtype::network::T_116_JOIN_ROOM);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][306] Failed to join room: room not found");
     }
 }
@@ -554,6 +566,7 @@ void rtype::RTypeNetworkClient::error307DatagramHandler(rtype::network::RTypeDat
 {
     if (_syncTo.getLobbyState().isJoiningLobby()) {
         _syncTo.getLobbyState().invalidateJoin("Invalid password");
+        resetDatagram(rtype::network::T_116_JOIN_ROOM);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][306] Failed to join room: room not found");
     }
 }
@@ -562,6 +575,7 @@ void rtype::RTypeNetworkClient::error308DatagramHandler(rtype::network::RTypeDat
 {
     if (_syncTo.getLobbyState().isJoiningLobby()) {
         _syncTo.getLobbyState().invalidateJoin("Room not joinable");
+        resetDatagram(rtype::network::T_116_JOIN_ROOM);
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][306] Failed to join room: room not joinable");
     }
 }

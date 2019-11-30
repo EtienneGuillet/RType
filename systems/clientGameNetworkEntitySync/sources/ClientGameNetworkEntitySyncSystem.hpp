@@ -10,6 +10,7 @@
 #ifndef R_TYPE_CLIENTGAMENETWORKENTITYSYNCSYSTEM_HPP
 #define R_TYPE_CLIENTGAMENETWORKENTITYSYNCSYSTEM_HPP
 
+#include <map>
 #include "ecs/ASystem/ASystem.hpp"
 #include "ecs/Version/Version.hpp"
 
@@ -22,6 +23,12 @@ namespace rtype {
 
     public:
         static const ecs::Version Version;
+
+    private:
+        static const std::map<int, int> _networkTypeToSpriteId;
+
+    private:
+        int getAssetIdFromNetworkType(int type);
     };
 }
 

@@ -13,6 +13,5 @@ void ExampleSystem::tick([[maybe_unused]]long deltatime) {
 
     world->applyToEach({IntComponent::Version}, [] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         auto intComponent = std::dynamic_pointer_cast<IntComponent>(components.front().lock());
-        std::cout << "[ExampleSystem] " << std::to_string(intComponent->operator++()) << std::endl;
     });
 }

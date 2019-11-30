@@ -8,6 +8,7 @@
 #ifndef R_TYPE_ENTITYID_HPP
 #define R_TYPE_ENTITYID_HPP
 
+#include <ecs/IComponent/AComponent.hpp>
 #include "ecs/IComponent/IComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -21,7 +22,7 @@
       * @class EntityID
       * @brief This class is a component refering to the ID of a entity on the network.
       */
-     class EntityIdComponent : public ecs::IComponent {
+     class EntityIdComponent : public ecs::AComponent {
 
          public:
             static const ecs::Version Version;
