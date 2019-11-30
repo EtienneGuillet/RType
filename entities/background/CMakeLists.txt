@@ -5,7 +5,7 @@ file(
         sources/*.cpp
 )
 
-add_library(background_entity SHARED ${RTYPE_SOURCES_ENTITY_BACKGROUND})
+add_library(background_entity SHARED ${RTYPE_SOURCES_ENTITY_BACKGROUND} ../textInput/sources/TextInputEntity.cpp ../textInput/sources/TextInputEntity.hpp)
 
 target_include_directories(
         background_entity PUBLIC

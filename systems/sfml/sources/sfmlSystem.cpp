@@ -136,7 +136,7 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
             std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
 
             if (textComponent && transformComponent && hoverComponent) {
-                if (textComponent->isTextSet()) {
+                if (textComponent->isTextSet() && hoverComponent->getHoverable()) {
                     if (isHovering(textComponent->getText())) {
                         textComponent->setColorText(sf::Color::Red);
                         textComponent->setOutlineColorText(sf::Color::White);
@@ -167,11 +167,11 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
             auto text = textComponent->getText();
             auto string = text.getString().toAnsiString();
 
-            if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode >= 'Z')) {
+            if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode <= 'Z') || (event.text.unicode >= '0' && event.text.unicode <= '9') || (event.text.unicode == '.')) {
                 text.setString(string + static_cast<char>(event.text.unicode));
                 textComponent->setText(text);
             } else if (event.text.unicode == 8) {
-                if (string.size() > 5) {
+                if (string.size() > (string.find(":") + 7)) {
                     string.erase(string.size() - 1, string.size());
                     textComponent->setString(string);
                 }
