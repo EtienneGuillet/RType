@@ -181,7 +181,7 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
                     text.setString(string + static_cast<char>(event.text.unicode));
                     textComponent->setText(text);
                 } else if (event.text.unicode == 8) {
-                    if (string.size() > (string.find(":") + 1)) {
+                    if (string.size() > (string.find(":") + 7)) {
                         string.erase(string.size() - 1, string.size());
                         textComponent->setString(string);
                     }
