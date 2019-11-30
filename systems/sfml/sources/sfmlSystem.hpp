@@ -104,6 +104,8 @@ class SfmlSystem : public ecs::ASystem {
      */
     void manageMouseEvents(sf::Event event);
 
+    void manageKeyboardEvents(sf::Event event);
+
     /*
      * @brief Lock the world and call every rendering methods.
      */

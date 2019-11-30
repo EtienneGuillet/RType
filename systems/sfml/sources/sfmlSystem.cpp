@@ -123,6 +123,22 @@ void SfmlSystem::manageMouseEvents(sf::Event event)
     }
 }
 
+void SfmlSystem::manageKeyboardEvents(sf::Event event)
+{
+    auto lockedWorld = _world.lock();
+
+    if (lockedWorld) {
+        if (event.type == sf::Event::TextEntered) {
+            std::cout << static_cast<char>(event.text.unicode) << '\n';
+            if (event.text.unicode < 128)
+                std::cout << "ASCII character typed: " << static_cast<char>(event.text.unicode) << std::endl;
+        }
+        lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this, &event] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
+        });
+    }
+}
+
 void SfmlSystem::tick([[maybe_unused]]long deltatime)
 {
     sf::Event event;
@@ -134,6 +150,9 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
                 break;
             }
             this->manageMouseEvents(event);
+            if (event.type == sf::Event::KeyPressed) {
+                this->manageKeyboardEvents(event);
+            }
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z) {
                 _inputs[Z] = true;
             }

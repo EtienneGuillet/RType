@@ -14,6 +14,8 @@ ecs::IECS *rtype::CreateMainWindowEntities::_ecs = nullptr;
 void rtype::CreateMainWindowEntities::gameSceneLaunch()
 {
     auto lockedWorld = _world.lock();
+    if (!lockedWorld || _ecs == nullptr)
+        return;
     auto entityBackground = _ecs->createEntityFromAPI(ecs::Version("Entity_Background", 1, 0, 0, 0));
 
     if (entityBackground) {
@@ -35,6 +37,24 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
 
 void rtype::CreateMainWindowEntities::roomSceneLaunch()
 {
+    auto lockedWorld = _world.lock();
+    if (!lockedWorld || _ecs == nullptr)
+        return;
+
+    auto entityTextbox = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+
+    if (entityTextbox) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextbox->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextbox->getComponent(rtype::TransformComponent::Version).lock());
+        if (transformComponent) {
+            transformComponent->setPosition(850, 570, 0);
+            transformComponent->setScale(2, 2);
+        }
+        if (textComponent) {
+            textComponent->setString("Name:");
+        }
+    }
+    lockedWorld->pushEntity(entityTextbox);
 }
 
 void rtype::CreateMainWindowEntities::menuSceneLaunch()
@@ -46,7 +66,6 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     auto entityTitle = _ecs->createEntityFromAPI(ecs::Version("Entity_TitleSprite", 0, 1, 0, 0));
     auto entityButtonPlay = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto entityButtonQuit = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
-
 
     if (entityTitle) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTitle->getComponent(rtype::TransformComponent::Version).lock());
@@ -99,5 +118,5 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
 {
     _world = world;
     _ecs = &ecs;
-    menuSceneLaunch();
+    roomSceneLaunch();
 }
