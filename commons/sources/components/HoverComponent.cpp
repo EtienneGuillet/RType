@@ -34,7 +34,13 @@ bool rtype::HoverComponent::getHoverable() const
     return _isHoverable;
 }
 
-void rtype::HoverComponent::setFunctionPointer(void (*functionPointer)())
+void rtype::HoverComponent::setFunctionPointer(const functionPointer &func)
 {
-    _functionPointer = functionPointer;
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "HoverComponent::setFunctionPointer");
+    _functionPointer = func;
+}
+
+const rtype::HoverComponent::functionPointer &rtype::HoverComponent::getFunctionPointer() const
+{
+    return _functionPointer;
 }
