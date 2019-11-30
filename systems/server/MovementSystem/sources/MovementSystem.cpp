@@ -31,11 +31,13 @@ void systems::MovementSystem::tick(long deltatime)
                 auto dir = rigidbodyomponent->getDirection().normalized();
                 auto movementVector = dir * rigidbodyomponent->getUps() * (deltatime / 1000.0f);
                 auto newPos = transformComponent->getPosition() + b12software::maths::Vector3D(movementVector.x, movementVector.y, 0.0f);
-                transformComponent->setPosition(newPos);
-                if (rigidbodyomponent->shouldLookTowardsDirection()) {
-                    auto rightVec = b12software::maths::Vector2D(1, 0);
-                    auto angle = acosf(b12software::maths::Vector2D::Dot(dir, rightVec));
-                    transformComponent->setRotation(b12software::maths::Vector2D(0, angle));
+                if (!std::isnan(movementVector.x) && !std::isnan(movementVector.y)) {
+                    transformComponent->setPosition(newPos);
+                    if (rigidbodyomponent->shouldLookTowardsDirection()) {
+                        auto rightVec = b12software::maths::Vector2D(1, 0);
+                        auto angle = acosf(b12software::maths::Vector2D::Dot(dir, rightVec));
+                        transformComponent->setRotation(b12software::maths::Vector2D(0, angle));
+                    }
                 }
             }
         );
