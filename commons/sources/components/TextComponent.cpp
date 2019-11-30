@@ -13,7 +13,7 @@ namespace rtype {
         0, 0, 1);
 
     TextComponent::TextComponent(const int fontId, const std::string &string)
-        : _text(std::unique_ptr<sf::Text>()), _textIsSet(false), _string(string), _fontId(fontId)
+        : _text(std::unique_ptr<sf::Text>()), _textIsSet(false), _string(string), _fontId(fontId), _color(sf::Color::Red), _outlineColor(sf::Color::White)
     {
     }
 
@@ -48,6 +48,8 @@ namespace rtype {
     {
         _textIsSet = true;
         _text = std::make_unique<sf::Text>(text);
+        if (_text->getOutlineThickness() == 0)
+            _text->setOutlineThickness(3);
     }
 
     bool TextComponent::isTextSet() const
@@ -68,15 +70,26 @@ namespace rtype {
 
     void TextComponent::setColorText(const sf::Color &color)
     {
+        _color = color;
         if (_text)
             _text->setFillColor(color);
     }
 
+    const sf::Color &TextComponent::getColor() const
+    {
+        return _color;
+    }
+
     void TextComponent::setOutlineColorText(const sf::Color &color)
     {
+        _outlineColor = color;
         if (_text) {
-            _text->setOutlineThickness(3);
             _text->setOutlineColor(color);
         }
+    }
+
+    const sf::Color &TextComponent::getOutlineColor() const
+    {
+        return _outlineColor;
     }
 }

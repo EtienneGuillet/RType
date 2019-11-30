@@ -138,11 +138,12 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
             if (textComponent && transformComponent && hoverComponent) {
                 if (textComponent->isTextSet() && hoverComponent->getHoverable()) {
                     if (isHovering(textComponent->getText())) {
-                        textComponent->setColorText(sf::Color::Red);
-                        textComponent->setOutlineColorText(sf::Color::White);
+                        textComponent->getText().setFillColor(textComponent->getColor());
+                        textComponent->getText().setOutlineColor(textComponent->getOutlineColor());
                     } else {
-                        textComponent->setColorText(sf::Color::White);
-                        textComponent->setOutlineColorText(sf::Color::Red);
+                        if (textComponent->getColor() == sf::Color::Red)
+                        textComponent->getText().setFillColor(textComponent->getOutlineColor());
+                        textComponent->getText().setOutlineColor(textComponent->getColor());
                     }
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
                         isHovering(textComponent->getText())) {
@@ -162,10 +163,13 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
 
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && isHovering(textComponent->getText())) {
                 lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version, rtype::UpdateTextComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entityShadow, std::vector<std::weak_ptr<ecs::IComponent>> componentsShadow) {
+                    std::shared_ptr<rtype::TextComponent> TComponent = std::dynamic_pointer_cast<rtype::TextComponent>(componentsShadow[0].lock());
                     std::shared_ptr<rtype::UpdateTextComponent> updateTComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(componentsShadow[3].lock());
                     updateTComponent->setUpdatable(false);
+                    TComponent->setColorText(sf::Color::Red);
                 });
                 updateTextComponent->setUpdatable(true);
+                textComponent->setColorText(sf::Color::Blue);
             }
         });
     }
@@ -349,8 +353,6 @@ void SfmlSystem::renderTexts(const std::shared_ptr<ecs::IWorld> &lockedWorld)
             text.setString(textComponent->getString());
             text.setFont(*(_fonts[textComponent->getFontId()]));
             textComponent->setText(text);
-            textComponent->setColorText(sf::Color::White);
-            textComponent->setOutlineColorText(sf::Color::Red);
         }
         textComponent->getText().setRotation(transformComponent->getRotation().y);
         textComponent->getText().setScale(transformComponent->getScale());

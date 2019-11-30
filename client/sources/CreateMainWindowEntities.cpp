@@ -160,7 +160,6 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
             transformComponent->setScale(1.5, 1.5);
         }
         if (textComponent) {
-            textComponent->setColorText(sf::Color::Blue);
             textComponent->setString("Username :      ");
         }
     }
@@ -213,7 +212,6 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
             transformComponent->setScale(1.5, 1.5);
         }
         if (textComponent) {
-            textComponent->setColorText(sf::Color::Blue);
             textComponent->setString("Port :      ");
         }
     }
@@ -233,7 +231,6 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
             transformComponent->setScale(1.5, 1.5);
         }
         if (textComponent) {
-            textComponent->setColorText(sf::Color::Blue);
             textComponent->setString("IP address :      ");
         }
     }

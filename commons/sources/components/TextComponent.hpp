@@ -83,18 +83,21 @@ namespace rtype {
          * @brief Set the color of the text.
          */
         void setColorText(const sf::Color &color);
+        const sf::Color &getColor() const;
 
         /*!
          * @brief Set the outline color of the text.
          */
         void setOutlineColorText(const sf::Color &color);
-
+        const sf::Color &getOutlineColor() const;
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         std::unique_ptr<sf::Text> _text; /*!< The text displayed */
         bool _textIsSet; /*!< Bool indicating if the font has been set */
         std::string _string; /*!< String with the content of the text */
         int _fontId; /*!< Id of the font to use */
+        sf::Color _color;
+        sf::Color _outlineColor;
     };
 }
 
