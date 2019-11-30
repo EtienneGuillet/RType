@@ -18,10 +18,10 @@
 #include "ClientGameNetworkEntitySyncSystem.hpp"
 
 const std::map<int, int> rtype::ClientGameNetworkEntitySyncSystem::_networkTypeToSpriteId = {
-    {1, 44}, //player 1
-    {2, 44}, //player 2
-    {3, 44}, //player 3
-    {4, 44}, //player 4
+    {1, 42}, //player 1
+    {2, 42}, //player 2
+    {3, 42}, //player 3
+    {4, 42}, //player 4
 };
 
 const ecs::Version rtype::ClientGameNetworkEntitySyncSystem::Version = ecs::Version("SYSTEM_ClientGameNetworkEntitySyncSystem", 0, 0, 1, 0);
@@ -62,10 +62,8 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
             } else {
                 trComp->setScale(0, 0);
             }
-            std::cout << "Updated entity" << std::endl;
         } catch (GameStateException &e) {
             toDestroy.push_back(lockedEntity->getID());
-            std::cout << "Deleted entity" << std::endl;
         }
         handeled.push_back(netIdComp->getID());
     });
@@ -81,7 +79,6 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
             ));
         newEntity->addComponent(std::make_shared<rtype::SpriteComponent>(getAssetIdFromNetworkType(entityData.getType())));
         lockedWorld->pushEntity(newEntity);
-        std::cout << "Created new entity" << std::endl;
     }
     for (auto &id : toDestroy) {
         lockedWorld->popEntity(id);

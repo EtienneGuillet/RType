@@ -446,7 +446,6 @@ void rtype::RTypeNetworkClient::display210DatagramHandler(rtype::network::RTypeD
         found.setPos(disp.position.x, disp.position.y, disp.position.z);
         found.setRot(disp.rotation.x, disp.rotation.y);
         found.setScale(disp.scale.x, disp.scale.y);
-        std::cout << "Updated display " << disp.entityId << " " << disp.type << std::endl;
     } catch (rtype::GameStateException &e) {
         EntitiesState state;
         state.setShouldDisplay(true);
@@ -459,7 +458,6 @@ void rtype::RTypeNetworkClient::display210DatagramHandler(rtype::network::RTypeD
         state.setId(disp.entityId);
         state.setHp(-1);
         _syncTo.addEntity(state);
-        std::cout << "Created display " << disp.entityId << " " << disp.type << std::endl;
     }
 }
 

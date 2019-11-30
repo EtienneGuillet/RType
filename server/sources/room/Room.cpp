@@ -400,8 +400,6 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
             for (int i = 0; i < 4; i++) {
                 auto &player = infos.getPlayer(i);
                 if (player.isUsed()) {
-                    std::cout << "Inputs player " << i + 1 << " [SHOOT:" << infos.getPlayer(i).isShooting() << "][UP:" << infos.getPlayer(i).isMovingUp() << "][DOWN:" << infos.getPlayer(i).isMovingDown()
-                              << "][LEFT:" << infos.getPlayer(i).isMovingLeft() << "][RIGHT:" << infos.getPlayer(i).isMovingRight() << "]" << std::endl;
                     if (player.getHp() <= 0) {
                         alive--;
                     }
