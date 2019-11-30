@@ -17,7 +17,7 @@ rtype::Configuration::Configuration(int nbArgs, char * const *args)
 #ifdef __linux__
     int optionIdx = 0;
     while (true) {
-        int c = ::getopt_long(nbArgs, args, "hpl:", longOptions, &optionIdx);
+        int c = ::getopt_long(nbArgs, args, "hp:l:", longOptions, &optionIdx);
         if (c == -1)
             break;
         switch (c) {
