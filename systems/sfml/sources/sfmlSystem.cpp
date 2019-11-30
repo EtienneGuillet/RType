@@ -135,6 +135,7 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
             std::shared_ptr<rtype::UpdateTextComponent> updateTextComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(components[2].lock());
 
             if (hoverComponent && updateTextComponent) {
+                hoverComponent->setFunctionPointer(updateTextComponent->setUpdatable());
             }
         });
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
