@@ -410,6 +410,7 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     world = std::shared_ptr<ecs::IWorld>();
     ecs = std::unique_ptr<ecs::IECS>();
     threadRunning = false;
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Exit thread");
 }
 
 bool rtype::Room::shouldGameRun() const

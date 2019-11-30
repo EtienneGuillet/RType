@@ -5,24 +5,43 @@
 #include <logger/StandardLogger.hpp>
 #include <components/server/rigidbody/RigidbodyComponent.hpp>
 #include <components/server/player/PlayerComponent.hpp>
+#include <cmath>
+#include <components/server/damager/DamagerComponent.hpp>
+#include <components/server/networkIdentity/NetworkIdentityComponent.hpp>
+#include <components/server/collider/ColliderComponent.hpp>
+#include <components/server/displayable/DisplayableComponent.hpp>
 
 KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 
+    addComponent(std::make_shared<ecs::components::NetworkIdentityComponent>(getID()));
+    addComponent(std::make_shared<ecs::components::DisplayableComponent>(rtype::ET_MONSTER_TYPE_KAMIKAZE));
+    addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(5,5)));
     addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(100.0f, 50.0f, 0.0f)));
     addComponent(std::make_shared<ecs::components::RigidbodyComponent>());
+    addComponent(std::make_shared<ecs::components::DamagerComponent>(50));
+
     addComponent(std::make_shared<ecs::components::AIComponent>([this] (const std::shared_ptr<IEntity>& entity, std::shared_ptr<ecs::IWorld> world) {
         std::string prefixDebug = "[AI][" + entity->getName() + "][" + std::to_string(entity->getID()) + "]";
         auto rb = std::dynamic_pointer_cast<ecs::components::RigidbodyComponent>(entity->getComponent(ecs::components::RigidbodyComponent::Version).lock());
+        auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(entity->getComponent(ecs::components::TransformComponent::Version).lock());
 
         if (rb) {
             auto playerPos = getPlayerPositions(world);
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug);
+            float smallestDistance = -1.0f;
+            auto ownPos = transform->getPosition();
 
             for (auto &pos : playerPos) {
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "[" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z) + "]");
+                float distance = std::sqrt(std::pow(pos.x + ownPos.x, 2) + std::pow(pos.y + ownPos.y, 2) + std::pow(pos.z + ownPos.z, 2));
+                if (distance < smallestDistance || smallestDistance == -1.0f) {
+                    auto direction = pos - ownPos;
+                    rb->setDirection(b12software::maths::Vector2D(direction.x, direction.y));
+                    rb->setUps(20);
+                }
             }
-            rb->setDirection(b12software::maths::Vector2D(10, 0));
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "From: " + std::to_string(ownPos.x) + ", " + std::to_string(ownPos.y));
         }
     }));
 }

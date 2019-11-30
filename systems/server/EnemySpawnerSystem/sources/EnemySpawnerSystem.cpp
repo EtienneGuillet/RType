@@ -8,7 +8,7 @@
 
 const ecs::Version systems::EnemySpawnerSystem::Version = ecs::Version("SYSTEM_EnemySpawner", 1, 0, 0, 0);
 
-systems::EnemySpawnerSystem::EnemySpawnerSystem() : ASystem(), _elapsedTime(0), _computeEvery(50) {
+systems::EnemySpawnerSystem::EnemySpawnerSystem() : ASystem(), _elapsedTime(0), _computeEvery(100) {
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 }
 
@@ -22,7 +22,6 @@ void systems::EnemySpawnerSystem::tick(long deltatime) {
 
             if (lockedEcs) {
                 auto entityAPIs = lockedEcs->getKnownEntities();
-
                 for (auto &entityAPI : entityAPIs) {
                     if (entityAPI->isSpawnable()) {
                         computeSpawn(entityAPI, lockedWorld);
