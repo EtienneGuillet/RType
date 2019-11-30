@@ -62,6 +62,8 @@ namespace rtype {
         static constexpr long gameDatagramSyncRate = 100; /*!< In ms */
         static constexpr long serverConnectivityPingThreshHold = 2500; /*!< In ms */
         static constexpr long serverConnectionLostThreshHold = 5000; /*!< In ms */
+        static constexpr long entityInvalidateDisplayAfter = 250; /*!< In ms */
+        static constexpr long entityInvalidateEntityAfter = 500; /*!< In ms */
 
     private:
         void resetDatagram(rtype::network::RTypeDatagramType type);
@@ -107,6 +109,12 @@ namespace rtype {
          */
         void checkLostConnection();
 
+        /*!
+         * @brief Invalidate entities that have not been updated since a long time
+         * @param deltatime elapsed time
+         */
+        void invalidateEntities(long deltatime);
+
     private:
         /*!
          * @brief Default handler called when an unknown datagram type comes in
@@ -129,6 +137,109 @@ namespace rtype {
          * This function should be removed by the correct handler
          */
         void nyiDatagramHandler(rtype::network::RTypeDatagram dg);
+
+    private:
+        /*!
+         * @brief A handler that handle the 101 datagram
+         * @param dg the received datagram
+         */
+        void connected101DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 102 datagram
+         * @param dg the received datagram
+         */
+        void ping102DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 105 datagram
+         * @param dg the received datagram
+         */
+        void disconnected105DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 106 datagram
+         * @param dg the received datagram
+         */
+        void clientDisconnected106DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 108 datagram
+         * @param dg the received datagram
+         */
+        void clientConnected108DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 111 datagram
+         * @param dg the received datagram
+         */
+        void roomList111DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 113 datagram
+         * @param dg the received datagram
+         */
+        void roomCreated113DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 115 datagram
+         * @param dg the received datagram
+         */
+        void roomQuitted115DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 117 datagram
+         * @param dg the received datagram
+         */
+        void roomJoined117DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 210 datagram
+         * @param dg the received datagram
+         */
+        void display210DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 220 datagram
+         * @param dg the received datagram
+         */
+        void living220DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 230 datagram
+         * @param dg the received datagram
+         */
+        void charge230DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 240 datagram
+         * @param dg the received datagram
+         */
+        void score240DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 250 datagram
+         * @param dg the received datagram
+         */
+        void endGame250DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief A handler that handle the 270 datagram
+         * @param dg the received datagram
+         */
+        void startGame270DatagramHandler(rtype::network::RTypeDatagram dg);
+
+        /*!
+         * @brief Handle the 303 error datagram
+         * @param dg the received datagram
+         */
+        void error303DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief Handle the 304 error datagram
+         * @param dg the received datagram
+         */
+        void error304DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief Handle the 306 error datagram
+         * @param dg the received datagram
+         */
+        void error306DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief Handle the 307 error datagram
+         * @param dg the received datagram
+         */
+        void error307DatagramHandler(rtype::network::RTypeDatagram dg);
+        /*!
+         * @brief Handle the 308 error datagram
+         * @param dg the received datagram
+         */
+        void error308DatagramHandler(rtype::network::RTypeDatagram dg);
 
     private:
         std::unique_ptr<b12software::network::INetworkManager> _nm;

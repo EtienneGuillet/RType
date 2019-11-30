@@ -81,3 +81,23 @@ void rtype::EntitiesState::setLastUpdate(const std::chrono::high_resolution_cloc
 {
     _lastUpdate = lastUpdate;
 }
+
+bool rtype::EntitiesState::isShouldDisplay() const
+{
+    return _shouldDisplay;
+}
+
+void rtype::EntitiesState::setShouldDisplay(bool shouldDisplay)
+{
+    _shouldDisplay = shouldDisplay;
+}
+
+uint32_t rtype::EntitiesState::getHp() const
+{
+    return _hp;
+}
+
+void rtype::EntitiesState::setHp(uint32_t hp)
+{
+    _hp = hp;
+}

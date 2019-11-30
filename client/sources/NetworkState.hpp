@@ -68,13 +68,13 @@ namespace rtype {
          * @param id the id of the entity asked.
          * @return the entity found.
          */
-        [[nodiscard]] const rtype::EntitiesState &getEntity(std::uint32_t id) const;
+        rtype::EntitiesState &getEntity(std::uint32_t id);
 
         /*!
          * @brief Get all the entities stored.
          * @return The vector of all the entities stored.
          */
-        [[nodiscard]] const std::vector<rtype::EntitiesState> &getEntities() const;
+        std::vector<rtype::EntitiesState> &getEntities();
 
         /*!
          * @brief Get a vector of entities that as the ids specified.
@@ -196,7 +196,36 @@ namespace rtype {
          * @param value The value to set to
          */
         void setLostConnection(bool value);
-
+        /*!
+         * @brief get the score for the 4 players
+         * @return the score
+         */
+        const std::tuple<int, int, int, int> &getScores() const;
+        /*!
+         * @brief Set the score for all four players
+         * @param scores the new scores to set
+         */
+        void setScores(const std::tuple<int, int, int, int> &scores);
+        /*!
+         * @brief is the player in a fame and not in lobby
+         * @return true if the player is in game false otherwise
+         */
+        bool isInGame() const;
+        /*!
+         * @brief set the player in game or not
+         * @param inGame is the player in game
+         */
+        void setInGame(bool inGame);
+        /*!
+         * @brief should play gagain
+         * @return true if want to play again
+         */
+        bool isPlayAgain() const;
+        /*!
+         * @brief set the should play again variable
+         * @param playAgain should play again
+         */
+        void setPlayAgain(bool playAgain);
     private:
 
         static bool comparePositionZ(rtype::EntitiesState entity1, rtype::EntitiesState entity2);
@@ -212,6 +241,9 @@ namespace rtype {
         std::map<Keys, bool> _inputs;
         std::vector<rtype::EntitiesState> _entities;
         rtype::LobbyState _lobbyState;
+        std::tuple<int, int, int, int> _scores;
+        bool _inGame;
+        bool _playAgain;
     };
 }
 

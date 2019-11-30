@@ -236,6 +236,7 @@ void rtype::LobbyState::removeFromLobby(const std::string &name)
 void rtype::LobbyState::setAvailableLobby(const std::vector<LobbyData> &lobbys)
 {
     _lobbyList = lobbys;
+    _requestLobbyList = false;
 }
 
 void rtype::LobbyState::invalidateCreate(const std::string &error)

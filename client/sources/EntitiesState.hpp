@@ -114,6 +114,27 @@ namespace rtype {
          */
         void setLastUpdate(const std::chrono::high_resolution_clock::time_point &lastUpdate);
 
+        /*!
+         * @brief should this entity be displayed
+         * @return true if this entity should be displayed
+         */
+        bool isShouldDisplay() const;
+        /*!
+         * @brief Set if the entity should be displayed or not
+         * @param shouldDisplay the new value
+         */
+        void setShouldDisplay(bool shouldDisplay);
+        /*!
+         * @brief get entity hp
+         * @return hp
+         */
+        uint32_t getHp() const;
+        /*!
+         * @brief set entity hp
+         * @param hp entity hp
+         */
+        void setHp(uint32_t hp);
+
     private:
 
         std::uint32_t _id;
@@ -125,8 +146,10 @@ namespace rtype {
         std::uint32_t _rotY;
         std::uint32_t _scaleX;
         std::uint32_t _scaleY;
+        std::uint32_t _hp;
         std::chrono::high_resolution_clock::time_point _lastDisplayUpdate;
         std::chrono::high_resolution_clock::time_point _lastUpdate;
+        bool _shouldDisplay;
     };
 }
 

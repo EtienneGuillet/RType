@@ -23,7 +23,7 @@ void rtype::NetworkState::removeEntity(std::uint32_t id)
     }
 }
 
-const rtype::EntitiesState& rtype::NetworkState::getEntity(std::uint32_t id) const
+rtype::EntitiesState& rtype::NetworkState::getEntity(std::uint32_t id)
 {
     for (unsigned long int i = 0; i < _entities.size(); i++) {
         if (_entities[i].getId() != id)
@@ -33,7 +33,7 @@ const rtype::EntitiesState& rtype::NetworkState::getEntity(std::uint32_t id) con
     throw GameStateException("The id invalid.", WHERE);
 }
 
-const std::vector<rtype::EntitiesState>& rtype::NetworkState::getEntities() const
+std::vector<rtype::EntitiesState>& rtype::NetworkState::getEntities()
 {
     
     return _entities;
@@ -171,4 +171,34 @@ bool rtype::NetworkState::hasLostConnection() const
 void rtype::NetworkState::setLostConnection(bool value)
 {
     _lostConnection = value;
+}
+
+const std::tuple<int, int, int, int> &rtype::NetworkState::getScores() const
+{
+    return _scores;
+}
+
+void rtype::NetworkState::setScores(const std::tuple<int, int, int, int> &scores)
+{
+    _scores = scores;
+}
+
+bool rtype::NetworkState::isInGame() const
+{
+    return _inGame;
+}
+
+void rtype::NetworkState::setInGame(bool inGame)
+{
+    _inGame = inGame;
+}
+
+bool rtype::NetworkState::isPlayAgain() const
+{
+    return _playAgain;
+}
+
+void rtype::NetworkState::setPlayAgain(bool playAgain)
+{
+    _playAgain = playAgain;
 }
