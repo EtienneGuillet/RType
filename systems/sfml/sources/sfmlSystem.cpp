@@ -131,14 +131,6 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
     _mouseInput.second = sf::Mouse::getPosition().y;
     if (lockedWorld) {
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
-            std::shared_ptr<rtype::UpdateTextComponent> updateTextComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(components[2].lock());
-
-            if (hoverComponent && updateTextComponent) {
-                hoverComponent->setFunctionPointer(updateTextComponent->setUpdatable());
-            }
-        });
-        lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
             std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
             std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
@@ -162,6 +154,20 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
                 }
             }
         });
+        lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version, rtype::UpdateTextComponent::Version}, [this, lockedWorld] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
+            std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
+            std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
+            std::shared_ptr<rtype::UpdateTextComponent> updateTextComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(components[3].lock());
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && isHovering(textComponent->getText())) {
+                lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version, rtype::UpdateTextComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entityShadow, std::vector<std::weak_ptr<ecs::IComponent>> componentsShadow) {
+                    std::shared_ptr<rtype::UpdateTextComponent> updateTComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(componentsShadow[3].lock());
+                    updateTComponent->setUpdatable(false);
+                });
+                updateTextComponent->setUpdatable(true);
+            }
+        });
     }
 }
 
@@ -172,7 +178,7 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
     if (lockedWorld) {
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::UpdateTextComponent::Version}, [this, &event] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
-            std::shared_ptr<rtype::UpdateTextComponent> updateTextComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(components[0].lock());
+            std::shared_ptr<rtype::UpdateTextComponent> updateTextComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(components[2].lock());
             auto text = textComponent->getText();
             auto string = text.getString().toAnsiString();
 

@@ -218,11 +218,11 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
         }
     }
     lockedWorld->pushEntity(entityTextboxPort);
-    if (entityTextboxAdresse) {
-        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxAdresse->getComponent(rtype::TextComponent::Version).lock());
-        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxAdresse->getComponent(rtype::TransformComponent::Version).lock());
-        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxAdresse->getComponent(rtype::HoverComponent::Version).lock());
-        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxAdresse->getComponent(rtype::UpdateTextComponent::Version).lock());
+    if (entityTextboxAddress) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxAddress->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxAddress->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxAddress->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxAddress->getComponent(rtype::UpdateTextComponent::Version).lock());
 
         if (hover && updateText) {
             hover->setHoverable(true);
