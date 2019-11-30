@@ -2,13 +2,13 @@
 #define R_TYPE_LIBLOADER_HPP
 
 
-#include <ecs/IWorld/IWorld.hpp>
-#include <ecs/IECS/IECS.hpp>
+#include "ecs/IWorld/IWorld.hpp"
+#include "ecs/IECS/IECS.hpp"
 #include <filesystem>
 #include <map>
 #include "where.hpp"
-#include <ecs/DLLoader/DLLoader.hpp>
-#include <rtype/FsNotifier/FsNotifier.hpp>
+#include "ecs/DLLoader/DLLoader.hpp"
+#include "rtype/FsNotifier/FsNotifier.hpp"
 /*!
  * @namespace rtype
  * @brief A generic namespace for the rtype project
