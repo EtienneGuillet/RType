@@ -46,7 +46,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     auto entityButtonCreateRoom = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto entityButtonRefresh = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto background = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
-    auto entityTextboxUsername = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0
+    auto entityTextboxUsername = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
 
     if (entityTextboxUsername) {
         auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxUsername->getComponent(rtype::TextComponent::Version).lock());
@@ -132,6 +132,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
 
         if (entityTitle) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTitle->getComponent(rtype::TransformComponent::Version).lock());
+
         if (tr) {
             tr->setPosition(550, -200, 0);
             tr->setScale(2, 2);
@@ -144,6 +145,13 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     if (entityTextboxUsername) {
         auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxUsername->getComponent(rtype::TextComponent::Version).lock());
         auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxUsername->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxUsername->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxUsername->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
         if (transformComponent) {
             transformComponent->setPosition(50, 400, 0);
             transformComponent->setScale(1.5, 1.5);
@@ -157,6 +165,13 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     if (entityTextboxPort) {
         auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxPort->getComponent(rtype::TextComponent::Version).lock());
         auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxPort->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxPort->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxPort->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
         if (transformComponent) {
             transformComponent->setPosition(50, 550, 0);
             transformComponent->setScale(1.5, 1.5);
@@ -170,6 +185,13 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     if (entityTextboxAdresse) {
         auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxAdresse->getComponent(rtype::TextComponent::Version).lock());
         auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxAdresse->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxAdresse->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxAdresse->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
         if (transformComponent) {
             transformComponent->setPosition(50, 700, 0);
             transformComponent->setScale(1.5, 1.5);

@@ -131,6 +131,13 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
     _mouseInput.second = sf::Mouse::getPosition().y;
     if (lockedWorld) {
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
+            std::shared_ptr<rtype::UpdateTextComponent> updateTextComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(components[2].lock());
+
+            if (hoverComponent && updateTextComponent) {
+            }
+        });
+        lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
             std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
             std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
@@ -164,16 +171,19 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
     if (lockedWorld) {
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::UpdateTextComponent::Version}, [this, &event] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
+            std::shared_ptr<rtype::UpdateTextComponent> updateTextComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(components[0].lock());
             auto text = textComponent->getText();
             auto string = text.getString().toAnsiString();
 
-            if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode <= 'Z') || (event.text.unicode >= '0' && event.text.unicode <= '9') || (event.text.unicode == '.')) {
-                text.setString(string + static_cast<char>(event.text.unicode));
-                textComponent->setText(text);
-            } else if (event.text.unicode == 8) {
-                if (string.size() > (string.find(":") + 1)) {
-                    string.erase(string.size() - 1, string.size());
-                    textComponent->setString(string);
+            if (updateTextComponent && updateTextComponent->getUpdatable()) {
+                if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode <= 'Z') || (event.text.unicode >= '0' && event.text.unicode <= '9') || (event.text.unicode == '.')) {
+                    text.setString(string + static_cast<char>(event.text.unicode));
+                    textComponent->setText(text);
+                } else if (event.text.unicode == 8) {
+                    if (string.size() > (string.find(":") + 1)) {
+                        string.erase(string.size() - 1, string.size());
+                        textComponent->setString(string);
+                    }
                 }
             }
         });

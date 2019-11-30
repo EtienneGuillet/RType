@@ -24,12 +24,17 @@ const ecs::Version &rtype::UpdateTextComponent::getVersion() const
     return UpdateTextComponent::Version;
 }
 
-void rtype::UpdateTextComponent::setHoverable(const bool isUpdatable)
+void rtype::UpdateTextComponent::setUpdatable(const bool isUpdatable)
 {
     _isUpdatable = isUpdatable;
 }
 
-bool rtype::UpdateTextComponent::getHoverable() const
+void rtype::UpdateTextComponent::setUpdatable()
+{
+    _isUpdatable = !_isUpdatable;
+}
+
+bool rtype::UpdateTextComponent::getUpdatable() const
 {
     return _isUpdatable;
 }

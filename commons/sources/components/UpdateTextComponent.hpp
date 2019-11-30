@@ -40,8 +40,9 @@ namespace rtype {
         void setEntity(const std::weak_ptr<ecs::IEntity> &entity) override;
         const ecs::Version &getVersion() const override;
 
-        void setHoverable(const bool isHoverable);
-        bool getHoverable() const;
+        void setUpdatable(const bool isHoverable);
+        void setUpdatable();
+        bool getUpdatable() const;
 
         void setFunctionPointer(void (*functionPointer)());
     private:
