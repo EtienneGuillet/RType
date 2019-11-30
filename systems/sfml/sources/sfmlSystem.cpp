@@ -167,7 +167,7 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
             auto text = textComponent->getText();
             auto string = text.getString().toAnsiString();
 
-            if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode >= 'Z')) {
+            if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode <= 'Z') || (event.text.unicode >= '0' && event.text.unicode <= '9')) {
                 text.setString(string + static_cast<char>(event.text.unicode));
                 textComponent->setText(text);
             } else if (event.text.unicode == 8) {

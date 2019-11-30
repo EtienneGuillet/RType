@@ -46,11 +46,11 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     auto entityButtonCreateRoom = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto entityButtonRefresh = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto background = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
-    auto entityTextbox = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+    auto entityTextboxUsername = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0
 
-    if (entityTextbox) {
-        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextbox->getComponent(rtype::TextComponent::Version).lock());
-        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextbox->getComponent(rtype::TransformComponent::Version).lock());
+    if (entityTextboxUsername) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxUsername->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxUsername->getComponent(rtype::TransformComponent::Version).lock());
         if (transformComponent) {
             transformComponent->setPosition(850, 570, 0);
             transformComponent->setScale(2, 2);
@@ -59,7 +59,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
             textComponent->setString("Name:");
         }
     }
-    lockedWorld->pushEntity(entityTextbox);
+    lockedWorld->pushEntity(entityTextboxUsername);
 
     if (entityButtonCreateRoom) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonCreateRoom->getComponent(rtype::TransformComponent::Version).lock());
