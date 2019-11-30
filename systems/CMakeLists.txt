@@ -1,3 +1,4 @@
 add_subdirectory(example)
 add_subdirectory(sfml)
 add_subdirectory(omegatron)
+add_subdirectory(clientGameNetworkEntitySync)
