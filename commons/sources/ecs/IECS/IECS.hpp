@@ -77,6 +77,12 @@ namespace ecs {
         virtual bool knowEntities(const std::vector<Version> &versions) = 0;
 
         /*!
+         * @brief Get a list of known entities.
+         * @return Returns a vector of known entities versions.
+         */
+        virtual std::vector<std::shared_ptr<ecs::IEntityAPI>> getKnownEntities() const = 0;
+
+        /*!
          * @brief Make the ecs learn a new system.
          * @param api System API that needs to be learn by the ECS.
          */
@@ -87,7 +93,7 @@ namespace ecs {
          * @param api Entity API that needs to be learn by the ECS.
          */
         virtual void learnEntity(const std::shared_ptr<IEntityAPI> &api) = 0;
-        
+
         /*!
          * @brief Make the ecs forget the system.
          * @param version the system to be forget.
@@ -103,5 +109,11 @@ namespace ecs {
         virtual std::shared_ptr<IEntityAPI> forgetEntity(const Version &version) = 0;
     };
 } /* ecs */
+
+#else
+
+namespace ecs {
+    class IECS;
+}
 
 #endif /* _I_ECS_HPP_ */

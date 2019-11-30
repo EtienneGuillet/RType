@@ -4,70 +4,79 @@
 #include <maths/Vectors.hpp>
 #include <ecs/IComponent/AComponent.hpp>
 
-class TransformComponent : public ecs::AComponent {
-private:
-public:
-    using Vector2 = b12software::maths::Vector2D;
-    using Vector3 = b12software::maths::Vector3D;
+namespace ecs {
 
-    /*!
-     * @brief ctor
-     * @param position The position to use
-     * @param rotation The rotation to use
-     * @param scale The scale to use
-     */
-    TransformComponent(const Vector3 &position, const Vector2 &rotation, const Vector2 &scale);
+    namespace components {
 
-    /*!
-     * @brief cpy ctor
-     * @param other The transform to copy
-     */
-    TransformComponent(const TransformComponent &other);
+        class TransformComponent : public ecs::AComponent {
+        public:
+            static const ecs::Version Version;
+            const ecs::Version &getVersion() const override;
 
-    /*!
-     * @brief Assignment operator
-     * @param rhs the object to assign as
-     * @return *this
-     */
-    TransformComponent &operator=(const TransformComponent &rhs);
+        public:
+            using Vector2 = b12software::maths::Vector2D;
+            using Vector3 = b12software::maths::Vector3D;
 
-    /*!
-     * @brief Get the position contained is the component
-     * @return The position contained in the component
-     */
-    [[nodiscard]] const Vector3 &getPosition() const;
+            /*!
+             * @brief ctor
+             * @param position The position to use
+             * @param rotation The rotation to use
+             * @param scale The scale to use
+             */
+            TransformComponent(const Vector3 &position = Vector3(0, 0, 0), const Vector2 &rotation = Vector2(0, 0), const Vector2 &scale = Vector2(1, 1));
 
-    /*!
-     * @brief Set the position contained is the component
-     */
-    void setPosition(const Vector3 &position);
+            /*!
+             * @brief cpy ctor
+             * @param other The transform to copy
+             */
+            TransformComponent(const TransformComponent &other);
 
-    /*!
-     * @brief Get the rotation contained is the component
-     * @return The rotation contained in the component
-     */
-    [[nodiscard]] const Vector2 &getRotation() const;
+            /*!
+             * @brief Assignment operator
+             * @param rhs the object to assign as
+             * @return *this
+             */
+            TransformComponent &operator=(const TransformComponent &rhs);
 
-    /*!
-     * @brief Set the rotation contained is the component
-     */
-    void setRotation(const Vector2 &rotation);
+            /*!
+             * @brief Get the position contained is the component
+             * @return The position contained in the component
+             */
+            [[nodiscard]] const Vector3 &getPosition() const;
 
-    /*!
-     * @brief Get the scale contained is the component
-     * @return The scale contained in the component
-     */
-    [[nodiscard]] const Vector2 &getScale() const;
+            /*!
+             * @brief Set the position contained is the component
+             */
+            void setPosition(const Vector3 &position);
 
-    /*!
-     * @brief Set the scale contained is the component
-     */
-    void setScale(const Vector2 &scale);
+            /*!
+             * @brief Get the rotation contained is the component
+             * @return The rotation contained in the component
+             */
+            [[nodiscard]] const Vector2 &getRotation() const;
 
-private:
-    Vector3 _position; /*!< position */
-    Vector2 _rotation; /*!< rotation */
-    Vector2 _scale; /*!< scale */
-};
+            /*!
+             * @brief Set the rotation contained is the component
+             */
+            void setRotation(const Vector2 &rotation);
+
+            /*!
+             * @brief Get the scale contained is the component
+             * @return The scale contained in the component
+             */
+            [[nodiscard]] const Vector2 &getScale() const;
+
+            /*!
+             * @brief Set the scale contained is the component
+             */
+            void setScale(const Vector2 &scale);
+
+        private:
+            Vector3 _position; /*!< position */
+            Vector2 _rotation; /*!< rotation */
+            Vector2 _scale; /*!< scale */
+        };
+    }
+}
 
 #endif

@@ -10,6 +10,12 @@
 #include <algorithm>
 #include "rtype/LibLoader/LibLoader.hpp"
 #include "ecs/IECS/ECS.hpp"
+#include "rtype/game/RTypeEntityType.hpp"
+#include "systems/NetworkSyncSystem/NetworkSyncSystem.hpp"
+#include "entities/PlayerEntity/PlayerEntityApi.hpp"
+#include "entities/PlayerEntity/PlayerEntity.hpp"
+#include "systems/NetworkSyncSystem/NetworkSyncSystemApi.hpp"
+#include "components/Transform/TransformComponent.hpp"
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -254,7 +260,7 @@ void rtype::Room::syncDisplayLiving(rtype::Client &client,
         if (!player.isUsed())
             continue;
         auto id = player.getId();
-        if (display) {
+        if (display && displayData.type != rtype::ET_UNKNOWN) {
             displayData.entityId = id;
             displayData.type = player.getType();
             auto position = player.getPosition();
@@ -277,7 +283,7 @@ void rtype::Room::syncDisplayLiving(rtype::Client &client,
     std::scoped_lock lock(entities);
     for (auto &entity : entities) {
         auto id = entity.getId();
-        if (display) {
+        if (display && displayData.type != rtype::ET_UNKNOWN) {
             displayData.entityId = id;
             displayData.type = entity.getType();
             auto position = entity.getPosition();
@@ -349,12 +355,31 @@ void rtype::Room::endGame()
 void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos, const std::string libsFolder)
 {
     threadRunning = true;
-    auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
+    std::shared_ptr<ecs::IECS> ecs = std::make_shared<ecs::ECS>();
     auto world = ecs->createWorld();
     auto libLoader = rtype::LibLoader(ecs, world, libsFolder);
     auto start = std::chrono::system_clock::now();
     auto end = start;
-    //TODO Force add NetworkSyncSystem
+    std::map<int, int> playersIdsMap;
+
+    auto playerApi = std::make_shared<PlayerEntityAPI>();
+    ecs->learnEntity(playerApi);
+
+    for (int j = 0; j < infos.getNbPlayers(); ++j) {
+        auto player = std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j));
+        auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(player->getComponent(ecs::components::TransformComponent::Version).lock());
+        auto spawnPos = ((80 / infos.getNbPlayers()) * j) + 10;
+
+        transform->setPosition(b12software::maths::Vector3D(10, spawnPos, 0));
+        playersIdsMap[j] = player->getID();
+        world->pushEntity(player);
+    }
+    auto     networkApi = std::make_shared<systems::NetworkSyncSystemApi>();
+    ecs->learnSystem(networkApi);
+    auto system = std::dynamic_pointer_cast<systems::NetworkSyncSystem>(networkApi->createNewSystem());
+    system->start();
+    system->setGameInfosPtr(infos.getWeak());
+    world->addSystem(system);
 
     while (shouldGameBeRunning && threadRunning) {
         end = std::chrono::system_clock::now();
@@ -365,21 +390,19 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
             world->tick(deltaTime);
 
             int used = 4;
+            int alive = 4;
             for (int i = 0; i < 4; i++) {
                 auto &player = infos.getPlayer(i);
                 if (player.isUsed()) {
-                    std::string str = "Player " + std::to_string(i) + " inputs:";
-                    str += std::string("[SHOOT:") + (player.isShooting() ? "true" : "false") + "]";
-                    str += std::string("[UP:") + (player.isMovingUp() ? "true" : "false") + "]";
-                    str += std::string("[DOWN:") + (player.isMovingDown() ? "true" : "false") + "]";
-                    str += std::string("[LEFT:") + (player.isMovingLeft() ? "true" : "false") + "]";
-                    str += std::string("[RIGHT:") + (player.isMovingRight() ? "true" : "false") + "]";
-                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, str);
+                    if (player.getHp() <= 0) {
+                        alive--;
+                    }
                 } else {
+                    alive--;
                     used--;
                 }
             }
-            if (used == 0)
+            if (used == 0 || alive == 0)
                 break;
         }
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));

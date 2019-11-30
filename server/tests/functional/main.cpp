@@ -11,7 +11,8 @@
 #include "rtype/network/RTypeDatagram.hpp"
 #include "network/asio/AsioNetworkManager.hpp"
 
-static void handleLoopingResponse(const b12software::network::HostInfos &serverHost, const std::shared_ptr<b12software::network::udp::IUdpSocket> &socket, rtype::network::RTypeDatagram response)
+static void
+handleLoopingResponse(const b12software::network::HostInfos &serverHost, const std::shared_ptr<b12software::network::udp::IUdpSocket> &socket, rtype::network::RTypeDatagram response)
 {
     rtype::network::RTypeDatagram dg(serverHost);
     std::string username;
@@ -202,7 +203,7 @@ int main()
     }
     socket1->bind(30001);
     socket2->bind(30002);
-    b12software::network::HostInfos serverHost= {"127.0.0.1", 8080};
+    b12software::network::HostInfos serverHost= {"127.0.0.1", 54321};
     connect(serverHost, socket1, "julian");
     connect(serverHost, socket2, "julian2");
     getRooms(serverHost, socket1);
@@ -210,6 +211,7 @@ int main()
     getRooms(serverHost, socket2);
     joinRoom(serverHost, socket2);
     getRooms(serverHost, socket1);
+    std::chrono::system_clock::time_point action = std::chrono::system_clock::now();
     auto start = std::chrono::system_clock::now();
     while (std::chrono::system_clock::now() - start <= std::chrono::seconds(10)) {
         auto dg = socket2->receive();
@@ -219,6 +221,15 @@ int main()
         if (dg2.isValid())
             handleLoopingResponse(serverHost, socket1, dg2);
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        if (std::chrono::system_clock::now() - start >= std::chrono::seconds(4) && std::chrono::system_clock::now() - action >= std::chrono::milliseconds(100)) {
+            rtype::network::RTypeDatagram dgA(serverHost);
+            rtype::network::RTypeDatagramAction datagramAction;
+            datagramAction.shot = true;
+            dgA.init200ActionDatagram(datagramAction);
+            socket2->send(dgA);
+            std::cout << "Action sned" << std::endl;
+            action = std::chrono::system_clock::now();;
+        }
     }
     quitRoom(serverHost, socket1);
     disconnect(serverHost, socket1);

@@ -41,7 +41,7 @@ void runMain(const std::string &libsFolder)
     }
     auto start = std::chrono::system_clock::now();
     auto end = start;
-    auto ecs = std::unique_ptr<ecs::IECS>(new ecs::ECS());
+    auto ecs = std::shared_ptr<ecs::IECS>(new ecs::ECS());
     auto world = ecs->createWorld();
     auto libLoader = rtype::LibLoader(ecs, world, libsFolder);
 

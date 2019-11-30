@@ -23,7 +23,7 @@ ecs::ECS::~ECS()
 
 std::shared_ptr<ecs::IWorld> ecs::ECS::createWorld()
 {
-    return std::shared_ptr<IWorld>(new World());
+    return std::shared_ptr<IWorld>(new World(weak_from_this()));
 }
 
 std::shared_ptr<ecs::IEntity> ecs::ECS::createEntityFromAPI(const ecs::Version &version)
@@ -116,4 +116,8 @@ std::shared_ptr<ecs::IEntityAPI> ecs::ECS::forgetEntity(const ecs::Version &vers
         }
     }
     return std::shared_ptr<ecs::IEntityAPI>();
+}
+
+std::vector<std::shared_ptr<ecs::IEntityAPI>> ecs::ECS::getKnownEntities() const {
+    return _entitysAPI;
 }

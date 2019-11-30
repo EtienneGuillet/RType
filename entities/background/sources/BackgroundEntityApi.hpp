@@ -3,8 +3,9 @@
 
 
 #include <ecs/IEntityAPI/IEntityAPI.hpp>
+#include <ecs/IEntityAPI/AUnspawnableEntityAPI.hpp>
 
-class BackgroundEntityAPI : public ecs::IEntityAPI {
+class BackgroundEntityAPI : public ecs::AUnspawnableEntityAPI {
 public:
     const ecs::Version &getVersion() const override;
 

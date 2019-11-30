@@ -3,8 +3,9 @@
 
 
 #include <ecs/IEntityAPI/IEntityAPI.hpp>
+#include <ecs/IEntityAPI/AUnspawnableEntityAPI.hpp>
 
-class PlayerEntityAPI : public ecs::IEntityAPI {
+class PlayerEntityAPI : public ecs::AUnspawnableEntityAPI {
 public:
     const ecs::Version &getVersion() const override;
 

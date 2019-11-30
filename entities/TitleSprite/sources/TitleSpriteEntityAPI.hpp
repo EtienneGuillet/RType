@@ -9,8 +9,9 @@
 #define R_TYPE_TITLESPRITEENTITYAPI_HPP
 
 #include <ecs/IEntityAPI/IEntityAPI.hpp>
+#include <ecs/IEntityAPI/AUnspawnableEntityAPI.hpp>
 
-class TitleSpriteEntityAPI : public ecs::IEntityAPI {
+class TitleSpriteEntityAPI : public ecs::AUnspawnableEntityAPI {
     public:
     const ecs::Version &getVersion() const override;
 

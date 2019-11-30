@@ -10,6 +10,7 @@ file(
 )
 
 list(REMOVE_ITEM RTYPE_SOURCES_SERVER_TESTS "${PROJECT_SOURCE_DIR}/server/sources/main.cpp")
+list(REMOVE_ITEM RTYPE_SOURCES_SERVER_TESTS "${PROJECT_SOURCE_DIR}/server/sources/debug.cpp")
 
 add_executable(tests_server ${RTYPE_SOURCES_SERVER_TESTS})
 

@@ -16,17 +16,22 @@
 #include "logger/StandardLogger.hpp"
 #include "RTypeServer.hpp"
 
-namespace {
-    volatile std::sig_atomic_t gSignalStatus;
+volatile std::sig_atomic_t gSignalStatus;
 
+namespace {
     void signalHandler(int s)
     {
         gSignalStatus = s;
     }
 }
 
+void runGame(std::string);
 void runMain(const rtype::Configuration &config)
 {
+    if (config.isDebug()) {
+        runGame(config.getLibsFolder());
+        return;
+    }
     auto server = std::make_unique<rtype::RTypeServer>(config.getPort(), config.getLibsFolder());
 
     while (gSignalStatus == 0) {

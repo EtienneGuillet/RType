@@ -4,7 +4,7 @@
 #include <cstring>
 #include <map>
 
-rtype::LibLoader::LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder) : _ecs(ecs), _world(world), _entitiesPath(libFolder + "/entities"), _systemsPath(libFolder + "/systems"), _notifierEntities(_entitiesPath), _notifierSystems(_systemsPath) {
+rtype::LibLoader::LibLoader(std::shared_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs::IWorld> &world, const std::string &libFolder) : _ecs(ecs), _world(world), _entitiesPath(libFolder + "/entities"), _systemsPath(libFolder + "/systems"), _notifierEntities(_entitiesPath), _notifierSystems(_systemsPath) {
     _notifierEntities.addCreateListener([this] (const std::filesystem::path &path) {
         try {
             loadLib<ecs::IEntityAPI>(path, _entities);
@@ -35,8 +35,7 @@ rtype::LibLoader::LibLoader(std::unique_ptr<ecs::IECS> &ecs, std::shared_ptr<ecs
 template <typename TypeAPI>
 void rtype::LibLoader::loadLib(const std::filesystem::path &libPath, MapType <TypeAPI> &libs) {
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, std::string("[Loading lib] ") + libPath.string());
-    auto lib = libs.find(libPath);
-    if (lib == libs.end()) {
+    if (libs.find(libPath) == libs.end()) {
         try {
             std::shared_ptr<ecs::DLLoader> loader(new ecs::DLLoader(libPath.string()));
             auto api = loader->loadAPI<TypeAPI>(getEntryPoint<TypeAPI>());
@@ -77,8 +76,8 @@ void rtype::LibLoader::unloadLib(const std::filesystem::path &libPath, MapType <
                 auto system = _world->getSystem((*i).second.version).lock();
                 if (system)
                     system->stop();
-                _ecs->forgetSystem((*i).second.version);
                 _world->removeSystem((*i).second.version);
+                _ecs->forgetSystem((*i).second.version);
             } else {
                 throw b12software::exception::B12SoftwareException(std::string("Invalid API type used: ") + typeid(TypeAPI).name() , WHERE);
             }

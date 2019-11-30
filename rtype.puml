@@ -570,7 +570,7 @@ abstract ecs::AComponent {
     - std::weak_ptr<IEntity> _entity
 }
 
-class ecs::TransformComponent {
+class ecs::components::TransformComponent {
     + TransformComponent(const Vector3 &position, const Vector2 &rotation, const Vector2 &scale)
     + TransformComponent(const TransformComponent &other)
     + TransformComponent &operator=(const TransformComponent &rhs)
@@ -599,6 +599,7 @@ interface ecs::IECS {
     + {abstract} void learnEntity(const std::shared_ptr<IEntityAPI> &api)
     + {abstract} std::shared_ptr<ISystemAPI> forgetSystem(const Version &version)
     + {abstract} std::shared_ptr<IEntityAPI> forgetEntity(const Version &version)
+    + {abstract} virtual std::vector<std::shared_ptr<ecs::IEntityAPI>> getKnownEntities() const
 }
 
 interface ecs::IEntity {
@@ -619,7 +620,19 @@ interface ecs::IEntityAPI {
     + {abstract} ~IEntityAPI() = default
     + {abstract} [[nodiscard]] const Version &getVersion() const
     + {abstract} [[nodiscard]] std::shared_ptr<IEntity> createNewEntity()
+    + {abstract} [[nodiscard]] bool isSpawnable() const
+    + {abstract} [[nodiscard]] virtual long getSpawnFreq() const
 }
+
+abstract ecs::AUnspawnableEntityAPI {
+    + [[nodiscard]] bool isSpawnable() const
+}
+
+abstract ecs::ASpawnableEntityAPI {
+    + [[nodiscard]] bool isSpawnable() const
+}
+
+
 
 interface ecs::ISystem {
     + {abstract} ~ISystem() = default
@@ -642,11 +655,13 @@ interface ecs::IWorld {
     + {abstract} tick(long deltatime)
     + {abstract} std::weak_ptr<IEntity> pushEntity(const std::shared_ptr<IEntity> &entity)
     + {abstract} std::shared_ptr<IEntity> popEntity(int id)
+    + {abstract} std::weak_ptr<IEntity> getEntityById(int id) const
     + {abstract} std::vector<std::weak_ptr<IEntity>> getEntitiesWith(const std::vector<Version> &components)
     + {abstract} void applyToEach(const std::vector<Version> &componentTypes, std::function<void (std::weak_ptr<IEntity>, std::vector<std::weak_ptr<IComponent>>)> toApply)
     + {abstract} std::weak_ptr<ISystem> addSystem(const std::shared_ptr<ISystem> &system)
     + {abstract} void removeSystem(const Version &system)
     + {abstract} std::weak_ptr<ISystem> getSystem(const Version &system)
+    + {abstract} const std::weak_ptr<ecs::IECS> &getEcs() const
 }
 
 class ecs::Version {
@@ -769,7 +784,10 @@ ecs::IECS <|-- ecs::ECS
 
 ecs::IComponent <|-- ecs::AComponent
 
-ecs::AComponent <|-- ecs::TransformComponent
+ecs::AComponent <|-- ecs::components::TransformComponent
+
+ecs::IEntityAPI <|-- ecs::AUnspawnableEntityAPI
+ecs::IEntityAPI <|-- ecs::ASpawnableEntityAPI
 
 ecs::IEntity <|-- ecs::Entity
 
@@ -1003,6 +1021,7 @@ class rtype::GameInfos {
     + void removeEntity(uint32_t id)
     + void removeEntity(const rtype::EntityInfos &entity)
     + void removeEntities(const std::function<bool(const rtype::EntityInfos &)> &func)
+    + std::weak_ptr<GameInfos> getWeak()
     - std::atomic_int _nbPlayers
     - PlayerInfos _players[4]
     - b12software::containers::ThreadSafeList<rtype::EntityInfos> _entities
@@ -1046,5 +1065,285 @@ b12software::exception::B12SoftwareException <|-- rtype::exception::RTypeServerE
 rtype::exception::RTypeServerException <|-- rtype::exception::RTypeInvalidPasswordException
 rtype::exception::RTypeServerException <|-- rtype::exception::RTypeRoomAlreadyFullException
 rtype::exception::RTypeServerException <|-- rtype::exception::RTypeUnknownRoomException
+
+class ecs::components::DamageableComponent {
+    + {static} const ecs::Version Version
+    + DamageableComponent(int hp = 3, int maxHp = 3)
+    + ~DamageableComponent()
+    + DamageableComponent(const DamageableComponent &other)
+    + DamageableComponent &operator=(const DamageableComponent &rhs)
+    + void setHp(int hp)
+    + void setMaxHp(int maxHp)
+    + void heal(int amount)
+    + void damage(int amount)
+    + int getHp() const
+    + bool isAlive() const
+    + int getMaxHp() const
+    + long getInvulnerabilityPeriodAfterDamage() const
+    + void setInvulnerabilityPeriodAfterDamage(long invulnerabilityPeriodAfterDamage)
+    + long getInvulnerabilityRemaining() const
+    + void setInvulnerabilityRemaining(long invulnerabilityRemaining)
+    + bool isInvulnerable() const
+    + int getDamageLayer() const
+    + void setDamageLayer(int damageLayer)
+    + int getLastHitOwner() const
+    + void setLastHitOwner(int lastHitOwner)
+    - int _hp
+    - int _maxHp
+    - long _invulnerabilityPeriodAfterDamage
+    - long _invulnerabilityRemaining
+    - int _damageLayer
+    - int _lastHitOwner
+}
+
+ecs::AComponent <|-- ecs::components::DamageableComponent
+
+class ecs::components::NetworkIdentityComponent {
+    + {static} const ecs::Version Version
+    + NetworkIdentityComponent(uint32_t id = 0)
+    + ~NetworkIdentityComponent()
+    + NetworkIdentityComponent(const NetworkIdentityComponent &other)
+    + NetworkIdentityComponent &operator=(const NetworkIdentityComponent &rhs)
+    + void setNetworkId(uint32_t id)
+    + uint32_t getNetworkId() const
+    - uint32_t _id
+}
+
+ecs::AComponent <|-- ecs::components::NetworkIdentityComponent
+
+class ecs::components::WeaponComponent {
+    + {static} const ecs::Version Version
+    + WeaponComponent(WeaponType type = WEAPON_TYPE_STANDARD_WAVE_CANON, uint32_t rps = 1)
+    + ~WeaponComponent()
+    + WeaponComponent(const WeaponComponent &other)
+    + WeaponComponent &operator=(const WeaponComponent &rhs)
+    + WeaponType getType() const
+    + void setType(WeaponType type)
+    + uint32_t getRps() const
+    + void setRps(uint32_t rps)
+    - WeaponType _type
+    - uint32_t _rps
+}
+
+ecs::AComponent <|-- ecs::components::WeaponComponent
+
+enum ecs::components::WeaponComponent::WeaponType {
+    WEAPON_TYPE_STANDARD_WAVE_CANON
+}
+
+class ecs::components::ColliderComponent {
+    + {static} const ecs::Version Version
+    + ColliderComponent(const b12software::maths::Vector2D &size = b12software::maths::Vector2D(1, 1), const b12software::maths::Vector2D &offset = b12software::maths::Vector2D())
+    + ~ColliderComponent()
+    + ColliderComponent(const ColliderComponent &other)
+    + ColliderComponent &operator=(const ColliderComponent &rhs)
+    + const b12software::maths::Vector2D &getSize() const
+    + void setSize(const b12software::maths::Vector2D &size)
+    + const b12software::maths::Vector2D &getOffset() const
+    + void setOffset(const b12software::maths::Vector2D &offset)
+    - b12software::maths::Vector2D _size
+    - b12software::maths::Vector2D _offset
+}
+
+ecs::AComponent <|-- ecs::components::ColliderComponent
+
+class ecs::components::RigidbodyComponent {
+    + {static} const ecs::Version Version
+    + RigidbodyComponent(float ups = 1, const b12software::maths::Vector2D &direction = b12software::maths::Vector2D())
+    + ~RigidbodyComponent()
+    + RigidbodyComponent(const RigidbodyComponent &other)
+    + RigidbodyComponent &operator=(const RigidbodyComponent &other)
+    + const b12software::maths::Vector2D &getDirection() const
+    + void setDirection(const b12software::maths::Vector2D &direction)
+    + float getUps() const
+    + void setUps(float ups)
+    + bool shouldLookTowardsDirection() const
+    + void setLookTowardsDirection(bool lookTowardsDirection)
+    - b12software::maths::Vector2D _direction
+    - float _ups
+    - bool _lookTowardsDirection
+}
+
+ecs::AComponent <|-- ecs::components::RigidbodyComponent
+
+class ecs::components::PlayerComponent {
+    + {static} const ecs::Version Version
+    + PlayerComponent(uint32_t score = 0, uint8_t charge = 0)
+    + ~PlayerComponent()
+    + PlayerComponent(const PlayerComponent &other)
+    + PlayerComponent &operator=(const PlayerComponent &rhs)
+    + uint32_t getScore() const
+    + void setScore(uint32_t score)
+    + float getCharge() const
+    + void setCharge(float charge)
+    + bool isShotPressed() const
+    + void setShotPressed(bool shotPressed)
+    + bool isReleased() const
+    + void setReleased(bool released)
+    - uint32_t _score
+    - float _charge
+    - bool _shotPressed
+    - bool _released
+}
+
+ecs::AComponent <|-- ecs::components::PlayerComponent
+
+class ecs::components::DamagerComponent {
+    + {static} const ecs::Version Version
+    + DamagerComponent(uint32_t damages = 1, bool destroyOnHit = true)
+    + ~DamagerComponent()
+    + DamagerComponent(const DamagerComponent &other)
+    + DamagerComponent &operator=(const DamagerComponent &rhs)
+    + uint32_t getDamages() const
+    + void setDamages(uint32_t damages)
+    + bool isDestroyOnHit() const
+    + void setDestroyOnHit(bool destroyOnHit)
+    + int getDamageLayer() const
+    + void setDamageLayer(int damageLayer)
+    + int getOwner() const
+    + void setOwner(int owner)
+    - uint32_t _damages
+    - bool _destroyOnHit
+    - int _damageLayer
+    - int _owner
+}
+
+ecs::AComponent <|-- ecs::components::DamagerComponent
+
+class ecs::components::DisplayableComponent {
+    + {static} const ecs::Version Version
+    + DisplayableComponent(uint32_t type = rtype::ET_UNKNOWN)
+    + ~DisplayableComponent()
+    + DisplayableComponent(const DisplayableComponent &other)
+    + DisplayableComponent &operator=(const DisplayableComponent &rhs)
+    + uint32_t getType() const
+    + void setType(uint32_t type)
+    - uint32_t _type
+}
+
+ecs::AComponent <|-- ecs::components::DisplayableComponent
+
+class ecs::components::PointAwarderComponent {
+    + {static} const ecs::Version Version
+    + PointAwarderComponent(int points = 500)
+    + ~PointAwarderComponent()
+    + PointAwarderComponent(const PointAwarderComponent &other)
+    + PointAwarderComponent &operator=(const PointAwarderComponent &rhs)
+    + int getPoints() const
+    + void setPoints(int points)
+    - int _points
+}
+
+ecs::AComponent <|-- ecs::components::PointAwarderComponent
+
+class systems::MovementSystem {
+    + MovementSystem()
+    + ~MovementSystem()
+    + MovementSystem(const MovementSystem &other)
+    + MovementSystem &operator=(const MovementSystem &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ASystem <|-- systems::MovementSystem
+
+class systems::MovementSystemApi {
+    + MovementSystemApi()
+    + ~MovementSystemApi()
+    + MovementSystemApi(const MovementSystemApi &other)
+    + MovementSystemApi &operator=(const MovementSystemApi &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ISystemAPI <|-- systems::MovementSystemApi
+
+class systems::DamageSystem {
+    + DamageSystem()
+    + ~DamageSystem()
+    + DamageSystem(const DamageSystem &other)
+    + DamageSystem &operator=(const DamageSystem &rhs)
+    + {static} const ecs::Version Version
+    - void computeDamages() const
+    - {static} bool collide(const b12software::maths::Vector2D &colAPos, const b12software::maths::Vector2D &colASize, const b12software::maths::Vector2D &colBPos, const b12software::maths::Vector2D &colBSize)
+    - long _elapsedTime
+    - long _computeEvery
+}
+
+ecs::ASystem <|-- systems::DamageSystem
+
+class systems::DamageSystemApi {
+    + DamageSystemApi()
+    + ~DamageSystemApi()
+    + DamageSystemApi(const DamageSystemApi &other)
+    + DamageSystemApi &operator=(const DamageSystemApi &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ISystemAPI <|-- systems::DamageSystemApi
+
+class systems::LifeSystem {
+    + LifeSystem()
+    + ~LifeSystem()
+    + LifeSystem(const LifeSystem &other)
+    + LifeSystem &operator=(const LifeSystem &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ASystem <|-- systems::LifeSystem
+
+class systems::LifeSystemApi {
+    + LifeSystemApi()
+    + ~LifeSystemApi()
+    + LifeSystemApi(const LifeSystemApi &other)
+    + LifeSystemApi &operator=(const LifeSystemApi &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ISystemAPI <|-- systems::LifeSystemApi
+
+class systems::NetworkSyncSystem {
+    + NetworkSyncSystem()
+    + ~NetworkSyncSystem()
+    + NetworkSyncSystem(const NetworkSyncSystem &other)
+    + NetworkSyncSystem &operator=(const NetworkSyncSystem &rhs)
+    + {static} const ecs::Version Version
+    + void setGameInfosPtr(std::weak_ptr<rtype::GameInfos> ptr)
+    + bool areGameInfosSet() const
+    - std::weak_ptr<rtype::GameInfos> _ptr
+    - bool _valid
+    - long _elapsedTime
+    - long _timeBetweenSync
+}
+
+ecs::ASystem <|-- systems::NetworkSyncSystem
+
+class systems::NetworkSyncSystemApi {
+    + NetworkSyncSystemApi()
+    + ~NetworkSyncSystemApi()
+    + NetworkSyncSystemApi(const NetworkSyncSystemApi &other)
+    + NetworkSyncSystemApi &operator=(const NetworkSyncSystemApi &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ISystemAPI <|-- systems::NetworkSyncSystemApi
+
+class systems::WeaponSystem {
+    + WeaponSystem()
+    + ~WeaponSystem()
+    + WeaponSystem(const WeaponSystem &other)
+    + WeaponSystem &operator=(const WeaponSystem &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ASystem <|-- systems::WeaponSystem
+
+class systems::WeaponSystemApi {
+    + WeaponSystemApi()
+    + ~WeaponSystemApi()
+    + WeaponSystemApi(const WeaponSystemApi &other)
+    + WeaponSystemApi &operator=(const WeaponSystemApi &rhs)
+    + {static} const ecs::Version Version
+}
+
+ecs::ISystemAPI <|-- systems::WeaponSystemApi
 
 @enduml
