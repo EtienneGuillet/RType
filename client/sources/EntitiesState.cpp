@@ -61,3 +61,43 @@ std::uint32_t rtype::EntitiesState::getType() const
 {
     return _type;
 }
+
+const std::chrono::high_resolution_clock::time_point &rtype::EntitiesState::getLastDisplayUpdate() const
+{
+    return _lastDisplayUpdate;
+}
+
+void rtype::EntitiesState::setLastDisplayUpdate(const std::chrono::high_resolution_clock::time_point &lastDisplayUpdate)
+{
+    _lastDisplayUpdate = lastDisplayUpdate;
+}
+
+const std::chrono::high_resolution_clock::time_point &rtype::EntitiesState::getLastUpdate() const
+{
+    return _lastUpdate;
+}
+
+void rtype::EntitiesState::setLastUpdate(const std::chrono::high_resolution_clock::time_point &lastUpdate)
+{
+    _lastUpdate = lastUpdate;
+}
+
+bool rtype::EntitiesState::isShouldDisplay() const
+{
+    return _shouldDisplay;
+}
+
+void rtype::EntitiesState::setShouldDisplay(bool shouldDisplay)
+{
+    _shouldDisplay = shouldDisplay;
+}
+
+uint32_t rtype::EntitiesState::getHp() const
+{
+    return _hp;
+}
+
+void rtype::EntitiesState::setHp(uint32_t hp)
+{
+    _hp = hp;
+}

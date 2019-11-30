@@ -2,6 +2,7 @@
 #define R_TYPE_ENTITIESSTATE_HPP
 
 #include <map>
+#include <chrono>
 #include "maths/Vectors.hpp"
 
 /*!
@@ -92,7 +93,49 @@ namespace rtype {
          */
         std::uint32_t getType() const;
 
-        private:
+        /*!
+         * @brief Get the last display update
+         * @return the last display update
+         */
+        const std::chrono::high_resolution_clock::time_point &getLastDisplayUpdate() const;
+        /*!
+         * @brief Set the last display update time point
+         * @param lastDisplayUpdate new timepoint
+         */
+        void setLastDisplayUpdate(const std::chrono::high_resolution_clock::time_point &lastDisplayUpdate);
+        /*!
+         * @brief Get the last update
+         * @return the last update
+         */
+        const std::chrono::high_resolution_clock::time_point &getLastUpdate() const;
+        /*!
+         * @brief Get the last update time point
+         * @return the last update time point
+         */
+        void setLastUpdate(const std::chrono::high_resolution_clock::time_point &lastUpdate);
+
+        /*!
+         * @brief should this entity be displayed
+         * @return true if this entity should be displayed
+         */
+        bool isShouldDisplay() const;
+        /*!
+         * @brief Set if the entity should be displayed or not
+         * @param shouldDisplay the new value
+         */
+        void setShouldDisplay(bool shouldDisplay);
+        /*!
+         * @brief get entity hp
+         * @return hp
+         */
+        uint32_t getHp() const;
+        /*!
+         * @brief set entity hp
+         * @param hp entity hp
+         */
+        void setHp(uint32_t hp);
+
+    private:
 
         std::uint32_t _id;
         std::uint32_t _type;
@@ -103,6 +146,10 @@ namespace rtype {
         std::uint32_t _rotY;
         std::uint32_t _scaleX;
         std::uint32_t _scaleY;
+        std::uint32_t _hp;
+        std::chrono::high_resolution_clock::time_point _lastDisplayUpdate;
+        std::chrono::high_resolution_clock::time_point _lastUpdate;
+        bool _shouldDisplay;
     };
 }
 
