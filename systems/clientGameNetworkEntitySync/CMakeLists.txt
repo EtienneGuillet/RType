@@ -18,5 +18,5 @@ target_link_libraries(
 )
 
 add_custom_command(TARGET clientGameNetworkEntitySync_system POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:example_system> ${CLIENT_SYSTEMS_FOLDER}
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:clientGameNetworkEntitySync_system> ${CLIENT_SYSTEMS_FOLDER}
         )

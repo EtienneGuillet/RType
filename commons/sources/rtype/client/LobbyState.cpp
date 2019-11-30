@@ -113,9 +113,9 @@ void rtype::LobbyState::createLobby(const std::string &name, const std::string &
     }
     _inLobby= false;
     _quitLobby = false;
-    _createLobby = false;
-    _joinLobby = true;
-    _failedToJoinLobbyError.clear();
+    _createLobby = true;
+    _joinLobby = false;
+    _failedToCreateLobbyError.clear();
     _currentLobby.name = name;
     _currentLobby.password = password;
     _currentLobby.hasPassword = !password.empty();
@@ -131,7 +131,7 @@ bool rtype::LobbyState::hasFailToCreateLobby() const
 
 const std::string &rtype::LobbyState::failToJoinLobbyError() const
 {
-    return _failedToCreateLobbyError;
+    return _failedToJoinLobbyError;
 }
 
 bool rtype::LobbyState::isJoiningLobby() const
@@ -172,7 +172,7 @@ bool rtype::LobbyState::hasFailToJoinLobby() const
 
 const std::string &rtype::LobbyState::failToCreateLobbyError() const
 {
-    return _failedToJoinLobbyError;
+    return _failedToCreateLobbyError;
 }
 
 bool rtype::LobbyState::isQuittingLobby() const

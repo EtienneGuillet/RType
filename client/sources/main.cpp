@@ -9,6 +9,7 @@
 #include <chrono>
 #include <csignal>
 #include <memory>
+#include <thread>
 #include "ecs/IECS/IECS.hpp"
 #include "ecs/DLLoader/DLLoader.hpp"
 #include "ecs/IECS/ECS.hpp"
@@ -27,6 +28,26 @@ void signalHandler(int s)
 {
     std::cout << "Caught signal " << s << std::endl;
     gSignalStatus = s;
+}
+
+void fakeDatagramSequence(rtype::NetworkState &state, rtype::RTypeNetworkClient &networkClient) //todo remove me
+{
+    state.setServerHost("127.0.0.1");
+    state.setServerPort(8080);
+    state.connect("julian");
+    while (!state.isConnnected()) {
+        networkClient.update(1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    state.getLobbyState().createLobby("Room1", "", 1);
+    while (!state.getLobbyState().isInLobby()) {
+        networkClient.update(1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    while (!state.isInGame()) {
+        networkClient.update(1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
 }
 
 void runMain(const std::string &libsFolder)
@@ -50,7 +71,9 @@ void runMain(const std::string &libsFolder)
     gameManager->addComponent(std::shared_ptr<rtype::GameManagerComponent>(new rtype::GameManagerComponent(state, shouldClose)));
     world->pushEntity(gameManager);
 
+    //Comment the first line and uncomment the second one to try the game
     rtype::CreateMainWindowEntities MainWindow(world, *ecs);
+    //fakeDatagramSequence(state, *networkClient);
 
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Starting world");
     while (gSignalStatus == 0 && !shouldClose) {

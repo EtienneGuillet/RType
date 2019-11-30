@@ -262,7 +262,20 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
                 _inputs[ENTER] = false;
             }
         }
-    this->renderEntities();
+        auto lockedWorld = _world.lock();
+        if (lockedWorld) {
+            lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this]([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+                auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+                if (gm) {
+                    gm->getState().setInput(Z, _inputs[Z]);
+                    gm->getState().setInput(S, _inputs[S]);
+                    gm->getState().setInput(D, _inputs[D]);
+                    gm->getState().setInput(Q, _inputs[Q]);
+                    gm->getState().setInput(SPACE, _inputs[SPACE]);
+                }
+            });
+        }
+        this->renderEntities();
     } catch (SfmlSystemException &e) {
         std::cerr << e.what() << e.where() << std::endl;
     }
