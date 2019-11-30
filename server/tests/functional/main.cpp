@@ -224,7 +224,11 @@ int main()
         if (std::chrono::system_clock::now() - start >= std::chrono::seconds(4) && std::chrono::system_clock::now() - action >= std::chrono::milliseconds(100)) {
             rtype::network::RTypeDatagram dgA(serverHost);
             rtype::network::RTypeDatagramAction datagramAction;
-            datagramAction.shot = true;
+            datagramAction.shot = false;
+            datagramAction.down = false;
+            datagramAction.up = false;
+            datagramAction.left = false;
+            datagramAction.right = false;
             dgA.init200ActionDatagram(datagramAction);
             socket2->send(dgA);
             std::cout << "Action sned" << std::endl;

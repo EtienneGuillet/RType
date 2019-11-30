@@ -10,6 +10,7 @@
 #include <components/server/networkIdentity/NetworkIdentityComponent.hpp>
 #include <components/server/collider/ColliderComponent.hpp>
 #include <components/server/displayable/DisplayableComponent.hpp>
+#include <components/server/damageable/DamageableComponent.hpp>
 
 KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
@@ -30,9 +31,10 @@ KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
             auto playerPos = getPlayerPositions(world);
             float smallestDistance = -1.0f;
             auto ownPos = transform->getPosition();
+            float distance = 0;
 
             for (auto &pos : playerPos) {
-                float distance = std::sqrt(std::pow(pos.x + ownPos.x, 2) + std::pow(pos.y + ownPos.y, 2) + std::pow(pos.z + ownPos.z, 2));
+                distance = std::sqrt(std::pow(pos.x + ownPos.x, 2) + std::pow(pos.y + ownPos.y, 2) + std::pow(pos.z + ownPos.z, 2));
                 if (distance < smallestDistance || smallestDistance == -1.0f) {
                     auto direction = pos - ownPos;
                     rb->setDirection(b12software::maths::Vector2D(direction.x, direction.y));
@@ -41,13 +43,14 @@ KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
             }
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Distance: " + std::to_string(distance));
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "From: " + std::to_string(ownPos.x) + ", " + std::to_string(ownPos.y));
         }
     }));
 }
 
 std::vector<b12software::maths::Vector3D> KamikazeEntity::getPlayerPositions(std::shared_ptr<ecs::IWorld> world) {
-    auto players = world->getEntitiesWith({ecs::components::PlayerComponent::Version, ecs::components::TransformComponent::Version});
+    auto players = world->getEntitiesWith({ecs::components::PlayerComponent::Version, ecs::components::TransformComponent::Version, ecs::components::DamageableComponent::Version});
     std::vector<b12software::maths::Vector3D> playerPositions;
 
     for (auto &player : players) {
