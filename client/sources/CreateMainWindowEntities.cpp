@@ -179,7 +179,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputPort->getComponent(rtype::TransformComponent::Version).lock());
         if (tr) {
             tr->setPosition(230, 540, 0);
-            tr->setScale(1, 0.9);
+            tr->setScale(1, 1);
         }
         lockedWorld->pushEntity(entityTextInputPort);
     }
@@ -190,7 +190,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputAddress->getComponent(rtype::TransformComponent::Version).lock());
         if (tr) {
             tr->setPosition(370, 690, 0);
-            tr->setScale(1, 0.9);
+            tr->setScale(1, 1);
         }
         lockedWorld->pushEntity(entityTextInputAddress);
     }

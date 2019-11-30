@@ -188,6 +188,7 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
             if (updateTextComponent && updateTextComponent->getUpdatable()) {
                 if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode <= 'Z') || (event.text.unicode >= '0' && event.text.unicode <= '9') || (event.text.unicode == '.')) {
                     text.setString(string + static_cast<char>(event.text.unicode));
+                    textComponent->setString(string + static_cast<char>(event.text.unicode));
                     textComponent->setText(text);
                 } else if (event.text.unicode == 8) {
                     if (string.size() > (string.find(":") + 7)) {
@@ -418,26 +419,24 @@ void SfmlSystem::tryForConnection()
 
                     std::cout << textComponent->getString() << std::endl << std::flush;
                     if (textComponent->getString().rfind("Port :      ", 0) == 0) {
-//                        unsigned short port = std::stoi(textComponent->getString().substr(12));
-//                        std::cout << "port : " << textComponent->getString() << std::endl << std::flush;
-//                        gm->getState().setServerPort(port);
+                        unsigned int port = std::stoul(textComponent->getString().substr(12));
+                        gm->getState().setServerPort(port);
                         _portSet = true;
                     }
                     if (textComponent->getString().rfind("IP address :      ", 0) == 0) {
-                        //std::string addr = textComponent->getString().substr(18);
-//                        std::cout << "addr : " << textComponent->getString() << std::endl << std::flush;
-//                        gm->getState().setServerHost(addr);
+                        std::string addr = textComponent->getString().substr(18);
+                        gm->getState().setServerHost(addr);
                         _addrSet = true;
                     }
-                    gm->stopConnecting();
                 });
+                gm->stopConnecting();
                 if (lockedWorld) {
                     lockedWorld->applyToEach({rtype::TextComponent::Version}, [this, gm] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> inlineEntity, std::vector<std::weak_ptr<ecs::IComponent>> inlineComponents) {
                         std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(inlineComponents.front().lock());
 
                         if (textComponent->getString().rfind("Username :      ", 0) == 0 && _portSet && _addrSet) {
                             std::cout << "username : " << textComponent->getString().substr(16) << std::endl << std::flush;
-                            //gm->getState().connect(textComponent->getString().substr(16));
+                            gm->getState().connect(textComponent->getString().substr(16));
                         }
                     });
                 }
