@@ -6,8 +6,22 @@
 
 const ecs::Version SfmlSystem::Version = ecs::Version("System_Sfml", 0, 1, 0, 0);
 
+SfmlSystem::SfmlSystem()
+    : _mouseInput()
+    , _inputs()
+    , _clock()
+    , _window()
+    , _fonts()
+    , _textures()
+    , _started(false)
+{
+
+}
+
 void SfmlSystem::start()
 {
+    if (_started)
+        return;
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Start");
     try {
         _inputs[Z] = false;
@@ -24,6 +38,7 @@ void SfmlSystem::start()
     } catch (SfmlSystemException &e) {
         std::cerr << e.what() << e.where() << std::endl;
     }
+    _started = true;
 }
 
 void SfmlSystem::loadTextures()
@@ -74,20 +89,25 @@ void SfmlSystem::loadFonts()
 
 void SfmlSystem::stop()
 {
+    if (!_started)
+        return;
     auto lockedWorld = _world.lock();
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Stop");
+    if (lockedWorld) {
+        lockedWorld->applyToEach({rtype::SpriteComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
+            spriteComponent->invalidateSprite();
+        });
+        lockedWorld->applyToEach({rtype::TextComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
+            textComponent->invalidateText();
+        });
+    }
 
-    lockedWorld->applyToEach({rtype::SpriteComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-        std::shared_ptr<rtype::SpriteComponent> spriteComponent = std::dynamic_pointer_cast<rtype::SpriteComponent>(components.front().lock());
-        spriteComponent->invalidateSprite();
-    });
-    lockedWorld->applyToEach({rtype::TextComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-        std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
-        textComponent->invalidateText();
-    });
     _fonts.clear();
     _textures.clear();
     _window.close();
+    _started = false;
 }
 
 bool SfmlSystem::isHovering(const sf::Vector3<float> &position)
@@ -98,18 +118,19 @@ bool SfmlSystem::isHovering(const sf::Vector3<float> &position)
         position.y + 130 > sf::Mouse::getPosition().y;
 }
 
-void SfmlSystem::manageMouseEvents(sf::Event event)
+void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
 {
     auto lockedWorld = _world.lock();
 
-    event = event;
     _mouseInput.first = sf::Mouse::getPosition().x;
     _mouseInput.second = sf::Mouse::getPosition().y;
     if (lockedWorld) {
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
             std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
-            if (textComponent && transformComponent) {
+            std::shared_ptr<rtype::HoverComponent> hoverComponent = std::dynamic_pointer_cast<rtype::HoverComponent>(components[2].lock());
+
+            if (textComponent && transformComponent && hoverComponent) {
                 sf::Vector3<float> vec = transformComponent->getPosition();
                 if (isHovering(vec)) {
                     textComponent->setColorText(sf::Color::Red);
@@ -117,6 +138,13 @@ void SfmlSystem::manageMouseEvents(sf::Event event)
                 } else {
                     textComponent->setColorText(sf::Color::White);
                     textComponent->setOutlineColorText(sf::Color::Red);
+                }
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && isHovering(vec)) {
+                    const auto &func = hoverComponent->getFunctionPointer();
+                    if (func) {
+                        std::cout << "Calling func" << std::endl << std::flush;
+                        func();
+                    }
                 }
             }
         });
