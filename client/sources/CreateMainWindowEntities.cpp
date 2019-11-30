@@ -248,7 +248,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
         }
         if (hv) {
             hv->setHoverable(true);
-            hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
+            hv->setFunctionPointer(rtype::CreateMainWindowEntities::tryToConnect);
         }
         if (rt) {
             rt->setString("PLAY");
@@ -285,4 +285,18 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
     _world = world;
     _ecs = &ecs;
     menuSceneLaunch();
+}
+
+void rtype::CreateMainWindowEntities::tryToConnect()
+{
+    auto lockedWorld = _world.lock();
+
+    if (lockedWorld) {
+        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+            if (gm) {
+                gm->startConnecting();
+            }
+        });
+    }
 }

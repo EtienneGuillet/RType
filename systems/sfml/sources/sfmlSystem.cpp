@@ -15,6 +15,9 @@ SfmlSystem::SfmlSystem()
     , _fonts()
     , _textures()
     , _started(false)
+    , _portSet(false)
+    , _addrSet(false)
+    , _connected(false)
 {
 }
 
@@ -276,6 +279,7 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
             });
         }
         this->renderEntities();
+        this->tryForConnection();
     } catch (SfmlSystemException &e) {
         std::cerr << e.what() << e.where() << std::endl;
     }
@@ -361,7 +365,6 @@ void SfmlSystem::renderTexts(const std::shared_ptr<ecs::IWorld> &lockedWorld)
 
 void SfmlSystem::renderShapes(const std::shared_ptr<ecs::IWorld> &lockedWorld)
 {
-    //render the Rectangle.
     lockedWorld->applyToEach({rtype::RectangleShapeComponent::Version, rtype::TransformComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::RectangleShapeComponent> rectangleComponent = std::dynamic_pointer_cast<rtype::RectangleShapeComponent>(components.front().lock());
         std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
@@ -371,7 +374,6 @@ void SfmlSystem::renderShapes(const std::shared_ptr<ecs::IWorld> &lockedWorld)
         rectangleComponent->getShape().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
         _window.draw(rectangleComponent->getShape());
     });
-    //render the Circles.
     lockedWorld->applyToEach({rtype::CircleShapeComponent::Version, rtype::TransformComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::CircleShapeComponent> circleComponent = std::dynamic_pointer_cast<rtype::CircleShapeComponent>(components.front().lock());
         std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
@@ -381,7 +383,6 @@ void SfmlSystem::renderShapes(const std::shared_ptr<ecs::IWorld> &lockedWorld)
         circleComponent->getShape().setPosition(transformComponent->getPosition().x, transformComponent->getPosition().y);
         _window.draw(circleComponent->getShape());
     });
-    //render the Convexs.
     lockedWorld->applyToEach({rtype::ConvexShapeComponent::Version, rtype::TransformComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::ConvexShapeComponent> convexComponent = std::dynamic_pointer_cast<rtype::ConvexShapeComponent>(components.front().lock());
         std::shared_ptr<rtype::TransformComponent> transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(components[1].lock());
@@ -403,19 +404,43 @@ const ecs::Version& SfmlSystem::getType() const
     return Version;
 }
 
-void SfmlSystem::waitForConnection()
+void SfmlSystem::tryForConnection()
 {
     auto lockedWorld = _world.lock();
 
     if (lockedWorld) {
-        lockedWorld->applyToEach({rtype::TextComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
-            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
+        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this, lockedWorld] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::GameManagerComponent> gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components.front().lock());
 
-            if (textComponent->getString().rfind("Port :      ", 0) == 0) {
-            }
-            if (textComponent->getString().rfind("IP address :      ", 0) == 0) {
-            }
-            if (textComponent->getString().rfind("Username :      ", 0) == 0) {
+            if (gm->isTryingToConnect()) {
+                lockedWorld->applyToEach({rtype::TextComponent::Version}, [this, gm] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> inlineEntity, std::vector<std::weak_ptr<ecs::IComponent>> inlineComponents) {
+                    std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(inlineComponents.front().lock());
+
+                    std::cout << textComponent->getString() << std::endl << std::flush;
+                    if (textComponent->getString().rfind("Port :      ", 0) == 0) {
+//                        unsigned short port = std::stoi(textComponent->getString().substr(12));
+//                        std::cout << "port : " << textComponent->getString() << std::endl << std::flush;
+//                        gm->getState().setServerPort(port);
+                        _portSet = true;
+                    }
+                    if (textComponent->getString().rfind("IP address :      ", 0) == 0) {
+                        //std::string addr = textComponent->getString().substr(18);
+//                        std::cout << "addr : " << textComponent->getString() << std::endl << std::flush;
+//                        gm->getState().setServerHost(addr);
+                        _addrSet = true;
+                    }
+                    gm->stopConnecting();
+                });
+                if (lockedWorld) {
+                    lockedWorld->applyToEach({rtype::TextComponent::Version}, [this, gm] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> inlineEntity, std::vector<std::weak_ptr<ecs::IComponent>> inlineComponents) {
+                        std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(inlineComponents.front().lock());
+
+                        if (textComponent->getString().rfind("Username :      ", 0) == 0 && _portSet && _addrSet) {
+                            std::cout << "username : " << textComponent->getString().substr(16) << std::endl << std::flush;
+                            //gm->getState().connect(textComponent->getString().substr(16));
+                        }
+                    });
+                }
             }
         });
     }

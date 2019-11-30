@@ -16,6 +16,7 @@ rtype::GameManagerComponent::GameManagerComponent(rtype::NetworkState &state, bo
     , _shouldClose(shouldClose)
     , _displayWidth(0)
     , _displayHeight(0)
+    , _tryingToConnect(false)
 {
 
 }
@@ -50,3 +51,20 @@ int rtype::GameManagerComponent::getDisplayHeight() const
 {
     return _displayHeight;
 }
+
+void rtype::GameManagerComponent::startConnecting()
+{
+    _tryingToConnect = true;
+}
+
+void rtype::GameManagerComponent::stopConnecting()
+{
+    _tryingToConnect = false;
+}
+
+bool rtype::GameManagerComponent::isTryingToConnect() const
+{
+    return _tryingToConnect;
+}
+
+
