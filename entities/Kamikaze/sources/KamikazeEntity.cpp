@@ -41,10 +41,13 @@ KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
                     rb->setUps(20);
                 }
             }
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Distance: " + std::to_string(distance));
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "From: " + std::to_string(ownPos.x) + ", " + std::to_string(ownPos.y));
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------Scanned " + std::to_string(playerPos.size()) + " players ------");
+            if (playerPos.empty()) {
+                rb->setUps(0);
+            } else {
+                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
+                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
+            }
         }
     }));
 }

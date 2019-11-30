@@ -48,7 +48,7 @@ bool systems::DamageSystem::collide(const b12software::maths::Vector2D &colAPos,
     auto aMax = colAPos + (colASize * 0.5f);
     auto bMin = colBPos - (colBSize * 0.5f);
     auto bMax = colBPos + (colBSize * 0.5f);
-    if (aMin.x < bMax.x && aMax.x > bMin.x && aMin.y > bMax.y && aMax.y > bMin.y) {
+    if (aMin.x < bMax.x && aMax.x > bMin.x && aMin.y < bMax.y && aMax.y > bMin.y) {
         return true;
     }
     return false;
@@ -107,7 +107,6 @@ void systems::DamageSystem::computeDamages() const
                     continue;
                 auto damagedBasePos = (damagedTr) ? damagedTr->getPosition() : b12software::maths::Vector3D(0, 0, 0);
                 auto damagedColWorldPos = b12software::maths::Vector2D(damagedBasePos.x, damagedBasePos.y) + damagedCol->getOffset();
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[" + lockedDamagerEntity->getName() + ":" + std::to_string(lockedDamagerEntity->getID()) + "] Check for collision with [" + lockedDamagedEntity->getName() + ":" + std::to_string(lockedDamagedEntity->getID()) + "]");
                 if (collide(damagerColWorldPos, damagerCol->getSize(), damagedColWorldPos, damagedCol->getSize())) {
                     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[" + lockedDamagerEntity->getName() + ":" + std::to_string(lockedDamagerEntity->getID()) + "][" + lockedDamagedEntity->getName() + ":" + std::to_string(lockedDamagedEntity->getID()) + "] Collision");
                     damagedDmg->damage(damagerDmg->getDamages());
@@ -121,7 +120,6 @@ void systems::DamageSystem::computeDamages() const
         }
         for (auto &id : toDelete) {
             auto entity = lockedWorld->popEntity(id);
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[" + entity->getName() + ":" + std::to_string(entity->getID()) + "] Popped from world");
         }
     }
 }
