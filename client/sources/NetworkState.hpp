@@ -14,10 +14,10 @@
 #include <algorithm>
 
 /*!
- * @enum Keys
+ * @enum NetworkStateKeys
  * @brief Enum representing the
  */
-enum Keys {
+enum NetworkStateKeys {
     Z,
     Q,
     S,
@@ -92,20 +92,20 @@ namespace rtype {
          * @brief Set the inputs of the client.
          * @param A map of key and a bool, true or false whether the input is held or not.
          */
-        void setInputs(const std::map<Keys, bool> &keys);
+        void setInputs(const std::map<NetworkStateKeys, bool> &keys);
 
         /*!
          * @brief Get the inputs of the client.
          * @return A map of key and a bool, true or false whether the input is held or not.
          */
-        const std::map<Keys, bool> &getInputs();
+        const std::map<NetworkStateKeys, bool> &getInputs();
 
         /*!
          * @brief Set the state of a key
          * @param key the key
          * @param state the new state
          */
-        void setInput(Keys key, bool state);
+        void setInput(NetworkStateKeys key, bool state);
 
         /*!
          * @brief Set the charge
@@ -238,7 +238,7 @@ namespace rtype {
         std::string _serverHost;
         unsigned short _serverPort;
         uint8_t _charge;
-        std::map<Keys, bool> _inputs;
+        std::map<NetworkStateKeys, bool> _inputs;
         std::vector<rtype::EntitiesState> _entities;
         rtype::LobbyState _lobbyState;
         std::tuple<int, int, int, int> _scores;

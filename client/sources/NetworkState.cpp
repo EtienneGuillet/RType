@@ -62,17 +62,17 @@ void rtype::NetworkState::sortByZindex()
     std::sort(_entities.begin(), _entities.end(), comparePositionZ);
 }
 
-void rtype::NetworkState::setInputs(const std::map<Keys, bool> &keys)
+void rtype::NetworkState::setInputs(const std::map<NetworkStateKeys, bool> &keys)
 {
     _inputs = keys;
 }
 
-const std::map<Keys, bool>& rtype::NetworkState::getInputs()
+const std::map<NetworkStateKeys, bool>& rtype::NetworkState::getInputs()
 {
     return _inputs;
 }
 
-void rtype::NetworkState::setInput(Keys key, bool state)
+void rtype::NetworkState::setInput(NetworkStateKeys key, bool state)
 {
     _inputs[key] = state;
 }
