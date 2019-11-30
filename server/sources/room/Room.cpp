@@ -15,6 +15,7 @@
 #include <entities/PlayerEntity/PlayerEntityApi.hpp>
 #include <entities/PlayerEntity/PlayerEntity.hpp>
 #include <systems/NetworkSyncSystem/NetworkSyncSystemApi.hpp>
+#include <components/Transform/TransformComponent.hpp>
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -359,12 +360,19 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     auto libLoader = rtype::LibLoader(ecs, world, libsFolder);
     auto start = std::chrono::system_clock::now();
     auto end = start;
+    std::map<int, int> playersIdsMap;
 
     auto playerApi = std::make_shared<PlayerEntityAPI>();
     ecs->learnEntity(playerApi);
 
     for (int j = 0; j < infos.getNbPlayers(); ++j) {
-        world->pushEntity(std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j)));
+        auto player = std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j));
+        auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(player->getComponent(ecs::components::TransformComponent::Version).lock());
+        auto spawnPos = ((80 / infos.getNbPlayers()) * j) + 10;
+
+        transform->setPosition(b12software::maths::Vector3D(10, spawnPos, 0));
+        playersIdsMap[j] = player->getID();
+        world->pushEntity(player);
     }
     auto     networkApi = std::make_shared<systems::NetworkSyncSystemApi>();
     ecs->learnSystem(networkApi);
@@ -390,8 +398,9 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
                     str += std::string("[DOWN:") + (player.isMovingDown() ? "true" : "false") + "]";
                     str += std::string("[LEFT:") + (player.isMovingLeft() ? "true" : "false") + "]";
                     str += std::string("[RIGHT:") + (player.isMovingRight() ? "true" : "false") + "]";
-                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, str);
+                    //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, str);
                 } else {
+                    world->popEntity(playersIdsMap[i]);
                     used--;
                 }
             }
