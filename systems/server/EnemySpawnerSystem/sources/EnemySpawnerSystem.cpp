@@ -50,13 +50,20 @@ void systems::EnemySpawnerSystem::computeSpawn(std::shared_ptr<ecs::IEntityAPI> 
 
     if (_timeBeforeSpawnMap.find(entityApi->getVersion()) == _timeBeforeSpawnMap.end()) {
         _timeBeforeSpawnMap[version] = entityApi->getSpawnFreq();
+        spawnEntity(entityApi, lockedWorld);
     } else {
         _timeBeforeSpawnMap[version] -= _elapsedTime;
         if (_timeBeforeSpawnMap[version] <= 0) {
-            auto spawnedEntity = entityApi->createNewEntity();
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[" + version.getType() + "] Spawned");
-            lockedWorld->pushEntity(spawnedEntity);
-            _timeBeforeSpawnMap[version] += entityApi->getSpawnFreq();
+            spawnEntity(entityApi, lockedWorld);
         }
     }
+}
+
+void systems::EnemySpawnerSystem::spawnEntity(std::shared_ptr<ecs::IEntityAPI> &entity, std::shared_ptr<ecs::IWorld> lockedWorld) {
+    auto version = entity->getVersion();
+
+    auto spawnedEntity = entity->createNewEntity();
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[" + version.getType() + "] Spawned");
+    lockedWorld->pushEntity(spawnedEntity);
+    _timeBeforeSpawnMap[version] += entity->getSpawnFreq();
 }

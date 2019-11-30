@@ -48,6 +48,7 @@ namespace ecs {
 
     public:
         int getID() const override;
+        void setId(int id) override ;
         const std::string &getName() const override;
         bool hasComponent(const Version &componentType) const override;
         bool hasComponents(const std::vector<Version> &componentTypes) override;
@@ -58,8 +59,6 @@ namespace ecs {
 
         bool operator ==(const Entity &rhs) const;
         bool operator !=(const Entity &rhs) const;
-    private:
-        static IDGenerator Generator; /*!< A static generator used to create ids for entities */
 
     private:
         int _id; /*!< A unique id for this entity */

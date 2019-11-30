@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include <logger/DefaultLogger.hpp>
+#include <logger/StandardLogger.hpp>
 #include "DamageSystem.hpp"
 #include "components/Transform/TransformComponent.hpp"
 #include "components/server/damageable/DamageableComponent.hpp"
@@ -21,7 +22,7 @@ const ecs::Version systems::DamageSystem::Version = ecs::Version("SYSTEM_DamageS
 systems::DamageSystem::DamageSystem()
     : ASystem(), _elapsedTime(0), _computeEvery(200)
 {
-
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 }
 
 void systems::DamageSystem::tick(long deltatime)
@@ -106,7 +107,9 @@ void systems::DamageSystem::computeDamages() const
                     continue;
                 auto damagedBasePos = (damagedTr) ? damagedTr->getPosition() : b12software::maths::Vector3D(0, 0, 0);
                 auto damagedColWorldPos = b12software::maths::Vector2D(damagedBasePos.x, damagedBasePos.y) + damagedCol->getOffset();
+                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[" + lockedDamagerEntity->getName() + ":" + std::to_string(lockedDamagerEntity->getID()) + "] Check for collision with [" + lockedDamagedEntity->getName() + ":" + std::to_string(lockedDamagedEntity->getID()) + "]");
                 if (collide(damagerColWorldPos, damagerCol->getSize(), damagedColWorldPos, damagedCol->getSize())) {
+                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[" + lockedDamagerEntity->getName() + ":" + std::to_string(lockedDamagerEntity->getID()) + "][" + lockedDamagedEntity->getName() + ":" + std::to_string(lockedDamagedEntity->getID()) + "] Collision");
                     damagedDmg->damage(damagerDmg->getDamages());
                     damagedDmg->setLastHitOwner(damagerDmg->getOwner());
                     if (damagerDmg->isDestroyOnHit()) {
@@ -117,7 +120,8 @@ void systems::DamageSystem::computeDamages() const
             }
         }
         for (auto &id : toDelete) {
-            lockedWorld->popEntity(id);
+            auto entity = lockedWorld->popEntity(id);
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[" + entity->getName() + ":" + std::to_string(entity->getID()) + "] Popped from world");
         }
     }
 }

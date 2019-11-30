@@ -213,7 +213,7 @@ int main()
     getRooms(serverHost, socket1);
     std::chrono::system_clock::time_point action = std::chrono::system_clock::now();
     auto start = std::chrono::system_clock::now();
-    while (std::chrono::system_clock::now() - start <= std::chrono::seconds(10)) {
+    while (std::chrono::system_clock::now() - start <= std::chrono::seconds(30)) {
         auto dg = socket2->receive();
         if (dg.isValid())
             handleLoopingResponse(serverHost, socket2, dg);
