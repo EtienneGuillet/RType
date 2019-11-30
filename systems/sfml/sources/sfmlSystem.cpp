@@ -144,7 +144,6 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
                         textComponent->getText().setFillColor(textComponent->getColor());
                         textComponent->getText().setOutlineColor(textComponent->getOutlineColor());
                     } else {
-                        if (textComponent->getColor() == sf::Color::Red)
                         textComponent->getText().setFillColor(textComponent->getOutlineColor());
                         textComponent->getText().setOutlineColor(textComponent->getColor());
                     }
@@ -170,9 +169,11 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
                     std::shared_ptr<rtype::UpdateTextComponent> updateTComponent = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(componentsShadow[3].lock());
                     updateTComponent->setUpdatable(false);
                     TComponent->setColorText(sf::Color::Red);
+                    TComponent->setOutlineColorText(sf::Color::White);
                 });
                 updateTextComponent->setUpdatable(true);
                 textComponent->setColorText(sf::Color::Blue);
+                textComponent->setOutlineColorText(sf::Color::White);
             }
         });
     }
