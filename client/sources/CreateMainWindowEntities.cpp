@@ -167,7 +167,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputUsername->getComponent(rtype::TransformComponent::Version).lock());
         if (tr) {
             tr->setPosition(360, 390, 0);
-            tr->setScale(1, 0.9);
+            tr->setScale(1, 1);
         }
         lockedWorld->pushEntity(entityTextInputUsername);
     }
@@ -297,3 +297,22 @@ void rtype::CreateMainWindowEntities::tryToConnect()
         });
     }
 }
+
+void rtype::CreateMainWindowEntities::checkForUpdateScene()
+{
+    auto lockedWorld = _world.lock();
+
+    if (lockedWorld) {
+        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+
+            if (gm) {
+                if (!gm->getState().isTryingToConnected() && gm->getState().isConnnected()) {
+                    roomSceneLaunch();
+                }
+            }
+        });
+    }
+}
+
+
