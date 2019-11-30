@@ -32,6 +32,9 @@ rtype::Configuration::Configuration(int nbArgs, char * const *args)
             } catch (std::out_of_range &e) {
                 _port = 0;
                 _errors.push_back(std::string("Invalid port: ") + e.what());
+            } catch (std::exception &e) {
+                _port = 0;
+                _errors.emplace_back(e.what());
             }
             break;
         case '?': _errors.emplace_back("Missing argument");
