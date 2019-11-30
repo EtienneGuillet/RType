@@ -376,8 +376,9 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     }
     auto     networkApi = std::make_shared<systems::NetworkSyncSystemApi>();
     ecs->learnSystem(networkApi);
-    auto system = networkApi->createNewSystem();
+    auto system = std::dynamic_pointer_cast<systems::NetworkSyncSystem>(networkApi->createNewSystem());
     system->start();
+    system->setGameInfosPtr(infos.getWeak());
     world->addSystem(system);
 
     while (shouldGameBeRunning && threadRunning) {
@@ -389,23 +390,19 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
             world->tick(deltaTime);
 
             int used = 4;
+            int alive = 4;
             for (int i = 0; i < 4; i++) {
                 auto &player = infos.getPlayer(i);
                 if (player.isUsed()) {
-                    std::string str = "Player " + std::to_string(i) + " inputs:";
-                    str += std::string("[SHOOT:") + (player.isShooting() ? "true" : "false") + "]";
-                    str += std::string("[UP:") + (player.isMovingUp() ? "true" : "false") + "]";
-                    str += std::string("[DOWN:") + (player.isMovingDown() ? "true" : "false") + "]";
-                    str += std::string("[LEFT:") + (player.isMovingLeft() ? "true" : "false") + "]";
-                    str += std::string("[RIGHT:") + (player.isMovingRight() ? "true" : "false") + "]";
-                    //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, str);
-                } else if (player.getHp() <= 0) {
-                    world->popEntity(playersIdsMap[i]);
+                    if (player.getHp() <= 0) {
+                        alive--;
+                    }
                 } else {
+                    alive--;
                     used--;
                 }
             }
-            if (used == 0)
+            if (used == 0 || alive == 0)
                 break;
         }
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
