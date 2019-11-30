@@ -128,9 +128,12 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     auto entityButtonQuit = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto entityTextboxUsername = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
     auto entityTextboxPort = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
-    auto entityTextboxAdresse = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+    auto entityTextboxAddress = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+    auto entityTextInputUsername = _ecs->createEntityFromAPI(ecs::Version("Entity_textInput", 1, 0, 0, 0));
+    auto entityTextInputPort = _ecs->createEntityFromAPI(ecs::Version("Entity_textInput", 1, 0, 0, 0));
+    auto entityTextInputAddress = _ecs->createEntityFromAPI(ecs::Version("Entity_textInput", 1, 0, 0, 0));
 
-        if (entityTitle) {
+    if (entityTitle) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTitle->getComponent(rtype::TransformComponent::Version).lock());
         if (tr) {
             tr->setPosition(550, -200, 0);
@@ -150,8 +153,41 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
         }
         if (textComponent) {
             textComponent->setColorText(sf::Color::Blue);
-            textComponent->setString("Username : ");
+            textComponent->setString("Username :      ");
         }
+    }
+    if (entityTextInputUsername) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputUsername->getComponent(rtype::TransformComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(360, 390, 0);
+            tr->setScale(1, 0.9);
+        }
+        lockedWorld->pushEntity(entityTextInputUsername);
+    }
+    else {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find TitleSprite_entity");
+    }
+    if (entityTextInputPort) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputPort->getComponent(rtype::TransformComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(230, 540, 0);
+            tr->setScale(1, 0.9);
+        }
+        lockedWorld->pushEntity(entityTextInputPort);
+    }
+    else {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find TitleSprite_entity");
+    }
+    if (entityTextInputAddress) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputAddress->getComponent(rtype::TransformComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(370, 690, 0);
+            tr->setScale(1, 0.9);
+        }
+        lockedWorld->pushEntity(entityTextInputAddress);
+    }
+    else {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find TitleSprite_entity");
     }
     lockedWorld->pushEntity(entityTextboxUsername);
     if (entityTextboxPort) {
@@ -163,23 +199,23 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
         }
         if (textComponent) {
             textComponent->setColorText(sf::Color::Blue);
-            textComponent->setString("Port : ");
+            textComponent->setString("Port :      ");
         }
     }
     lockedWorld->pushEntity(entityTextboxPort);
-    if (entityTextboxAdresse) {
-        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxAdresse->getComponent(rtype::TextComponent::Version).lock());
-        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxAdresse->getComponent(rtype::TransformComponent::Version).lock());
+    if (entityTextboxAddress) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxAddress->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxAddress->getComponent(rtype::TransformComponent::Version).lock());
         if (transformComponent) {
             transformComponent->setPosition(50, 700, 0);
             transformComponent->setScale(1.5, 1.5);
         }
         if (textComponent) {
             textComponent->setColorText(sf::Color::Blue);
-            textComponent->setString("IP address : ");
+            textComponent->setString("IP address :      ");
         }
     }
-    lockedWorld->pushEntity(entityTextboxAdresse);
+    lockedWorld->pushEntity(entityTextboxAddress);
     if (entityButtonPlay) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlay->getComponent(rtype::TransformComponent::Version).lock());
         auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonPlay->getComponent(rtype::HoverComponent::Version).lock());
