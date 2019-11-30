@@ -21,7 +21,7 @@ const std::map<int, int> rtype::ClientGameNetworkEntitySyncSystem::_networkTypeT
     {1, 42}, //player 1
     {2, 42}, //player 2
     {3, 42}, //player 3
-    {4, 42}, //player 4
+    {4, 42}, //player 4 //todo change sprites
 };
 
 const ecs::Version rtype::ClientGameNetworkEntitySyncSystem::Version = ecs::Version("SYSTEM_ClientGameNetworkEntitySyncSystem", 0, 0, 1, 0);
@@ -55,6 +55,7 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
             return;
         try {
             auto &entityData = gameManagerComp->getState().getEntity(netIdComp->getID());
+            //todo change the values from percents to screen coordinates
             if (entityData.isShouldDisplay()) {
                 trComp->setPosition(entityData.getPos().x, entityData.getPos().y, entityData.getPos().z);
                 trComp->setScale(entityData.getScale().x, entityData.getScale().y);
@@ -72,6 +73,7 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
             continue;
         auto newEntity = std::make_shared<ecs::Entity>("NetworkedEntity");
         newEntity->addComponent(std::make_shared<rtype::EntityIdComponent>(entityData.getId()));
+        //todo change the values from percents to screen coordinates
         newEntity->addComponent(std::make_shared<rtype::TransformComponent>(
             sf::Vector3f(entityData.getPos().x, entityData.getPos().y, entityData.getPos().z),
             sf::Vector2f(entityData.getRot().x, entityData.getRot().y),

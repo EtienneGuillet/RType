@@ -71,8 +71,9 @@ void runMain(const std::string &libsFolder)
     gameManager->addComponent(std::shared_ptr<rtype::GameManagerComponent>(new rtype::GameManagerComponent(state, shouldClose)));
     world->pushEntity(gameManager);
 
-    //rtype::CreateMainWindowEntities MainWindow(world, *ecs);
-    fakeDatagramSequence(state, *networkClient);
+    //Comment the first line and uncomment the second one to try the game
+    rtype::CreateMainWindowEntities MainWindow(world, *ecs);
+    //fakeDatagramSequence(state, *networkClient);
 
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Starting world");
     while (gSignalStatus == 0 && !shouldClose) {
