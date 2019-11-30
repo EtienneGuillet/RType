@@ -69,9 +69,9 @@ class SfmlSystem : public ecs::ASystem {
     bool isRunning() const override;
 
     /*
-     * @brief check if the client as connected to the server yet.
+     * @brief try to connect the client to the server.
      */
-    void waitForConnection();
+    void tryForConnection();
 
     /*
      * @brief Inform the type of the system.
@@ -127,6 +127,7 @@ class SfmlSystem : public ecs::ASystem {
 
     static bool isHovering(const sf::Text &text);
 
+    std::weak_ptr<rtype::NetworkState> _networkState;
     std::pair</*x*/float, /*y*/float> _mouseInput;
     std::map<NetworkStateKeys, bool> _inputs;
     sf::Clock _clock;
@@ -134,6 +135,9 @@ class SfmlSystem : public ecs::ASystem {
     std::map<int, std::shared_ptr<sf::Font>> _fonts;
     std::map<int, std::pair<std::shared_ptr<sf::Texture>, sf::IntRect>> _textures;
     bool _started;
+    bool _portSet;
+    bool _addrSet;
+    bool _connected;
 };
 
 #endif //R_TYPE_SFMLSYSTEM_HPP

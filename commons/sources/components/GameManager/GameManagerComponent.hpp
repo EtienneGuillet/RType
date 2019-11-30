@@ -64,11 +64,18 @@ namespace rtype {
          */
         int getDisplayHeight() const;
 
+        void startConnecting();
+
+        void stopConnecting();
+
+        bool isTryingToConnect() const;
+
     private:
         NetworkState &_state; /*!< The network state to sync */
         bool &_shouldClose; /*!< Should the program close */
         int _displayWidth; /*!< The display width */
         int _displayHeight; /*!< The display height */
+        bool _tryingToConnect;
     };
 }
 

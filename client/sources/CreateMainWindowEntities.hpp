@@ -31,6 +31,7 @@ namespace rtype {
         ~CreateMainWindowEntities() = default;
 
         static void closeByQuitButton();
+        static void tryToConnect();
         static void menuSceneLaunch();
         static void roomSceneLaunch();
         static void gameSceneLaunch();
