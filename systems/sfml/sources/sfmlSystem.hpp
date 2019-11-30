@@ -69,6 +69,11 @@ class SfmlSystem : public ecs::ASystem {
     bool isRunning() const override;
 
     /*
+     * @brief check if the client as connected to the server yet.
+     */
+    void waitForConnection();
+
+    /*
      * @brief Inform the type of the system.
      * @return The type of the system.
      */

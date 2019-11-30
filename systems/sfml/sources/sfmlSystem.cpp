@@ -372,3 +372,21 @@ const ecs::Version& SfmlSystem::getType() const
 {
     return Version;
 }
+
+void SfmlSystem::waitForConnection()
+{
+    auto lockedWorld = _world.lock();
+
+    if (lockedWorld) {
+        lockedWorld->applyToEach({rtype::TextComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+            std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components.front().lock());
+
+            if (textComponent->getString().rfind("Port :      ", 0) == 0) {
+            }
+            if (textComponent->getString().rfind("IP address :      ", 0) == 0) {
+            }
+            if (textComponent->getString().rfind("Username :      ", 0) == 0) {
+            }
+        });
+    }
+}

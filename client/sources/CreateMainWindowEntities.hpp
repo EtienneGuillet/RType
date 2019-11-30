@@ -32,8 +32,6 @@ namespace rtype {
         static void closeByQuitButton();
         static void menuSceneLaunch();
         static void roomSceneLaunch();
-        static void askForRooms();
-        static void createRoom();
         static void gameSceneLaunch();
     private:
         static std::weak_ptr<ecs::IWorld> _world;
