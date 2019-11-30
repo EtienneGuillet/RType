@@ -44,6 +44,8 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     }
     lockedWorld->clearAllEntities();
     auto entityButtonCreateRoom = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    auto entityButtonRefresh = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    auto background = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto entityTextbox = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
 
     if (entityTextbox) {
@@ -64,17 +66,37 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
         auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonCreateRoom->getComponent(rtype::HoverComponent::Version).lock());
         auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonCreateRoom->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(700, 900, 0);
+            tr->setPosition(1350, 900, 0);
             tr->setScale(2, 2);
         }
         if (hv) {
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "SET FUNCTION POINTER entityButtonPlay");
+            hv->setHoverable(true);
             hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
         }
         if (rt) {
-            rt->setString("CREATE ROOM");
+            rt->setString("CREATE");
         }
         lockedWorld->pushEntity(entityButtonCreateRoom);
+    }
+    else {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find Entity_Button");
+    }
+    if (entityButtonRefresh) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonRefresh->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonRefresh->getComponent(rtype::HoverComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonRefresh->getComponent(rtype::TextComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(300, 900, 0);
+            tr->setScale(2, 2);
+        }
+        if (hv) {
+            hv->setHoverable(true);
+            hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
+        }
+        if (rt) {
+            rt->setString("REFRESH");
+        }
+        lockedWorld->pushEntity(entityButtonRefresh);
     }
     else {
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find Entity_Button");
@@ -125,7 +147,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
             tr->setScale(2, 2);
         }
         if (hv) {
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "SET FUNCTION POINTER entityButtonPlay");
+            hv->setHoverable(true);
             hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
         }
         if (rt) {
@@ -145,6 +167,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
             tr->setScale(2, 2);
         }
         if (hv) {
+            hv->setHoverable(true);
             hv->setFunctionPointer(rtype::CreateMainWindowEntities::closeByQuitButton);
         }
         if (rt) {
@@ -161,5 +184,5 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
 {
     _world = world;
     _ecs = &ecs;
-    roomSceneLaunch();
+    menuSceneLaunch();
 }
