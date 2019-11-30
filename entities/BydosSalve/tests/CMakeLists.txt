@@ -3,8 +3,8 @@ file(
         RTYPE_SOURCES_BYDOS_SLAVE_ENTITY_TESTS
         ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
-        ${PROJECT_SOURCE_DIR}/entities/spawnable/*.cpp
-        ${PROJECT_SOURCE_DIR}/entities/spawnable/*.hpp
+        ${PROJECT_SOURCE_DIR}/entities/BydosSalve/*.cpp
+        ${PROJECT_SOURCE_DIR}/entities/BydosSalve/*.hpp
         *.cpp
         *.hpp
 )
