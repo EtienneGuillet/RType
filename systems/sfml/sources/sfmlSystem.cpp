@@ -164,12 +164,16 @@ void SfmlSystem::manageKeyboardEvents(sf::Event event)
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::UpdateTextComponent::Version}, [this, &event] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
             auto text = textComponent->getText();
+            auto string = text.getString().toAnsiString();
 
-            if (event.text.unicode < 128) {
-                text.setString(text.getString().toAnsiString() + static_cast<char>(event.text.unicode));
+            if ((event.text.unicode >= 'a' && event.text.unicode <= 'z') || (event.text.unicode >= 'A' && event.text.unicode >= 'Z')) {
+                text.setString(string + static_cast<char>(event.text.unicode));
                 textComponent->setText(text);
-            } else if (event.text.unicode ) {
-
+            } else if (event.text.unicode == 8) {
+                if (string.size() > 5) {
+                    string.erase(string.size() - 1, string.size());
+                    textComponent->setString(string);
+                }
             }
         });
     }
