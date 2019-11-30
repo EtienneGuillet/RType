@@ -35,6 +35,34 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
 
 void rtype::CreateMainWindowEntities::roomSceneLaunch()
 {
+    auto lockedWorld = _world.lock();
+
+    if (!lockedWorld) {
+        return;
+    }
+    lockedWorld->clearAllEntities();
+    auto entityButtonCreateRoom = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+
+    if (entityButtonCreateRoom) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonCreateRoom->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonCreateRoom->getComponent(rtype::HoverComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonCreateRoom->getComponent(rtype::TextComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(700, 900, 0);
+            tr->setScale(2, 2);
+        }
+        if (hv) {
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "SET FUNCTION POINTER entityButtonPlay");
+            hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
+        }
+        if (rt) {
+            rt->setString("CREATE ROOM");
+        }
+        lockedWorld->pushEntity(entityButtonCreateRoom);
+    }
+    else {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find Entity_Button");
+    }
 }
 
 void rtype::CreateMainWindowEntities::closeByQuitButton()
@@ -84,7 +112,6 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
             b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "SET FUNCTION POINTER entityButtonPlay");
             hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
         }
-        lockedWorld->pushEntity(entityButtonPlay);
         if (rt) {
             rt->setString("PLAY");
         }
@@ -104,7 +131,6 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
         if (hv) {
             hv->setFunctionPointer(rtype::CreateMainWindowEntities::closeByQuitButton);
         }
-        lockedWorld->pushEntity(entityButtonQuit);
         if (rt) {
             rt->setString("QUIT");
         }
