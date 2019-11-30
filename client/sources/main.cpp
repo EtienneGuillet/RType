@@ -46,6 +46,7 @@ void runMain(const std::string &libsFolder)
             world->tick(deltaTime);
         }
     }
+    std::cout << "WOWOWOWOW" << std::endl << std::flush;
     world = std::shared_ptr<ecs::IWorld>();
     ecs = std::unique_ptr<ecs::IECS>();
 }

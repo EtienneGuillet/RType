@@ -41,10 +41,12 @@ class SfmlSystem : public ecs::ASystem {
 
     public:
 
+    static const ecs::Version Version;
+
     /*
      * @brief Ctor.
      */
-    SfmlSystem() = default;
+    SfmlSystem();
 
     /*
      * @brief Ctor.
@@ -128,13 +130,13 @@ class SfmlSystem : public ecs::ASystem {
 
     static bool isHovering(const sf::Vector3<float> &position);
 
-    static const ecs::Version Version;
     std::pair</*x*/float, /*y*/float> _mouseInput;
     std::map<Keys, bool> _inputs;
     sf::Clock _clock;
     sf::RenderWindow _window;
     std::map<int, std::shared_ptr<sf::Font>> _fonts;
     std::map<int, std::pair<std::shared_ptr<sf::Texture>, sf::IntRect>> _textures;
+    bool _started;
 };
 
 #endif //R_TYPE_SFMLSYSTEM_HPP

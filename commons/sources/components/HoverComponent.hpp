@@ -25,6 +25,8 @@ namespace rtype {
     class HoverComponent : public ecs::AComponent {
 
     public:
+        using functionPointer = std::function<void()>;
+
         static const ecs::Version Version;
 
         /*!
@@ -43,11 +45,12 @@ namespace rtype {
         void setHoverable(const bool isHoverable);
         bool getHoverable() const;
 
-        void setFunctionPointer(void (*functionPointer)());
+        void setFunctionPointer(const functionPointer &func);
+        const functionPointer &getFunctionPointer() const;
     private:
         std::weak_ptr<ecs::IEntity> _entity;
         bool _isHoverable;
-        void (*_functionPointer)();
+        functionPointer _functionPointer;
     };
 } /* r-type */
 

@@ -57,6 +57,19 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     lockedWorld->pushEntity(entityTextbox);
 }
 
+void rtype::CreateMainWindowEntities::closeByQuitButton()
+{
+    auto lockedWorld = _world.lock();
+
+    if (lockedWorld) {
+        auto sfmlSystem = lockedWorld->getSystem(ecs::Version("System_Sfml", 0, 1, 0, 0)).lock();
+        lockedWorld = std::shared_ptr<ecs::IWorld>();
+        if (sfmlSystem) {
+            sfmlSystem->stop();
+        }
+    }
+}
+
 void rtype::CreateMainWindowEntities::menuSceneLaunch()
 {
     auto lockedWorld = _world.lock();
@@ -86,7 +99,10 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
             tr->setPosition(850, 570, 0);
             tr->setScale(2, 2);
         }
-        hv->setFunctionPointer(&rtype::CreateMainWindowEntities::roomSceneLaunch);
+        if (hv) {
+            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "SET FUNCTION POINTER entityButtonPlay");
+            hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
+        }
         lockedWorld->pushEntity(entityButtonPlay);
         if (rt) {
             rt->setString("PLAY");
@@ -98,10 +114,14 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     }
     if (entityButtonQuit) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonQuit->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonQuit->getComponent(rtype::HoverComponent::Version).lock());
         auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonQuit->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
             tr->setPosition(850, 670, 0);
             tr->setScale(2, 2);
+        }
+        if (hv) {
+            hv->setFunctionPointer(rtype::CreateMainWindowEntities::closeByQuitButton);
         }
         lockedWorld->pushEntity(entityButtonQuit);
         if (rt) {
