@@ -8,6 +8,24 @@
 #include "NetworkState.hpp"
 #include "exception/GameStateException.hpp"
 
+rtype::NetworkState::NetworkState()
+	: _lostConnection(false)
+	, _tryToConnect(false)
+	, _isConnected(false)
+	, _connectionErrorMessage("")
+	, _serverInfoChanged(false)
+	, _serverHost("")
+	, _serverPort(0)
+	, _charge(0)
+	, _inputs()
+	, _entities()
+	, _lobbyState()
+	, _scores()
+	, _inGame(false)
+	, _playAgain(false)
+{
+}
+
 void rtype::NetworkState::addEntity(const rtype::EntitiesState &entity)
 {
     _entities.push_back(entity);

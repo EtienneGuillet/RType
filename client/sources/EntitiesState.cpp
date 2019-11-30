@@ -1,7 +1,7 @@
 #include "EntitiesState.hpp"
 
 rtype::EntitiesState::EntitiesState()
-: _id(0), _type(0), _posX(0), _posY(0), _posZ(0), _rotX(0), _rotY(0), _scaleX(1), _scaleY(1)
+: _id(0), _type(0), _posX(0), _posY(0), _posZ(0), _rotX(0), _rotY(0), _scaleX(1), _scaleY(1), _hp(-1), _lastDisplayUpdate(), _lastUpdate(), _shouldDisplay(false)
 {
 }
 
