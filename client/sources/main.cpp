@@ -82,6 +82,7 @@ void runMain(const std::string &libsFolder)
         if (deltaTime >= 10) {
             start = std::chrono::system_clock::now();
             libLoader.checkForChanges();
+            MainWindow.checkForUpdateScene();
             world->tick(deltaTime);
             networkClient->update(deltaTime);
         }
