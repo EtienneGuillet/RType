@@ -159,8 +159,10 @@ class SfmlSystem : public ecs::ASystem {
     bool _addrSet;
     bool _roomNameSet;
     bool _roomPswSet;
+    bool _roomCapSet;
     std::string _roomName;
     std::string _roomPsw;
+    std::string _roomCap;
     std::vector<rtype::LobbyState::LobbyData> _rooms;
     bool _connected;
 };
