@@ -309,6 +309,32 @@ void rtype::RTypeNetworkClient::invalidDatagramHandler(rtype::network::RTypeData
 void rtype::RTypeNetworkClient::emptyDatagramHandler(rtype::network::RTypeDatagram dg)
 {
     resetDatagram(rtype::network::T_102_PING);
+    if (_syncTo.isTryingToConnected()) {
+        _syncTo.setConnectionStatus(false, "Invalid data in packet was sent from the client");
+        resetDatagram(rtype::network::T_100_CONNECT);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][" + std::to_string(dg.getType()) + "] Failed to connect");
+    }
+    if (_syncTo.getLobbyState().isJoiningLobby()) {
+        _syncTo.getLobbyState().invalidateJoin("Invalid data in packet was sent from the client probably empty room name");
+        resetDatagram(rtype::network::T_116_JOIN_ROOM);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][" + std::to_string(dg.getType()) + "] Failed to join");
+    }
+    if (_syncTo.getLobbyState().isCreatingLobby()) {
+        _syncTo.getLobbyState().invalidateCreate("Invalid data in packet was sent from the client probably empty room name");
+        resetDatagram(rtype::network::T_112_CREATE_ROOM);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][" + std::to_string(dg.getType()) + "] Failed to create");
+    }
+    if (_syncTo.getLobbyState().isUpdatingLobby()) {
+        _syncTo.getLobbyState().setAvailableLobby(std::vector<rtype::LobbyState::LobbyData>());
+        resetDatagram(rtype::network::T_110_GET_ROOMS);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][" + std::to_string(dg.getType()) + "] Failed to get");
+    }
+    if (_syncTo.getLobbyState().isQuittingLobby()) {
+        _syncTo.getLobbyState().invalidateQuit("Invalid data in packet was sent from the client");
+        resetDatagram(rtype::network::T_114_QUIT_ROOM);
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][" + std::to_string(dg.getType()) + "] Failed to quit");
+
+    }
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTypeNetworkClient][" + static_cast<std::string>(dg.getHostInfos()) + "][" + std::to_string(dg.getType()) + "] Empty handler");
 }
 
