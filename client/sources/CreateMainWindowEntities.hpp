@@ -34,8 +34,8 @@ namespace rtype {
         static void tryToConnect(std::weak_ptr<ecs::IEntity> entity, std::weak_ptr<ecs::IWorld> world);
         static void createRoom(std::weak_ptr<ecs::IEntity> entity, std::weak_ptr<ecs::IWorld> world);
         static void refreshRooms(std::weak_ptr<ecs::IEntity> entity, std::weak_ptr<ecs::IWorld> world);
+        static void roomSceneLaunch([[maybe_unused]]std::weak_ptr<ecs::IEntity> e, [[maybe_unused]]std::weak_ptr<ecs::IWorld> world);
         static void menuSceneLaunch();
-        static void roomSceneLaunch();
         static void gameSceneLaunch();
         static void lobbySceneLaunch();
         void checkForUpdateScene();

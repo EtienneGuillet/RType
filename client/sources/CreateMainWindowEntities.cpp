@@ -196,7 +196,7 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
     }
 }
 
-void rtype::CreateMainWindowEntities::roomSceneLaunch()
+void rtype::CreateMainWindowEntities::roomSceneLaunch([[maybe_unused]]std::weak_ptr<ecs::IEntity> e, [[maybe_unused]]std::weak_ptr<ecs::IWorld> world)
 {
     auto lockedWorld = _world.lock();
     if (!lockedWorld) {
@@ -517,7 +517,7 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
     _cleanCreateLobby = false;
     _world = world;
     _ecs = &ecs;
-    lobbySceneLaunch();
+    menuSceneLaunch();
 }
 
 void rtype::CreateMainWindowEntities::tryToConnect([[maybe_unused]]std::weak_ptr<ecs::IEntity> e, [[maybe_unused]]std::weak_ptr<ecs::IWorld> world)
@@ -544,11 +544,11 @@ void rtype::CreateMainWindowEntities::checkForUpdateScene()
 
             if (gm) {
                 if (!gm->getState().isTryingToConnected() && gm->getState().isConnnected() && !_isInLobbyOfRooms) {
-                    roomSceneLaunch();
+                    roomSceneLaunch(std::weak_ptr<ecs::IEntity>(), _world);
                     _isInLobbyOfRooms = true;
                 }
                 if (gm->getState().isConnnected() && gm->getState().getLobbyState().isInLobby() && !_cleanCreateLobby) {
-                    
+                    lobbySceneLaunch();
                     _cleanCreateLobby = true;
                 }
             }
