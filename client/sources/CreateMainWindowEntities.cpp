@@ -52,27 +52,27 @@ void rtype::CreateMainWindowEntities::lobbySceneLaunch()
             hv->setHoverable(false);
         }
         if (rt) {
-            rt->setString("Roomname");
+            rt->setString("RoomName");
         }
         lockedWorld->pushEntity(entityButtonRoomName);
     }
-    if (entityButtonQuit) {
-        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonQuit->getComponent(rtype::TransformComponent::Version).lock());
-        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonQuit->getComponent(rtype::HoverComponent::Version).lock());
-        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonQuit->getComponent(rtype::TextComponent::Version).lock());
-        if (tr) {
-            tr->setPosition(900, 900, 0);
-            tr->setScale(2, 2);
-        }
-        if (hv) {
-            hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
-            hv->setHoverable(true);
-        }
-        if (rt) {
-            rt->setString("Quit");
-        }
-        lockedWorld->pushEntity(entityButtonQuit);
-    }
+//    if (entityButtonQuit) {
+//        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonQuit->getComponent(rtype::TransformComponent::Version).lock());
+//        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonQuit->getComponent(rtype::HoverComponent::Version).lock());
+//        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonQuit->getComponent(rtype::TextComponent::Version).lock());
+//        if (tr) {
+//            tr->setPosition(900, 900, 0);
+//            tr->setScale(2, 2);
+//        }
+//        if (hv) {
+//            hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
+//            hv->setHoverable(true);
+//        }
+//        if (rt) {
+//            rt->setString("Quit");
+//        }
+//        lockedWorld->pushEntity(entityButtonQuit);
+//    }
     if (entityButtonPlayerNameOne) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlayerNameOne->getComponent(rtype::TransformComponent::Version).lock());
         auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonPlayerNameOne->getComponent(rtype::HoverComponent::Version).lock());
