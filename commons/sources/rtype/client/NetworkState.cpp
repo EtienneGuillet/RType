@@ -189,6 +189,7 @@ bool rtype::NetworkState::hasLostConnection() const
 void rtype::NetworkState::setLostConnection(bool value)
 {
     _lostConnection = value;
+    _isConnected = !value;
 }
 
 const std::tuple<int, int, int, int> &rtype::NetworkState::getScores() const
