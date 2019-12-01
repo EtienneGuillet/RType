@@ -35,9 +35,9 @@ namespace rtype {
         static void menuSceneLaunch();
         static void roomSceneLaunch();
         static void gameSceneLaunch();
-        static void checkForUpdateScene();
-        void clearMenuScene();
+        void checkForUpdateScene();
     private:
+        bool _isInRooms;
         static std::weak_ptr<ecs::IWorld> _world;
         static ecs::IECS *_ecs;
     };

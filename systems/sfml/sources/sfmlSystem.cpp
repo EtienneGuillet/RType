@@ -420,7 +420,6 @@ void SfmlSystem::tryForConnection()
                 lockedWorld->applyToEach({rtype::TextComponent::Version}, [this, gm] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> inlineEntity, std::vector<std::weak_ptr<ecs::IComponent>> inlineComponents) {
                     std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(inlineComponents.front().lock());
 
-                    std::cout << textComponent->getString() << std::endl << std::flush;
                     if (textComponent->getString().rfind("Port :      ", 0) == 0) {
                         unsigned int port = std::stoul(textComponent->getString().substr(12));
                         gm->getState().setServerPort(port);
@@ -438,7 +437,6 @@ void SfmlSystem::tryForConnection()
                         std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(inlineComponents.front().lock());
 
                         if (textComponent->getString().rfind("Username :      ", 0) == 0 && _portSet && _addrSet) {
-                            std::cout << "username : " << textComponent->getString().substr(16) << std::endl << std::flush;
                             gm->getState().connect(textComponent->getString().substr(16));
                         }
                     });

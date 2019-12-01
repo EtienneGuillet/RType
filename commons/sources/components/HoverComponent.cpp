@@ -36,7 +36,6 @@ bool rtype::HoverComponent::getHoverable() const
 
 void rtype::HoverComponent::setFunctionPointer(const functionPointer &func)
 {
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "HoverComponent::setFunctionPointer");
     _functionPointer = func;
 }
 
