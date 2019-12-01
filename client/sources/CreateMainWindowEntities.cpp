@@ -210,6 +210,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     auto spriteBoxCreate = _ecs->createEntityFromAPI(ecs::Version("Entity_LobbyContainer", 1, 0, 0, 0));
     auto entityTextboxRoomName = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
     auto entityTextboxRoomPwd = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+    auto entityTextboxRoomCapacity = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
 
     if (background) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(background->getComponent(rtype::TransformComponent::Version).lock());
@@ -241,7 +242,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
 
         if (tr) {
             tr->setPosition(1120, 150, 0);
-            tr->setScale(1.5, 0.3);
+            tr->setScale(1.5, 0.7);
         }
         lockedWorld->pushEntity(spriteBoxRooms);
     }
@@ -254,7 +255,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
         auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonCreateRoom->getComponent(rtype::HoverComponent::Version).lock());
         auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonCreateRoom->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(1350, 600, 0);
+            tr->setPosition(1350, 900, 0);
             tr->setScale(2, 2);
         }
         if (hv) {
@@ -326,6 +327,25 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
             textComponent->setString("Room password : ");
         }
         lockedWorld->pushEntity(entityTextboxRoomPwd);
+    }
+    if (entityTextboxRoomCapacity) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxRoomCapacity->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxRoomCapacity->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxRoomCapacity->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxRoomCapacity->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
+        if (transformComponent) {
+            transformComponent->setPosition(1140, 500, 0);
+            transformComponent->setScale(1.2, 1.2);
+        }
+        if (textComponent) {
+            textComponent->setString("Room capacity : ");
+        }
+        lockedWorld->pushEntity(entityTextboxRoomCapacity);
     }
 }
 
@@ -508,7 +528,7 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
     _isInLobbyOfRooms = false;
     _world = world;
     _ecs = &ecs;
-    lobbySceneLaunch();
+    menuSceneLaunch();
 }
 
 void rtype::CreateMainWindowEntities::tryToConnect()
