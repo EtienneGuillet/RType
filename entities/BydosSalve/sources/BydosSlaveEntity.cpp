@@ -21,7 +21,8 @@ BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
     addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(50,50)));
     addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(1000.0f, 500.0f, 0.0f)));
     addComponent(std::make_shared<ecs::components::RigidbodyComponent>(200, b12software::maths::Vector2D(-1, 0)));
-    addComponent(std::make_shared<ecs::components::DamagerComponent>(1, true, 0b10));
+    addComponent(std::make_shared<ecs::components::DamagerComponent>(1, true, 0b1));
+    addComponent(std::make_shared<ecs::components::DamageableComponent>(3, 3, 0, 0b10));
     addComponent(std::make_shared<ecs::components::WeaponComponent>());
 
     addComponent(std::make_shared<ecs::components::AIComponent>([this] (const std::shared_ptr<IEntity>& entity, std::shared_ptr<ecs::IWorld> world) {
@@ -45,11 +46,11 @@ BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
                     rb->setDirection(b12software::maths::Vector2D(rb->getDirection().x, direction.y));
                     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(direction.x) + ", " + std::to_string(direction.y));
                     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "CapableDirection: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
-                    if (distance <= 10) {
+                    if (distance <= 100) {
                         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelWarn, prefixDebug + "TODO Shoot");
-                        rb->setUps(5);
+                        rb->setUps(50);
                     } else {
-                        rb->setUps(20);
+                        rb->setUps(200);
                     }
                 }
             }
