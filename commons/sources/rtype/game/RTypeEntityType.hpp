@@ -35,6 +35,7 @@ namespace rtype {
         ET_BONUS_MOVING_SPEED_UP = 1000,
         ET_BONUS_MOVING_SPEED_DOWN = 1001,
         ET_MONSTER_TYPE_BASE = 100000, /*!< Above this value should be the monsters types */
+        ET_MONSTER_TYPE_KAMIKAZE = 100001
     };
 }
 

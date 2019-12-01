@@ -97,10 +97,10 @@ namespace rtype {
     private:
 #ifdef __linux__
         static constexpr struct option longOptions[] = {
-            {"help", no_argument, 0, 'h'},
-            {"port", required_argument, 0, 'p'},
-            {"libs", required_argument, 0, 'l'},
-            {"debug", no_argument, 0, 'D'},
+            {"help", no_argument, nullptr, 'h'},
+            {"port", required_argument, nullptr, 'p'},
+            {"libs", required_argument, nullptr, 'l'},
+            {"debug", no_argument, nullptr, 'D'},
         };
 #endif
 

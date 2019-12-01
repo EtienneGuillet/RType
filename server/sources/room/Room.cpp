@@ -16,6 +16,7 @@
 #include "entities/PlayerEntity/PlayerEntity.hpp"
 #include "systems/NetworkSyncSystem/NetworkSyncSystemApi.hpp"
 #include "components/Transform/TransformComponent.hpp"
+#include "components/server/networkIdentity/NetworkIdentityComponent.hpp"
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -371,8 +372,9 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
         auto spawnPos = ((80 / infos.getNbPlayers()) * j) + 10;
 
         transform->setPosition(b12software::maths::Vector3D(10, spawnPos, 0));
-        playersIdsMap[j] = player->getID();
         world->pushEntity(player);
+        playersIdsMap[j] = player->getID();
+        player->addComponent(std::make_shared<ecs::components::NetworkIdentityComponent>(player->getID()));
         infos.getPlayer(j).setId(player->getID());
         infos.getPlayer(j).setHp(3);
         infos.getPlayer(j).setIsUsed(true);
@@ -420,6 +422,7 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     world = std::shared_ptr<ecs::IWorld>();
     ecs = std::unique_ptr<ecs::IECS>();
     threadRunning = false;
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Exit thread");
 }
 
 bool rtype::Room::shouldGameRun() const

@@ -10,17 +10,18 @@
 #include "ecs/exceptions/ECSException.hpp"
 #include "Entity.hpp"
 
-ecs::IDGenerator ecs::Entity::Generator;
-
 ecs::Entity::Entity(const std::string &name)
-    : _id(Generator.generateNewID()), _name(name), _components(), _shouldBeKeeped(false)
+    : _id(-1), _name(name), _components(), _shouldBeKeeped(false)
 {
 
 }
 
+void ecs::Entity::setId(int id) {
+    _id = id;
+}
+
 ecs::Entity::~Entity()
 {
-    Generator.freeId(_id);
 }
 
 int ecs::Entity::getID() const

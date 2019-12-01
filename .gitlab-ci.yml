@@ -23,10 +23,6 @@ build-binaries-linux:
     - conan install .. --build missing
     - cmake .. -G "Unix Makefiles"
     - cmake --build . --config Release
-  artifacts:
-    paths:
-      - build/bin/r-type_client
-      - build/bin/r-type_server
 
 run-tests:
   stage: test

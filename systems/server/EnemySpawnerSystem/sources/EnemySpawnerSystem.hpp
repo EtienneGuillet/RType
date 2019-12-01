@@ -34,6 +34,7 @@ namespace systems {
         long _computeEvery; /*!< Compute actual damages every x ms*/
 
         std::map<ecs::Version, long> _timeBeforeSpawnMap; /*< A map for each spawnable entity version and remaining time before spawn */
+        void spawnEntity(std::shared_ptr<ecs::IEntityAPI> &entity, std::shared_ptr<ecs::IWorld> lockedWorld);
     };
 }
 

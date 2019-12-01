@@ -10,6 +10,7 @@
 #ifndef R_TYPE_WORLD_HPP
 #define R_TYPE_WORLD_HPP
 
+#include "ecs/IDGenerator/IdGenerator.hpp"
 #include "ecs/IWorld/IWorld.hpp"
 
 /*!
@@ -57,6 +58,7 @@ namespace ecs {
         std::weak_ptr<ISystem> getSystem(const Version &system) override;
         const std::weak_ptr<ecs::IECS> &getEcs() const override;
     private:
+        IDGenerator Generator; /*!< A static generator used to create ids for entities */
         bool _entitiesClearCallBack;
         std::vector<std::shared_ptr<IEntity>> _afterClear; /*!< Tmp world entitites */
         std::vector<std::shared_ptr<IEntity>> _entities; /*!< this world entities */

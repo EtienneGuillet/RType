@@ -1,30 +1,30 @@
 file(
         GLOB_RECURSE
-        RTYPE_SOURCES_BYDOS_SLAVE_ENTITY_TESTS
+        RTYPE_SOURCES_KAMIKAZE_ENTITY_TESTS
         ${PROJECT_SOURCE_DIR}/commons/sources/*.cpp
         ${PROJECT_SOURCE_DIR}/commons/sources/*.hpp
-        ${PROJECT_SOURCE_DIR}/entities/BydosSalve/*.cpp
-        ${PROJECT_SOURCE_DIR}/entities/BydosSalve/*.hpp
+        ${PROJECT_SOURCE_DIR}/entities/Kamikaze/*.cpp
+        ${PROJECT_SOURCE_DIR}/entities/Kamikaze/*.hpp
         *.cpp
         *.hpp
 )
 
-add_executable(tests_bydos_slave_entity ${RTYPE_SOURCES_BYDOS_SLAVE_ENTITY_TESTS})
+add_executable(tests_kamikaze_entity ${RTYPE_SOURCES_KAMIKAZE_ENTITY_TESTS})
 
 target_include_directories(
-        tests_bydos_slave_entity PUBLIC
+        tests_kamikaze_entity PUBLIC
         ${PROJECT_SOURCE_DIR}/commons/sources
         ${PROJECT_SOURCE_DIR}/client/sources
         ${PROJECT_SOURCE_DIR}/client/tests
         ${PROJECT_SOURCE_DIR}/commons/tests
 )
 target_link_libraries(
-        tests_bydos_slave_entity
+        tests_kamikaze_entity
         criterion
         dl
         gcov
         ${CONAN_LIBS}
 )
 
-add_test(NAME bydos_slave_entity COMMAND tests_bydos_slave_entity)
-add_dependencies(${TESTS_RULE} tests_bydos_slave_entity)
+add_test(NAME kamikaze_entity COMMAND tests_kamikaze_entity)
+add_dependencies(${TESTS_RULE} tests_kamikaze_entity)

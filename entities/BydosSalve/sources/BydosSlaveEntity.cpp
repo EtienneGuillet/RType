@@ -17,10 +17,8 @@ BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
 
         if (rb) {
             auto playerPos = getPlayerPositions(world);
-            //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug);
 
             for (auto &pos : playerPos) {
-                //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "[" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z) + "]");
             }
             rb->setDirection(b12software::maths::Vector2D(10, 0));
         }

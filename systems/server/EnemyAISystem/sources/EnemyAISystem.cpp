@@ -10,7 +10,7 @@
 
 const ecs::Version systems::EnemyAISystem::Version = ecs::Version("SYSTEM_EnemyAI", 1, 0, 0, 0);
 
-systems::EnemyAISystem::EnemyAISystem() : ASystem(), _elapsedTime(0), _computeEvery(50) {
+systems::EnemyAISystem::EnemyAISystem() : ASystem(), _elapsedTime(0), _computeEvery(200) {
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 }
 
@@ -23,6 +23,7 @@ void systems::EnemyAISystem::tick(long deltatime) {
             lockedWorld->applyToEach({ecs::components::AIComponent::Version}, [lockedWorld] (std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
                 auto AIComponent = std::dynamic_pointer_cast<ecs::components::AIComponent>(components.front().lock());
                 auto lockedEntity = entity.lock();
+                std::string prefixDebug = "[AI][" + lockedEntity->getName() + "][" + std::to_string(lockedEntity->getID()) + "]";
                 AIComponent->operator ()(lockedEntity, lockedWorld);
             });
         }
