@@ -52,7 +52,7 @@ void rtype::CreateMainWindowEntities::lobbySceneLaunch()
             hv->setHoverable(false);
         }
         if (rt) {
-            rt->setString("Roomname");
+            rt->setString("RoomName");
         }
         lockedWorld->pushEntity(entityButtonRoomName);
     }
