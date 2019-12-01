@@ -345,7 +345,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
 
 rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world, ecs::IECS &ecs)
 {
-    _isInRooms = false;
+    _isInLobbyOfRooms = false;
     _world = world;
     _ecs = &ecs;
     menuSceneLaunch();
@@ -374,9 +374,9 @@ void rtype::CreateMainWindowEntities::checkForUpdateScene()
             auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
 
             if (gm) {
-                if (!gm->getState().isTryingToConnected() && gm->getState().isConnnected() && !_isInRooms) {
+                if (!gm->getState().isTryingToConnected() && gm->getState().isConnnected() && !_isInLobbyOfRooms) {
                     roomSceneLaunch();
-                    _isInRooms = true;
+                    _isInLobbyOfRooms = true;
                 }
             }
         });
@@ -394,7 +394,10 @@ void rtype::CreateMainWindowEntities::createRoom()
     lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
         if (gm) {
-            //todo create une room
+            if (!gm->getState().isConnnected())
+                return;
+            if (!gm->getState().getLobbyState().isCreatingLobby())
+                gm->getState().getLobbyState().createLobby("", "");
         }
     });
 }
@@ -410,7 +413,10 @@ void rtype::CreateMainWindowEntities::refreshRooms()
     lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
         if (gm) {
-            //todo refresh les rooms
+            if (!gm->getState().isConnnected())
+                return;
+            if (!gm->getState().getLobbyState().isUpdatingLobby())
+                gm->getState().getLobbyState().requestLobbyListUpdate();
         }
     });
 }

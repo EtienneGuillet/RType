@@ -70,6 +70,8 @@ namespace rtype {
 
         bool isTryingToConnect() const;
 
+
+
     private:
         NetworkState &_state; /*!< The network state to sync */
         bool &_shouldClose; /*!< Should the program close */

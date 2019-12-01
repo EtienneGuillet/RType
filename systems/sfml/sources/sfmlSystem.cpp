@@ -17,6 +17,8 @@ SfmlSystem::SfmlSystem()
     , _started(false)
     , _portSet(false)
     , _addrSet(false)
+    , _roomNameSet(false)
+    , _roomPswSet(false)
     , _connected(false)
 {
 }
@@ -448,4 +450,42 @@ void SfmlSystem::tryForConnection()
             }
         });
     }
+}
+
+void SfmlSystem::checkCreateRoom()
+{
+    auto lockedWorld = _world.lock();
+
+    if (!lockedWorld)
+        return;
+    lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this, lockedWorld] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        std::shared_ptr<rtype::GameManagerComponent> gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components.front().lock());
+
+        if (gm->getState().getLobbyState().isCreatingLobby()) {
+            lockedWorld->applyToEach({rtype::TextComponent::Version},
+                [this, gm](
+                    [[maybe_unused]]std::weak_ptr<ecs::IEntity> inlineEntity,
+                    std::vector<std::weak_ptr<ecs::IComponent>> inlineComponents
+                ) {
+                    std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(
+                        inlineComponents.front().lock());
+
+                    if (textComponent->getString().rfind("Room name : ", 0) ==
+                        0) {
+                        _roomName = textComponent->getString().substr(12);
+                        _roomNameSet = true;
+                    }
+                    if (textComponent->getString().rfind("Room psw : ", 0) ==
+                        0) {
+                        _roomPsw = textComponent->getString().substr(11);
+                        _roomPswSet = true;
+                    }
+                });
+        }
+        if (gm->getState().getLobbyState().isCreatingLobby() && _roomNameSet && _roomPswSet) {
+            gm->getState().getLobbyState().createLobby(_roomName, _roomPsw);
+            _roomPswSet = false;
+            _roomNameSet = false;
+        }
+    });
 }

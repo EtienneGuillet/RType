@@ -74,6 +74,11 @@ class SfmlSystem : public ecs::ASystem {
     void tryForConnection();
 
     /*
+     * @brief check if the client is trying to create a room.
+     */
+    void checkCreateRoom();
+
+    /*
      * @brief Inform the type of the system.
      * @return The type of the system.
      */
@@ -140,6 +145,10 @@ class SfmlSystem : public ecs::ASystem {
     bool _started;
     bool _portSet;
     bool _addrSet;
+    bool _roomNameSet;
+    bool _roomPswSet;
+    std::string _roomName;
+    std::string _roomPsw;
     bool _connected;
 };
 
