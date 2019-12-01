@@ -37,6 +37,7 @@ namespace rtype {
         static void menuSceneLaunch();
         static void roomSceneLaunch();
         static void gameSceneLaunch();
+        static void lobbySceneLaunch();
         void checkForUpdateScene();
     private:
         bool _isInLobbyOfRooms;

@@ -99,7 +99,6 @@ void rtype::RTypeServer::handleDatagrams()
     auto start = std::chrono::high_resolution_clock::now();
     while (locketSocket->hasPendingDatagrams() && (std::chrono::high_resolution_clock::now() - start) <= std::chrono::milliseconds(10)) {
         rtype::network::RTypeDatagram dg = locketSocket->receive();
-        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[RTYPESERVER] Received datagram from " + static_cast<std::string>(dg.getHostInfos()) + "(" + std::to_string(dg.getDatagramSize()) + " bytes)(code: " + std::to_string(dg.getType()) + ")");
         auto it = protocolMap.find(dg.getType());
         if (it != protocolMap.end()) {
             try {
