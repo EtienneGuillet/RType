@@ -20,7 +20,7 @@ BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
     addComponent(std::make_shared<ecs::components::DisplayableComponent>(rtype::ET_MONSTER_TYPE_BASE));
     addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(50,50)));
     addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(1000.0f, 500.0f, 0.0f)));
-    addComponent(std::make_shared<ecs::components::RigidbodyComponent>(200, b12software::maths::Vector2D(-1, 0)));
+    addComponent(std::make_shared<ecs::components::RigidbodyComponent>(200, b12software::maths::Vector2D(-20, 0)));
     addComponent(std::make_shared<ecs::components::DamagerComponent>(1, true, 0b1));
     addComponent(std::make_shared<ecs::components::DamageableComponent>(3, 3, 0, 0b10));
     addComponent(std::make_shared<ecs::components::WeaponComponent>());
@@ -39,15 +39,15 @@ BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
 
             for (auto &pos : playerPos) {
                 distance = std::abs(pos.y - ownPos.y);
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Distance: " + std::to_string(distance));
+                //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Distance: " + std::to_string(distance));
                 if (distance < smallestDistance || smallestDistance == -1.0f) {
                     smallestDistance = distance;
                     auto direction = pos - ownPos;
                     rb->setDirection(b12software::maths::Vector2D(rb->getDirection().x, direction.y));
-                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(direction.x) + ", " + std::to_string(direction.y));
-                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "CapableDirection: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
+                    //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(direction.x) + ", " + std::to_string(direction.y));
+                    //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "CapableDirection: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
                     if (distance <= 100) {
-                        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelWarn, prefixDebug + "TODO Shoot");
+                        //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelWarn, prefixDebug + "TODO Shoot");
                         rb->setUps(50);
                     } else {
                         rb->setUps(200);
