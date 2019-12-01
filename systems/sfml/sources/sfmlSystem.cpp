@@ -234,16 +234,16 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
             if (event.type == sf::Event::TextEntered) {
                 this->manageKeyboardEvents(event);
             }
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z) {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up) {
                 _inputs[Z] = true;
             }
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Q) {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left) {
                 _inputs[Q] = true;
             }
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S) {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down) {
                 _inputs[S] = true;
             }
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::D) {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right) {
                 _inputs[D] = true;
             }
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
@@ -255,16 +255,16 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
                 _inputs[ENTER] = true;
             }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Z) {
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Up) {
                 _inputs[Z] = false;
             }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Q) {
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left) {
                 _inputs[Q] = false;
             }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::S) {
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
                 _inputs[S] = false;
             }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::D) {
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right) {
                 _inputs[D] = false;
             }
             if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
