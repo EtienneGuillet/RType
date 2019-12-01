@@ -41,15 +41,15 @@ const rtype::RTypeNetworkClient::ProtocolMapType rtype::RTypeNetworkClient::prot
     {rtype::network::T_260_GAME_ENDED, &rtype::RTypeNetworkClient::invalidDatagramHandler},
     {rtype::network::T_270_GAME_STARTING, &rtype::RTypeNetworkClient::startGame270DatagramHandler},
     {rtype::network::T_280_GAME_STARTED, &rtype::RTypeNetworkClient::invalidDatagramHandler},
-    {rtype::network::T_301_INVALID_PACKET, &rtype::RTypeNetworkClient::invalidDatagramHandler},
-    {rtype::network::T_302_INVALID_PARAM, &rtype::RTypeNetworkClient::invalidDatagramHandler},
+    {rtype::network::T_301_INVALID_PACKET, &rtype::RTypeNetworkClient::emptyDatagramHandler},
+    {rtype::network::T_302_INVALID_PARAM, &rtype::RTypeNetworkClient::emptyDatagramHandler},
     {rtype::network::T_303_USERNAME_ALREADY_USED, &rtype::RTypeNetworkClient::error303DatagramHandler},
     {rtype::network::T_304_ROOM_NAME_ALREADY_USED, &rtype::RTypeNetworkClient::error304DatagramHandler},
-    {rtype::network::T_305_NOT_IN_A_ROOM, &rtype::RTypeNetworkClient::invalidDatagramHandler},
+    {rtype::network::T_305_NOT_IN_A_ROOM, &rtype::RTypeNetworkClient::emptyDatagramHandler},
     {rtype::network::T_306_UNKNOWN_ROOM, &rtype::RTypeNetworkClient::error306DatagramHandler},
     {rtype::network::T_307_INVALID_PASSWORD, &rtype::RTypeNetworkClient::error307DatagramHandler},
     {rtype::network::T_308_ROOM_FULL, &rtype::RTypeNetworkClient::error308DatagramHandler},
-    {rtype::network::T_309_OPERATION_NOT_PERMITTED, &rtype::RTypeNetworkClient::invalidDatagramHandler},
+    {rtype::network::T_309_OPERATION_NOT_PERMITTED, &rtype::RTypeNetworkClient::emptyDatagramHandler},
 };
 
 rtype::RTypeNetworkClient::RTypeNetworkClient(rtype::NetworkState &syncTo)
