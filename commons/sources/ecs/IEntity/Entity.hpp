@@ -56,6 +56,8 @@ namespace ecs {
         std::weak_ptr<IComponent> getComponent(const Version &componentType) override;
         std::vector<std::weak_ptr<IComponent>> getComponents(const std::vector<Version> &componentTypes) override;
         std::shared_ptr<IComponent> removeComponent(const Version &version) override;
+        bool shouldBeKeeped() const override;
+        void setShouldBeKeeped(bool value) override;
 
         bool operator ==(const Entity &rhs) const;
         bool operator !=(const Entity &rhs) const;
@@ -64,6 +66,7 @@ namespace ecs {
         int _id; /*!< A unique id for this entity */
         std::string _name; /*!< A name for this entity */
         std::vector<std::shared_ptr<IComponent>> _components; /*!< this entity components */
+        bool _shouldBeKeeped; /*!< Should this entity be keeped */
     };
 }
 

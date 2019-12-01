@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include <ecs/IEntity/AComponent.hpp>
+#include <ecs/IComponent/AComponent.hpp>
 #include <ecs/IEntity/Entity.hpp>
 #include "ecs/ASystem/ASystem.hpp"
 

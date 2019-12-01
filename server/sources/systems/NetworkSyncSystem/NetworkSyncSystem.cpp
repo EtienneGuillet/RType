@@ -68,6 +68,9 @@ void systems::NetworkSyncSystem::tick(long deltatime)
             auto lockedNetworkId = std::dynamic_pointer_cast<ecs::components::NetworkIdentityComponent>(components[0].lock());
             if (!lockedEntity || !lockedNetworkId)
                 return;
+            if (lockedNetworkId->getNetworkId() == ecs::components::NetworkIdentityComponent::InvalidId) {
+                lockedNetworkId->setNetworkId(lockedEntity->getID());
+            }
             auto lockedTransform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(lockedEntity->getComponent(ecs::components::TransformComponent::Version).lock());
             auto lockedDamageable = std::dynamic_pointer_cast<ecs::components::DamageableComponent>(lockedEntity->getComponent(ecs::components::DamageableComponent::Version).lock());
             auto lockedPlayer = std::dynamic_pointer_cast<ecs::components::PlayerComponent>(lockedEntity->getComponent(ecs::components::PlayerComponent::Version).lock());
@@ -86,7 +89,10 @@ void systems::NetworkSyncSystem::tick(long deltatime)
                     return;
                 auto lockedRb = std::dynamic_pointer_cast<ecs::components::RigidbodyComponent>(lockedEntity->getComponent(ecs::components::RigidbodyComponent::Version).lock());
                 if (lockedRb) {
-                    lockedRb->setDirection(b12software::maths::Vector2D(infos.isMovingRight() - infos.isMovingLeft(), infos.isMovingUp() - infos.isMovingDown()).normalized());
+                    auto dir = b12software::maths::Vector2D(infos.isMovingRight() - infos.isMovingLeft(), infos.isMovingUp() - infos.isMovingDown());
+                    if (dir.magnitude() != 0)
+                        dir.normalize();
+                    lockedRb->setDirection(dir);
                 }
                 lockedPlayer->setShotPressed(infos.isShooting());
                 infos.setCharge(lockedPlayer->getCharge());

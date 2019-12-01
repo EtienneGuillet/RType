@@ -10,7 +10,7 @@
 #ifndef R_TYPE_DAMAGEABLECOMPONENT_HPP
 #define R_TYPE_DAMAGEABLECOMPONENT_HPP
 
-#include "ecs/IEntity/AComponent.hpp"
+#include "ecs/IComponent/AComponent.hpp"
 
 namespace ecs {
 

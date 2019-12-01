@@ -11,7 +11,7 @@ file(
 
 list(REMOVE_ITEM RTYPE_SOURCES_CLIENT_TESTS "${PROJECT_SOURCE_DIR}/client/sources/main.cpp")
 
-add_executable(tests_client ${RTYPE_SOURCES_CLIENT_TESTS})
+add_executable(tests_client ${RTYPE_SOURCES_CLIENT_TESTS} testsEntitesState.cpp testsGameState.cpp)
 
 target_include_directories(
         tests_client PUBLIC

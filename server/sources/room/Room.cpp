@@ -8,16 +8,16 @@
 /* Created the 26/11/2019 at 05:12 by julian.frabel@epitech.eu */
 
 #include <algorithm>
-#include <rtype/game/RTypeEntityType.hpp>
-#include <rtype/LibLoader/LibLoader.hpp>
-#include <ecs/IECS/ECS.hpp>
-#include <systems/NetworkSyncSystem/NetworkSyncSystem.hpp>
-#include <entities/PlayerEntity/PlayerEntityApi.hpp>
-#include <entities/PlayerEntity/PlayerEntity.hpp>
-#include <systems/NetworkSyncSystem/NetworkSyncSystemApi.hpp>
-#include <components/Transform/TransformComponent.hpp>
-#include <components/server/networkIdentity/NetworkIdentityComponent.hpp>
-#include <components/server/collider/ColliderComponent.hpp>
+#include "rtype/LibLoader/LibLoader.hpp"
+#include "ecs/IECS/ECS.hpp"
+#include "rtype/game/RTypeEntityType.hpp"
+#include "systems/NetworkSyncSystem/NetworkSyncSystem.hpp"
+#include "entities/PlayerEntity/PlayerEntityApi.hpp"
+#include "entities/PlayerEntity/PlayerEntity.hpp"
+#include "systems/NetworkSyncSystem/NetworkSyncSystemApi.hpp"
+#include "components/Transform/TransformComponent.hpp"
+#include "components/server/networkIdentity/NetworkIdentityComponent.hpp"
+#include "components/server/collider/ColliderComponent.hpp"
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -30,7 +30,7 @@ rtype::Room::Room(const std::string &libsFolder)
       _gameRunning(false),
       _clients(),
       _shouldGameBeRunning(false),
-      _gameInfos(),
+      _gameInfos(std::make_shared<GameInfos>()),
       _clientPlayerMap(),
       _threadRunning(false),
       _thread(),
@@ -131,7 +131,7 @@ void rtype::Room::removeClient(const rtype::Client &client)
         if (elem.get() == client) {
             _slotUsed--;
             if (_gameRunning) {
-                _gameInfos.getPlayer(_clientPlayerMap[client.getUsername()]).setIsUsed(false);
+                _gameInfos->getPlayer(_clientPlayerMap[client.getUsername()]).setIsUsed(false);
                 _clientPlayerMap.erase(client.getUsername());
             }
             return true;
@@ -152,13 +152,13 @@ void rtype::Room::startGame()
     if (_shouldGameBeRunning)
         return;
     _shouldGameBeRunning = true;
-    _gameInfos.reset();
+    _gameInfos->reset();
     _clientPlayerMap.clear();
-    _gameInfos.setNbPlayers(_clients.size());
+    _gameInfos->setNbPlayers(_clients.size());
     int idx = 0;
     for (auto it = _clients.begin(); it != _clients.end(); ++it, idx++) {
         _clientPlayerMap[it->get().getUsername()] = idx;
-        _gameInfos.getPlayer(idx).setIsUsed(true);
+        _gameInfos->getPlayer(idx).setIsUsed(true);
         rtype::network::RTypeDatagram dg(it->get().getHost());
         dg.initSingleOpCodeDatagram(rtype::network::T_270_GAME_STARTING);
         it->get().setDatagram(network::T_270_GAME_STARTING, dg);
@@ -175,7 +175,7 @@ void rtype::Room::syncGame(std::weak_ptr<b12software::network::udp::IUdpSocket> 
         }
         if (allClientsRdy) {
             _threadRunning = true;
-            _thread = std::make_unique<std::thread>(rtype::Room::gameThreadFunc, std::ref(_shouldGameBeRunning), std::ref(_threadRunning), std::ref(_gameInfos), _libsFolder);
+            _thread = std::make_unique<std::thread>(rtype::Room::gameThreadFunc, std::ref(_shouldGameBeRunning), std::ref(_threadRunning), _gameInfos, _libsFolder);
             _gameRunning = true;
         }
     } else if (_shouldGameBeRunning && _gameRunning) {
@@ -206,7 +206,7 @@ void rtype::Room::setUsernameInputs(const std::string &username, const rtype::ne
     auto it = _clientPlayerMap.find(username);
     if (it != _clientPlayerMap.end()) {
         auto idx = it->second;
-        auto &player = _gameInfos.getPlayer(idx);
+        auto &player = _gameInfos->getPlayer(idx);
         player.setIsShooting(inputs.shot);
         player.setIsMovingUp(inputs.up);
         player.setIsMovingDown(inputs.down);
@@ -258,11 +258,11 @@ void rtype::Room::syncDisplayLiving(rtype::Client &client,
     if (!lockedSocket)
         return;
     for (int i = 0; i < 4; i++) {
-        auto &player = _gameInfos.getPlayer(i);
+        auto &player = _gameInfos->getPlayer(i);
         if (!player.isUsed())
             continue;
         auto id = player.getId();
-        if (display && displayData.type != rtype::ET_UNKNOWN) {
+        if (display && player.getType() != rtype::ET_UNKNOWN) {
             displayData.entityId = id;
             displayData.type = player.getType();
             auto position = player.getPosition();
@@ -281,11 +281,11 @@ void rtype::Room::syncDisplayLiving(rtype::Client &client,
             lockedSocket->send(dg);
         }
     }
-    auto &entities = _gameInfos.getEntities();
+    auto &entities = _gameInfos->getEntities();
     std::scoped_lock lock(entities);
     for (auto &entity : entities) {
         auto id = entity.getId();
-        if (display && displayData.type != rtype::ET_UNKNOWN) {
+        if (display && entity.getType() != rtype::ET_UNKNOWN) {
             displayData.entityId = id;
             displayData.type = entity.getType();
             auto position = entity.getPosition();
@@ -310,10 +310,10 @@ void rtype::Room::syncScore(rtype::Client &client, const std::weak_ptr<b12softwa
 {
     rtype::network::RTypeDatagram dg(client.getHost());
     rtype::network::RTypeDatagramScore score;
-    score.p1Score = _gameInfos.getPlayer(0).getScore();
-    score.p2Score = _gameInfos.getPlayer(1).getScore();
-    score.p3Score = _gameInfos.getPlayer(2).getScore();
-    score.p4Score = _gameInfos.getPlayer(3).getScore();
+    score.p1Score = _gameInfos->getPlayer(0).getScore();
+    score.p2Score = _gameInfos->getPlayer(1).getScore();
+    score.p3Score = _gameInfos->getPlayer(2).getScore();
+    score.p4Score = _gameInfos->getPlayer(3).getScore();
     dg.init240ScoreDatagram(score);
     auto lockedSocket = socket.lock();
     if (lockedSocket) {
@@ -328,7 +328,7 @@ void rtype::Room::syncCharge(rtype::Client &client, const std::weak_ptr<b12softw
         return;
     int idx = it->second;
     rtype::network::RTypeDatagram dg(client.getHost());
-    dg.init230ChargeDatagram(_gameInfos.getPlayer(idx).getCharge());
+    dg.init230ChargeDatagram(_gameInfos->getPlayer(idx).getCharge());
     auto lockedSocket = socket.lock();
     if (lockedSocket) {
         lockedSocket->send(dg);
@@ -343,19 +343,20 @@ void rtype::Room::endGame()
     for (auto &_client : _clients) {
         rtype::network::RTypeDatagram dg(_client.get().getHost());
         rtype::network::RTypeDatagramScore scores;
-        scores.p1Score = _gameInfos.getPlayer(0).getScore();
-        scores.p2Score = _gameInfos.getPlayer(1).getScore();
-        scores.p3Score = _gameInfos.getPlayer(2).getScore();
-        scores.p4Score = _gameInfos.getPlayer(3).getScore();
+        scores.p1Score = _gameInfos->getPlayer(0).getScore();
+        scores.p2Score = _gameInfos->getPlayer(1).getScore();
+        scores.p3Score = _gameInfos->getPlayer(2).getScore();
+        scores.p4Score = _gameInfos->getPlayer(3).getScore();
         dg.init250EndGameDatagram(scores);
         _client.get().setDatagram(network::T_250_END_GAME, dg);
     }
-    _gameInfos.reset();
+    _gameInfos->reset();
     _clientPlayerMap.clear();
 }
 
-void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos, const std::string libsFolder)
+void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, std::weak_ptr<GameInfos> infos, const std::string libsFolder)
 {
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Enter game thread");
     threadRunning = true;
     std::shared_ptr<ecs::IECS> ecs = std::make_shared<ecs::ECS>();
     auto world = ecs->createWorld();
@@ -364,25 +365,33 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     auto end = start;
     std::map<int, int> playersIdsMap;
 
+    auto lockedInfos = infos.lock();
+
     auto playerApi = std::make_shared<PlayerEntityAPI>();
     ecs->learnEntity(playerApi);
 
-    for (int j = 0; j < infos.getNbPlayers(); ++j) {
-        auto player = std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j));
+    for (int j = 0; j < lockedInfos->getNbPlayers(); ++j) {
+        auto player = std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j + 1));
         auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(player->getComponent(ecs::components::TransformComponent::Version).lock());
-        auto spawnPos = ((80 / infos.getNbPlayers()) * j) + 10;
+        auto spawnPos = ((80 / lockedInfos->getNbPlayers()) * j) + 10;
 
         transform->setPosition(b12software::maths::Vector3D(10, spawnPos, 0));
         world->pushEntity(player);
         playersIdsMap[j] = player->getID();
         player->addComponent(std::make_shared<ecs::components::NetworkIdentityComponent>(player->getID()));
+        lockedInfos->getPlayer(j).setId(player->getID());
+        lockedInfos->getPlayer(j).setHp(3);
+        lockedInfos->getPlayer(j).setIsUsed(true);
+        lockedInfos->getPlayer(j).setType(j + 1);
     }
-    auto     networkApi = std::make_shared<systems::NetworkSyncSystemApi>();
+    auto networkApi = std::make_shared<systems::NetworkSyncSystemApi>();
     ecs->learnSystem(networkApi);
     auto system = std::dynamic_pointer_cast<systems::NetworkSyncSystem>(networkApi->createNewSystem());
     system->start();
-    system->setGameInfosPtr(infos.getWeak());
+    system->setGameInfosPtr(infos);
     world->addSystem(system);
+
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Starting game");
 
     while (shouldGameBeRunning && threadRunning) {
         end = std::chrono::system_clock::now();
@@ -395,7 +404,7 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
             int used = 4;
             int alive = 4;
             for (int i = 0; i < 4; i++) {
-                auto &player = infos.getPlayer(i);
+                auto &player = lockedInfos->getPlayer(i);
                 if (player.isUsed()) {
                     if (player.getHp() <= 0) {
                         alive--;
@@ -405,15 +414,18 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
                     used--;
                 }
             }
-            if (used == 0 || alive == 0)
+            if (used == 0 || alive == 0) {
                 break;
+            }
         }
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
+
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Ending game");
     world = std::shared_ptr<ecs::IWorld>();
     ecs = std::unique_ptr<ecs::IECS>();
     threadRunning = false;
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Exit thread");
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Exit game thread");
 }
 
 bool rtype::Room::shouldGameRun() const

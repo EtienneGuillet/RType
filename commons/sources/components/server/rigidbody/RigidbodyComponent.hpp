@@ -11,7 +11,7 @@
 #define R_TYPE_RIGIDBODYCOMPONENT_HPP
 
 #include <maths/Vectors.hpp>
-#include "ecs/IEntity/AComponent.hpp"
+#include "ecs/IComponent/AComponent.hpp"
 #include "maths/Vectors.hpp"
 
 namespace ecs {

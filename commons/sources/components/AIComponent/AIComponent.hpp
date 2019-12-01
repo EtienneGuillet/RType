@@ -1,7 +1,7 @@
 #ifndef R_TYPE_AIComponent_HPP
 #define R_TYPE_AIComponent_HPP
 
-#include <ecs/IEntity/AComponent.hpp>
+#include <ecs/IComponent/AComponent.hpp>
 #include <functional>
 #include <ecs/IWorld/IWorld.hpp>
 

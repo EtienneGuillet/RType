@@ -25,15 +25,16 @@ void systems::WeaponSystem::tick(long deltatime)
     auto lockedWorld = _world.lock();
     if (!lockedWorld)
         return;
+    std::vector<std::shared_ptr<ecs::IEntity>> newShots;
     lockedWorld->applyToEach(
         {ecs::components::PlayerComponent::Version, ecs::components::WeaponComponent::Version},
-        [deltatime, &lockedWorld](std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        [&newShots, deltatime](std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             auto lockedPlayer = std::dynamic_pointer_cast<ecs::components::PlayerComponent>(components[0].lock());
             auto lockedWeapon = std::dynamic_pointer_cast<ecs::components::WeaponComponent>(components[1].lock());
             auto lockedEntity = entity.lock();
             if (!lockedPlayer || !lockedWeapon || !lockedEntity)
                 return;
-            float newCharge = lockedPlayer->getCharge() + lockedPlayer->isShotPressed() * lockedWeapon->getRps() * deltatime / 1000.0f;
+            float newCharge = lockedPlayer->getCharge() + ((lockedPlayer->isShotPressed() * deltatime / 1000.0f) / (lockedWeapon->getChargeTime() / 1000.0f)) * 30;
             if (newCharge > 100.0)
                 newCharge = 100.0;
             lockedPlayer->setCharge(newCharge);
@@ -52,7 +53,10 @@ void systems::WeaponSystem::tick(long deltatime)
             if (shotLevel == 0)
                 return;
             auto parentTr = std::dynamic_pointer_cast<ecs::components::TransformComponent>(lockedEntity->getComponent(ecs::components::TransformComponent::Version).lock());
-            auto basePos = (parentTr) ? parentTr->getPosition() : b12software::maths::Vector3D(0, 0, 0);
+            auto basePos = b12software::maths::Vector3D(0, 0, 0);
+            if (parentTr) {
+                basePos = parentTr->getPosition();
+            }
             std::shared_ptr<ecs::IEntity> shotEntity = std::make_shared<ecs::Entity>("playerShot");
             auto networkIdComp = std::make_shared<ecs::components::NetworkIdentityComponent>(shotEntity->getID());
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(networkIdComp));
@@ -60,15 +64,20 @@ void systems::WeaponSystem::tick(long deltatime)
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(transformComp));
             auto colliderComp = std::make_shared<ecs::components::ColliderComponent>();
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(colliderComp));
-            auto rigidBodyComp = std::make_shared<ecs::components::RigidbodyComponent>(1, b12software::maths::Vector2D(1, 0));
+            auto rigidBodyComp = std::make_shared<ecs::components::RigidbodyComponent>(50, b12software::maths::Vector2D(1, 0));
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(rigidBodyComp));
             auto damagerComp = std::make_shared<ecs::components::DamagerComponent>(shotLevel, true, 0b10);
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(damagerComp));
             auto displayableComp = std::make_shared<ecs::components::DisplayableComponent>(rtype::ET_SHOOT_TYPE_BASIC_BASE + shotLevel * 30);
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(displayableComp));
-            lockedWorld->pushEntity(shotEntity);
+            if (networkIdComp && transformComp && colliderComp && rigidBodyComp && damagerComp && displayableComp) {
+                newShots.push_back(shotEntity);
+            }
         }
     );
+    for (auto &shot : newShots) {
+        lockedWorld->pushEntity(shot);
+    }
 }
 
 const ecs::Version &systems::WeaponSystem::getType() const

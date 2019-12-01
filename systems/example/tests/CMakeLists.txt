@@ -14,9 +14,6 @@ add_executable(tests_example_system ${RTYPE_SOURCES_EXAMPLE_SYSTEM_TESTS})
 target_include_directories(
         tests_example_system PUBLIC
         ${PROJECT_SOURCE_DIR}/commons/sources
-        ${PROJECT_SOURCE_DIR}/client/sources
-        ${PROJECT_SOURCE_DIR}/client/tests
-        ${PROJECT_SOURCE_DIR}/commons/tests
 )
 target_link_libraries(
         tests_example_system

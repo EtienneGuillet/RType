@@ -10,7 +10,7 @@
 #ifndef R_TYPE_COLLIDERCOMPONENT_HPP
 #define R_TYPE_COLLIDERCOMPONENT_HPP
 
-#include "ecs/IEntity/AComponent.hpp"
+#include "ecs/IComponent/AComponent.hpp"
 #include "maths/Vectors.hpp"
 
 namespace ecs {

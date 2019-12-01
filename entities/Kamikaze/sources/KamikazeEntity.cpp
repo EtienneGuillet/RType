@@ -20,7 +20,8 @@ KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
     addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(5,5)));
     addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(100.0f, 50.0f, 0.0f)));
     addComponent(std::make_shared<ecs::components::RigidbodyComponent>());
-    addComponent(std::make_shared<ecs::components::DamagerComponent>(1, true, 0b10));
+    addComponent(std::make_shared<ecs::components::DamagerComponent>(1, true, 0b1));
+    addComponent(std::make_shared<ecs::components::DamageableComponent>(1, 1, 0, 0b10));
 
     addComponent(std::make_shared<ecs::components::AIComponent>([this] (const std::shared_ptr<IEntity>& entity, std::shared_ptr<ecs::IWorld> world) {
         std::string prefixDebug = "[AI][" + entity->getName() + "][" + std::to_string(entity->getID()) + "]";
@@ -38,15 +39,15 @@ KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
                 if (distance < smallestDistance || smallestDistance == -1.0f) {
                     auto direction = pos - ownPos;
                     rb->setDirection(b12software::maths::Vector2D(direction.x, direction.y));
-                    rb->setUps(20);
+                    rb->setUps(10);
                 }
             }
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------Scanned " + std::to_string(playerPos.size()) + " players ------");
+            //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------Scanned " + std::to_string(playerPos.size()) + " players ------");
             if (playerPos.empty()) {
                 rb->setUps(0);
             } else {
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
+                //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
+                //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
             }
         }
     }));
@@ -65,7 +66,7 @@ std::vector<b12software::maths::Vector3D> KamikazeEntity::getPlayerPositions(std
                 auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(lockedTransform);
 
                 if (transform) {
-                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[AI][" + playerLocked->getName() + ":" + std::to_string(playerLocked->getID()) + "] Found " + std::to_string(transform->getPosition().x) + ", " + std::to_string(transform->getPosition().y) + ", " + std::to_string(transform->getPosition().z));
+                    //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[AI][" + playerLocked->getName() + ":" + std::to_string(playerLocked->getID()) + "] Found " + std::to_string(transform->getPosition().x) + ", " + std::to_string(transform->getPosition().y) + ", " + std::to_string(transform->getPosition().z));
                     playerPositions.emplace_back(transform->getPosition());
                 }
             }

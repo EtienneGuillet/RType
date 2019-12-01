@@ -18,8 +18,8 @@
 >
 
     <front>
-        <title abbrev="R-Type protocol">
-            Describing UDP Protocol for R-Type game project
+        <title abbrev="R-Type protocol - RFC 69420">
+            Describing UDP Protocol for R-Type game project - RFC 69420
         </title>
 
         <author fullname="Titouan PAUTIER" initials="T." surname="PAUTIER">

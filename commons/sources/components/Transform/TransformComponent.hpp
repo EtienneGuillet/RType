@@ -2,7 +2,7 @@
 #define R_TYPE_TRANSFORMCOMPONENT_HPP
 
 #include <maths/Vectors.hpp>
-#include <ecs/IEntity/AComponent.hpp>
+#include <ecs/IComponent/AComponent.hpp>
 
 namespace ecs {
 

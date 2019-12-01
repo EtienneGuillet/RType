@@ -10,7 +10,7 @@
 #ifndef R_TYPE_NETWORKIDENTITYCOMPONENT_HPP
 #define R_TYPE_NETWORKIDENTITYCOMPONENT_HPP
 
-#include "ecs/IEntity/AComponent.hpp"
+#include "ecs/IComponent/AComponent.hpp"
 
 namespace ecs {
 
@@ -23,6 +23,7 @@ namespace ecs {
         class NetworkIdentityComponent : public ecs::AComponent {
         public:
             static const ecs::Version Version;
+            static constexpr uint32_t InvalidId = -1;
             const ecs::Version &getVersion() const override;
 
         public:

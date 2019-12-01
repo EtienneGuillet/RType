@@ -79,6 +79,18 @@ namespace ecs {
          * @return Shared pointer of the component just removed.
          */
         virtual std::shared_ptr<IComponent> removeComponent(const Version &version) = 0;
+
+        /*!
+         * @brief Get if an entity should be keeped when destroying all entities in a scene
+         * @return true if the entity should be keeped
+         */
+        virtual bool shouldBeKeeped() const = 0;
+
+        /*!
+         * @brief Set the should be keeped value
+         * @param value the value
+         */
+        virtual void setShouldBeKeeped(bool value) = 0;
     };
 } /* ecs */
 

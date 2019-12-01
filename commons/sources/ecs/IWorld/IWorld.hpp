@@ -46,6 +46,10 @@ namespace ecs {
          */
         virtual std::shared_ptr<IEntity> popEntity(int id) = 0;
 
+        /*
+         * @brief Remove all entities from the world.
+         */
+        virtual void clearAllEntities() = 0;
         /*!
          * @brief Return the entities that has the component asked as parameter.
          * @param components the components seached.
