@@ -17,6 +17,7 @@
 #include <components/HoverComponent.hpp>
 #include <components/ScrollComponent.hpp>
 #include <components/UpdateTextComponent.hpp>
+#include <components/MusicComponent.hpp>
 
 //todo changer les path absolue
 

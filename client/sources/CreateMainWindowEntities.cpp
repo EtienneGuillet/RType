@@ -178,6 +178,7 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
         return;
     lockedWorld->clearAllEntities();
     auto entityBackground = _ecs->createEntityFromAPI(ecs::Version("Entity_Background", 1, 0, 0, 0));
+    auto entityMusic = _ecs->createEntityFromAPI(ecs::Version("Entity_Music", 1, 0, 0, 0));
 
     if (entityBackground) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityBackground->getComponent(rtype::TransformComponent::Version).lock());
@@ -193,6 +194,17 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
             scroll->setScrollValues(sf::Vector2<float>(1, 0));
         }
         lockedWorld->pushEntity(entityBackground);
+    }
+    std::cout << "/* message */" << '\n';
+    if (entityMusic) {
+        auto music = std::dynamic_pointer_cast<rtype::MusicComponent>(entityMusic->getComponent(rtype::MusicComponent::Version).lock());
+        std::cout << "/* message */" << '\n';
+        if (music && !music->isSeted()) {
+            std::cout << "PUTE PUTE" << '\n';
+            music->setMusic("../build_dependency/music/super-r-type-full-ost-snes.ogg");
+            music->play();
+        }
+        lockedWorld->pushEntity(entityMusic);
     }
 }
 
