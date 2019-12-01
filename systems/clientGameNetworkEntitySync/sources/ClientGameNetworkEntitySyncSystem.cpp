@@ -27,6 +27,7 @@ const std::map<int, int> rtype::ClientGameNetworkEntitySyncSystem::_networkTypeT
     {ET_SHOOT_TYPE_BASIC_BASE + 30, 51},
     {ET_SHOOT_TYPE_BASIC_BASE + 60, 52},
     {ET_SHOOT_TYPE_BASIC_BASE + 90, 53},
+    {ET_MONSTER_TYPE_KAMIKAZE, 8}
 };
 
 const ecs::Version rtype::ClientGameNetworkEntitySyncSystem::Version = ecs::Version("SYSTEM_ClientGameNetworkEntitySyncSystem", 0, 0, 1, 0);
