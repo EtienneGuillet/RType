@@ -12,5 +12,5 @@ std::shared_ptr<ecs::IEntity> BydosSlaveEntityAPI::createNewEntity() const {
 }
 
 long BydosSlaveEntityAPI::getSpawnFreq() const {
-    return 1000 * 2;
+    return 1000 * 30;
 }
