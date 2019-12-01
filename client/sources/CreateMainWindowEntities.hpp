@@ -39,7 +39,7 @@ namespace rtype {
         static void gameSceneLaunch();
         void checkForUpdateScene();
     private:
-        bool _isInRooms;
+        bool _isInLobbyOfRooms;
         static std::weak_ptr<ecs::IWorld> _world;
         static ecs::IECS *_ecs;
     };
