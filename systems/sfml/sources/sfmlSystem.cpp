@@ -120,18 +120,18 @@ bool SfmlSystem::isHovering(const sf::Text &text)
     float top = text.getGlobalBounds().top + text.getGlobalBounds().height;
     float height = text.getGlobalBounds().top + text.getGlobalBounds().height + text.getGlobalBounds().height;
 
-    return left < sf::Mouse::getPosition().x &&
-        width > sf::Mouse::getPosition().x &&
-        top < sf::Mouse::getPosition().y &&
-        height > sf::Mouse::getPosition().y;
+    return left < sf::Mouse::getPosition(_window).x &&
+        width > sf::Mouse::getPosition(_window).x &&
+        top < sf::Mouse::getPosition(_window).y &&
+        height > sf::Mouse::getPosition(_window).y;
 }
 
 void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
 {
     auto lockedWorld = _world.lock();
 
-    _mouseInput.first = sf::Mouse::getPosition().x;
-    _mouseInput.second = sf::Mouse::getPosition().y;
+    _mouseInput.first = sf::Mouse::getPosition(_window).x;
+    _mouseInput.second = sf::Mouse::getPosition(_window).y;
     if (lockedWorld) {
         lockedWorld->applyToEach({rtype::TextComponent::Version, rtype::TransformComponent::Version, rtype::HoverComponent::Version}, [this] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(components[0].lock());
