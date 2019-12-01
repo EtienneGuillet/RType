@@ -10,6 +10,7 @@ void rtype::EntitiesState::setPos(std::uint32_t x, std::uint32_t y, std::uint32_
     _posX = x;
     _posY = y;
     _posZ = z;
+    setWasPosUpdated(true);
 }
 
 b12software::maths::Vector3D rtype::EntitiesState::getPos() const
@@ -100,4 +101,14 @@ uint32_t rtype::EntitiesState::getHp() const
 void rtype::EntitiesState::setHp(uint32_t hp)
 {
     _hp = hp;
+}
+
+bool rtype::EntitiesState::wasPosUpdated() const
+{
+    return _wasPosUpdated;
+}
+
+void rtype::EntitiesState::setWasPosUpdated(bool wasUpdated)
+{
+    _wasPosUpdated = wasUpdated;
 }

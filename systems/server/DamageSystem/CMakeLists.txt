@@ -15,5 +15,4 @@ target_include_directories(
 
 add_custom_command(TARGET damage_system POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:damage_system> ${SERVER_SYSTEMS_FOLDER}
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:damage_system> ${CLIENT_SYSTEMS_FOLDER}
 )

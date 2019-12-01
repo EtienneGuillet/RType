@@ -18,11 +18,11 @@ BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
 
     addComponent(std::make_shared<ecs::components::NetworkIdentityComponent>(getID()));
     addComponent(std::make_shared<ecs::components::DisplayableComponent>(rtype::ET_MONSTER_TYPE_BASE));
-    addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(5,5)));
-    addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(100.0f, 50.0f, 0.0f)));
-    addComponent(std::make_shared<ecs::components::RigidbodyComponent>(20, b12software::maths::Vector2D(-1, 0)));
+    addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(50,50)));
+    addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(1000.0f, 500.0f, 0.0f)));
+    addComponent(std::make_shared<ecs::components::RigidbodyComponent>(200, b12software::maths::Vector2D(-1, 0)));
     addComponent(std::make_shared<ecs::components::DamagerComponent>(1, true, 0b1));
-    addComponent(std::make_shared<ecs::components::DamageableComponent>(1, 1, 0, 0b10));
+    addComponent(std::make_shared<ecs::components::DamageableComponent>(3, 3, 0, 0b10));
     addComponent(std::make_shared<ecs::components::WeaponComponent>());
 
     addComponent(std::make_shared<ecs::components::AIComponent>([this] (const std::shared_ptr<IEntity>& entity, std::shared_ptr<ecs::IWorld> world) {
@@ -46,21 +46,21 @@ BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
                     rb->setDirection(b12software::maths::Vector2D(rb->getDirection().x, direction.y));
                     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(direction.x) + ", " + std::to_string(direction.y));
                     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "CapableDirection: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
-                    if (distance <= 10) {
+                    if (distance <= 100) {
                         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelWarn, prefixDebug + "TODO Shoot");
-                        rb->setUps(5);
+                        rb->setUps(50);
                     } else {
-                        rb->setUps(20);
+                        rb->setUps(200);
                     }
                 }
             }
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------Scanned " + std::to_string(playerPos.size()) + " players ------");
+            //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------Scanned " + std::to_string(playerPos.size()) + " players ------");
             if (playerPos.empty()) {
                 rb->setUps(0);
             } else {
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "OwnPos: " + std::to_string(ownPos.x) + ", " + std::to_string(ownPos.y) + ", " + std::to_string(ownPos.z));
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
+                //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
+                //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "OwnPos: " + std::to_string(ownPos.x) + ", " + std::to_string(ownPos.y) + ", " + std::to_string(ownPos.z));
+                //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
             }
         }
     }));
@@ -79,7 +79,7 @@ std::vector<b12software::maths::Vector3D> BydosSlaveEntity::getPlayerPositions(s
                 auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(lockedTransform);
 
                 if (transform) {
-                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[AI][" + playerLocked->getName() + ":" + std::to_string(playerLocked->getID()) + "] Found " + std::to_string(transform->getPosition().x) + ", " + std::to_string(transform->getPosition().y) + ", " + std::to_string(transform->getPosition().z));
+                    //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[AI][" + playerLocked->getName() + ":" + std::to_string(playerLocked->getID()) + "] Found " + std::to_string(transform->getPosition().x) + ", " + std::to_string(transform->getPosition().y) + ", " + std::to_string(transform->getPosition().z));
                     playerPositions.emplace_back(transform->getPosition());
                 }
             }

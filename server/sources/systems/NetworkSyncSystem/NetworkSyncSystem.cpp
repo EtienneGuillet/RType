@@ -22,7 +22,7 @@ systems::NetworkSyncSystem::NetworkSyncSystem()
     , _ptr()
     , _valid(false)
     , _elapsedTime(0)
-    , _timeBetweenSync(150)
+    , _timeBetweenSync(1)
 {
 
 }

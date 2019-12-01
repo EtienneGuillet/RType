@@ -17,8 +17,8 @@ KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
 
     addComponent(std::make_shared<ecs::components::NetworkIdentityComponent>(getID()));
     addComponent(std::make_shared<ecs::components::DisplayableComponent>(rtype::ET_MONSTER_TYPE_KAMIKAZE));
-    addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(5,5)));
-    addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(100.0f, 50.0f, 0.0f)));
+    addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(50,50)));
+    addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(1000.0f, 500.0f, 0.0f)));
     addComponent(std::make_shared<ecs::components::RigidbodyComponent>());
     addComponent(std::make_shared<ecs::components::DamagerComponent>(1, true, 0b1));
     addComponent(std::make_shared<ecs::components::DamageableComponent>(1, 1, 0, 0b10));
@@ -39,7 +39,7 @@ KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
                 if (distance < smallestDistance || smallestDistance == -1.0f) {
                     auto direction = pos - ownPos;
                     rb->setDirection(b12software::maths::Vector2D(direction.x, direction.y));
-                    rb->setUps(10);
+                    rb->setUps(100);
                 }
             }
             //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------Scanned " + std::to_string(playerPos.size()) + " players ------");

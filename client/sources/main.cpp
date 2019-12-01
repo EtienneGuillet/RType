@@ -79,7 +79,7 @@ void runMain(const std::string &libsFolder)
     while (gSignalStatus == 0 && !shouldClose) {
         end = std::chrono::system_clock::now();
         auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        if (deltaTime >= 10) {
+        if (deltaTime >= 1) {
             start = std::chrono::system_clock::now();
             libLoader.checkForChanges();
             MainWindow.checkForUpdateScene();
