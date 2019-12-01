@@ -32,6 +32,8 @@ namespace rtype {
 
         static void closeByQuitButton();
         static void tryToConnect();
+        static void createRoom();
+        static void refreshRooms();
         static void menuSceneLaunch();
         static void roomSceneLaunch();
         static void gameSceneLaunch();

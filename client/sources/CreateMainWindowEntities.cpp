@@ -48,13 +48,12 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     auto background = _ecs->createEntityFromAPI(ecs::Version("Entity_Background", 1, 0, 0, 0));
     auto spriteBoxRooms = _ecs->createEntityFromAPI(ecs::Version("Entity_LobbyContainer", 1, 0, 0, 0));
     auto spriteBoxCreate = _ecs->createEntityFromAPI(ecs::Version("Entity_LobbyContainer", 1, 0, 0, 0));
+    auto entityTextboxRoomName = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+    auto entityTextboxRoomPwd = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
 
     if (background) {
-        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(
-            background->getComponent(
-                rtype::TransformComponent::Version).lock());
-        auto sprite = std::dynamic_pointer_cast<rtype::SpriteComponent>(
-            background->getComponent(rtype::SpriteComponent::Version).lock());
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(background->getComponent(rtype::TransformComponent::Version).lock());
+        auto sprite = std::dynamic_pointer_cast<rtype::SpriteComponent>(background->getComponent(rtype::SpriteComponent::Version).lock());
         if (tr) {
             tr->setScale(3, 3);
         }
@@ -82,7 +81,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
 
         if (tr) {
             tr->setPosition(1120, 150, 0);
-            tr->setScale(1.5, 0.7);
+            tr->setScale(1.5, 0.3);
         }
         lockedWorld->pushEntity(spriteBoxRooms);
     }
@@ -95,11 +94,12 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
         auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonCreateRoom->getComponent(rtype::HoverComponent::Version).lock());
         auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonCreateRoom->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(1350, 900, 0);
+            tr->setPosition(1350, 600, 0);
             tr->setScale(2, 2);
         }
         if (hv) {
             hv->setHoverable(true);
+            hv->setFunctionPointer(rtype::CreateMainWindowEntities::createRoom);
         }
         if (rt) {
             rt->setString("CREATE");
@@ -119,6 +119,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
         }
         if (hv) {
             hv->setHoverable(true);
+            hv->setFunctionPointer(rtype::CreateMainWindowEntities::refreshRooms);
         }
         if (rt) {
             rt->setString("REFRESH");
@@ -127,6 +128,44 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     }
     else {
         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find Entity_Button");
+    }
+    if (entityTextboxRoomName) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxRoomName->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxRoomName->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxRoomName->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxRoomName->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
+        if (transformComponent) {
+            transformComponent->setPosition(1140, 200, 0);
+            transformComponent->setScale(1.2, 1.2);
+        }
+        if (textComponent) {
+            textComponent->setString("Room name : ");
+        }
+        lockedWorld->pushEntity(entityTextboxRoomName);
+    }
+    if (entityTextboxRoomPwd) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxRoomPwd->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxRoomPwd->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxRoomPwd->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxRoomPwd->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
+        if (transformComponent) {
+            transformComponent->setPosition(1140, 350, 0);
+            transformComponent->setScale(1.2, 1.2);
+        }
+        if (textComponent) {
+            textComponent->setString("Room password : ");
+        }
+        lockedWorld->pushEntity(entityTextboxRoomPwd);
     }
 }
 
@@ -342,6 +381,38 @@ void rtype::CreateMainWindowEntities::checkForUpdateScene()
             }
         });
     }
+}
+
+void rtype::CreateMainWindowEntities::createRoom()
+{
+    auto lockedWorld = _world.lock();
+
+    if (!lockedWorld) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "Error locked world");
+        return;
+    }
+    lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+        if (gm) {
+            //todo create une room
+        }
+    });
+}
+
+void rtype::CreateMainWindowEntities::refreshRooms()
+{
+    auto lockedWorld = _world.lock();
+
+    if (!lockedWorld) {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "Error locked world");
+        return;
+    }
+    lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+        if (gm) {
+            //gm->getState().
+        }
+    });
 }
 
 
