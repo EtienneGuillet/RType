@@ -27,6 +27,7 @@ const std::map<int, int> rtype::ClientGameNetworkEntitySyncSystem::_networkTypeT
     {ET_SHOOT_TYPE_BASIC_BASE + 30, 51},
     {ET_SHOOT_TYPE_BASIC_BASE + 60, 52},
     {ET_SHOOT_TYPE_BASIC_BASE + 90, 53},
+    {ET_MONSTER_TYPE_KAMIKAZE, 8}
 };
 
 const ecs::Version rtype::ClientGameNetworkEntitySyncSystem::Version = ecs::Version("SYSTEM_ClientGameNetworkEntitySyncSystem", 0, 0, 1, 0);
@@ -65,22 +66,27 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
     lockedWorld->applyToEach({EntityIdComponent::Version},
         [&width, &height, &handeled, &toDestroy, &gameManagerComp](std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         auto lockedEntity = entity.lock();
-        auto trComp = std::dynamic_pointer_cast<rtype::TransformComponent>(lockedEntity->getComponent({rtype::TransformComponent::Version}).lock());
         auto netIdComp = std::dynamic_pointer_cast<EntityIdComponent>(components[0].lock());
         if (!netIdComp || !lockedEntity)
             return;
         try {
             auto &entityData = gameManagerComp->getState().getEntity(netIdComp->getID());
             auto scaledPos = mapPercentCoordinatesToPixelCoordianes(entityData.getPos(), width, height);
+            auto trComp = std::dynamic_pointer_cast<rtype::TransformComponent>(lockedEntity->getComponent({rtype::TransformComponent::Version}).lock());
             if (entityData.isShouldDisplay()) {
                 auto spriteComp = std::dynamic_pointer_cast<rtype::SpriteComponent>(lockedEntity->getComponent({rtype::SpriteComponent::Version}).lock());
-                if (!spriteComp)
+                if (!spriteComp) {
                     lockedEntity->addComponent(std::make_shared<rtype::SpriteComponent>(getAssetIdFromNetworkType(entityData.getType())));
-                trComp->setPosition(scaledPos.x, scaledPos.y, scaledPos.z);
-                trComp->setScale(entityData.getScale().x, entityData.getScale().y);
-                trComp->setRotation(entityData.getRot().x, entityData.getRot().y);
+                }
+                if (trComp) {
+                    trComp->setPosition(scaledPos.x, scaledPos.y, scaledPos.z);
+                    trComp->setScale(entityData.getScale().x, entityData.getScale().y);
+                    trComp->setRotation(entityData.getRot().x, entityData.getRot().y);
+                }
             } else {
-                //trComp->setScale(0, 0);
+                if (trComp) {
+                    trComp->setScale(0, 0);
+                }
             }
             //todo sync health
         } catch (GameStateException &e) {
@@ -92,7 +98,6 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
         if (std::find(handeled.begin(), handeled.end(), entityData.getId()) != handeled.end())
             continue;
         auto newEntity = std::make_shared<ecs::Entity>("NetworkedEntity");
-        std::cout << "New entity " << entityData.getId() << " type:" << entityData.getType() << std::endl;
         newEntity->addComponent(std::make_shared<rtype::EntityIdComponent>(entityData.getId()));
         newEntity->addComponent(std::make_shared<rtype::TransformComponent>(
             mapPercentCoordinatesToPixelCoordianes(entityData.getPos(), width, height),
