@@ -410,7 +410,7 @@ void rtype::CreateMainWindowEntities::refreshRooms()
     lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
         if (gm) {
-            //gm->getState().
+            //todo refresh les rooms
         }
     });
 }
