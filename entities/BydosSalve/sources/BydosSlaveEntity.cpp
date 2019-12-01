@@ -48,9 +48,7 @@ BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
                     if (distance <= 10) {
                         b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelWarn, prefixDebug + "TODO Shoot");
                         rb->setUps(5);
-                        weapon->setRps(1000);
                     } else {
-                        weapon->setRps(0);
                         rb->setUps(20);
                     }
                 }
