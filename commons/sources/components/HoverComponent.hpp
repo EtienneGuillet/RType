@@ -12,6 +12,7 @@
 #include "ecs/IComponent/AComponent.hpp"
 #include "logger/DefaultLogger.hpp"
 #include <SFML/Graphics.hpp>
+#include <ecs/IWorld/IWorld.hpp>
 
 /*!
  * @namespace rtype
@@ -26,7 +27,7 @@ namespace rtype {
     class HoverComponent : public ecs::AComponent {
 
     public:
-        using functionPointer = std::function<void()>;
+        using functionPointer = std::function<void(std::weak_ptr<ecs::IEntity>, std::weak_ptr<ecs::IWorld> world)>;
 
         static const ecs::Version Version;
 

@@ -23,6 +23,7 @@
 #include <logger/DefaultLogger.hpp>
 #include <SFML/Graphics.hpp>
 #include "rtype/client/NetworkState.hpp"
+#include <ecs/IEntity/Entity.hpp>
 
 #define PATH_TO_ASSETS "./bin/assets/"
 #define PATH_TO_FONTS "./bin/fonts/"
@@ -77,6 +78,16 @@ class SfmlSystem : public ecs::ASystem {
      * @brief check if the client is trying to create a room.
      */
     void checkCreateRoom();
+
+    /*
+     * @brief check if the client is trying to update the list of rooms.
+     */
+    void checkUpdateRooms();
+
+    /*
+     * @brief CallBack when clicking on room name.
+     */
+    static void connectToRoom(std::weak_ptr<ecs::IEntity> entity, std::weak_ptr<ecs::IWorld> world);
 
     /*
      * @brief Inform the type of the system.
@@ -149,6 +160,7 @@ class SfmlSystem : public ecs::ASystem {
     bool _roomPswSet;
     std::string _roomName;
     std::string _roomPsw;
+    std::vector<rtype::LobbyState::LobbyData> _rooms;
     bool _connected;
 };
 

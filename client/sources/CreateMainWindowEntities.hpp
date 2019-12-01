@@ -30,16 +30,17 @@ namespace rtype {
 
         ~CreateMainWindowEntities() = default;
 
-        static void closeByQuitButton();
-        static void tryToConnect();
-        static void createRoom();
-        static void refreshRooms();
+        static void closeByQuitButton(std::weak_ptr<ecs::IEntity> entity, std::weak_ptr<ecs::IWorld> world);
+        static void tryToConnect(std::weak_ptr<ecs::IEntity> entity, std::weak_ptr<ecs::IWorld> world);
+        static void createRoom(std::weak_ptr<ecs::IEntity> entity, std::weak_ptr<ecs::IWorld> world);
+        static void refreshRooms(std::weak_ptr<ecs::IEntity> entity, std::weak_ptr<ecs::IWorld> world);
         static void menuSceneLaunch();
         static void roomSceneLaunch();
         static void gameSceneLaunch();
         void checkForUpdateScene();
     private:
         bool _isInLobbyOfRooms;
+        bool _cleanCreateLobby;
         static std::weak_ptr<ecs::IWorld> _world;
         static ecs::IECS *_ecs;
     };
