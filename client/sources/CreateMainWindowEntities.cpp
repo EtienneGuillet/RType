@@ -535,6 +535,7 @@ rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::I
 {
     _isInLobbyOfRooms = false;
     _cleanCreateLobby = false;
+    _cleanStartGame = false;
     _world = world;
     _ecs = &ecs;
     menuSceneLaunch();
@@ -570,6 +571,10 @@ void rtype::CreateMainWindowEntities::checkForUpdateScene()
                 if (gm->getState().isConnnected() && gm->getState().getLobbyState().isInLobby() && !_cleanCreateLobby) {
                     lobbySceneLaunch();
                     _cleanCreateLobby = true;
+                }
+                if (gm->getState().isInGame() && !_cleanStartGame) {
+                    gameSceneLaunch();
+                    _cleanStartGame = true;
                 }
             }
         });

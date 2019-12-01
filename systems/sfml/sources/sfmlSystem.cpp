@@ -119,8 +119,8 @@ bool SfmlSystem::isHovering(const sf::Text &text)
 {
     float left = text.getGlobalBounds().left;
     float width = text.getGlobalBounds().left + text.getGlobalBounds().width;
-    float top = text.getGlobalBounds().top + text.getGlobalBounds().height;
-    float height = text.getGlobalBounds().top + text.getGlobalBounds().height + text.getGlobalBounds().height;
+    float top = text.getGlobalBounds().top;
+    float height = text.getGlobalBounds().top + text.getGlobalBounds().height;
 
     return left < sf::Mouse::getPosition(_window).x &&
         width > sf::Mouse::getPosition(_window).x &&
@@ -429,6 +429,8 @@ void SfmlSystem::tryForConnection()
                     std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(inlineComponents.front().lock());
 
                     if (textComponent->getString().rfind("Port :      ", 0) == 0) {
+                        if (!std::atoi(textComponent->getString().substr(12).c_str()))
+                            return;
                         unsigned int port = std::stoul(textComponent->getString().substr(12));
                         gm->getState().setServerPort(port);
                         _portSet = true;
@@ -475,12 +477,21 @@ void SfmlSystem::checkCreateRoom()
                     _roomPsw = textComponent->getString().substr(16);
                     _roomPswSet = true;
                 }
+                if (textComponent->getString().rfind("Room capacity : ", 0) == 0) {
+                    _roomCap = textComponent->getString().substr(16);
+                    _roomCapSet = true;
+                }
+
             });
         }
         if (!gm->getState().getLobbyState().isCreatingLobby() && _roomNameSet && _roomPswSet) {
-            gm->getState().getLobbyState().createLobby(_roomName, _roomPsw);
+
+            if (!std::atoi(_roomCap.c_str()))
+                return;
+            gm->getState().getLobbyState().createLobby(_roomName, _roomPsw, std::atoi(_roomCap.c_str()));
             _roomPswSet = false;
             _roomNameSet = false;
+            _roomPswSet = false;
             gm->stopCreateRoom();
         }
     });

@@ -42,6 +42,7 @@ namespace rtype {
     private:
         bool _isInLobbyOfRooms;
         bool _cleanCreateLobby;
+        bool _cleanStartGame;
         static std::weak_ptr<ecs::IWorld> _world;
         static ecs::IECS *_ecs;
     };
