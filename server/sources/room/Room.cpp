@@ -17,6 +17,7 @@
 #include <systems/NetworkSyncSystem/NetworkSyncSystemApi.hpp>
 #include <components/Transform/TransformComponent.hpp>
 #include <components/server/networkIdentity/NetworkIdentityComponent.hpp>
+#include <components/server/collider/ColliderComponent.hpp>
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
