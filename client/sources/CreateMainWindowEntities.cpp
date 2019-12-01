@@ -184,7 +184,7 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
         auto sprite = std::dynamic_pointer_cast<rtype::SpriteComponent>(entityBackground->getComponent(rtype::SpriteComponent::Version).lock());
         auto scroll = std::dynamic_pointer_cast<rtype::ScrollComponent>(entityBackground->getComponent(rtype::ScrollComponent::Version).lock());
         if (tr) {
-            tr->setScale(3, 3);
+            tr->setScale(1, 1);
         }
         if (sprite) {
             sprite->setRepeated(true);
@@ -224,7 +224,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch([[maybe_unused]]std::weak_
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(background->getComponent(rtype::TransformComponent::Version).lock());
         auto sprite = std::dynamic_pointer_cast<rtype::SpriteComponent>(background->getComponent(rtype::SpriteComponent::Version).lock());
         if (tr) {
-            tr->setScale(3, 3);
+            tr->setScale(1, 1);
         }
         if (sprite) {
             sprite->setRepeated(true);
