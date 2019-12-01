@@ -18,6 +18,7 @@
 #include "components/server/networkIdentity/NetworkIdentityComponent.hpp"
 #include "ClientGameNetworkEntitySyncSystem.hpp"
 #include "rtype/game/RTypeEntityType.hpp"
+#include "components/TransformNetworkLagCompensation.hpp"
 
 const std::map<int, int> rtype::ClientGameNetworkEntitySyncSystem::_networkTypeToSpriteId = {
     {ET_PLAYER_1, 47},
@@ -73,6 +74,11 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
             auto &entityData = gameManagerComp->getState().getEntity(netIdComp->getID());
             auto scaledPos = mapPercentCoordinatesToPixelCoordianes(entityData.getPos(), width, height);
             auto trComp = std::dynamic_pointer_cast<rtype::TransformComponent>(lockedEntity->getComponent({rtype::TransformComponent::Version}).lock());
+            auto trNetCompensationComp = std::dynamic_pointer_cast<rtype::TransformNetworkLagCompensation>(lockedEntity->getComponent({rtype::TransformNetworkLagCompensation::Version}).lock());
+            if (!entityData.wasPosUpdated()) {
+                handeled.push_back(netIdComp->getID());
+                return;
+            }
             if (entityData.isShouldDisplay()) {
                 auto spriteComp = std::dynamic_pointer_cast<rtype::SpriteComponent>(lockedEntity->getComponent({rtype::SpriteComponent::Version}).lock());
                 if (!spriteComp) {
@@ -83,31 +89,41 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
                     trComp->setScale(entityData.getScale().x, entityData.getScale().y);
                     trComp->setRotation(entityData.getRot().x, entityData.getRot().y);
                 }
+                if (trNetCompensationComp) {
+                    trNetCompensationComp->setLastNetworkPos(b12software::maths::Vector3D(scaledPos.x, scaledPos.y, scaledPos.z));
+                }
             } else {
                 if (trComp) {
                     trComp->setScale(0, 0);
                 }
             }
+            entityData.setWasPosUpdated(false);
             //todo sync health
+            handeled.push_back(netIdComp->getID());
         } catch (GameStateException &e) {
             toDestroy.push_back(lockedEntity->getID());
+            handeled.push_back(netIdComp->getID());
         }
-        handeled.push_back(netIdComp->getID());
     });
     for (auto &entityData : gameManagerComp->getState().getEntities()) {
         if (std::find(handeled.begin(), handeled.end(), entityData.getId()) != handeled.end())
             continue;
         auto newEntity = std::make_shared<ecs::Entity>("NetworkedEntity");
         newEntity->addComponent(std::make_shared<rtype::EntityIdComponent>(entityData.getId()));
+        auto scaledPos = mapPercentCoordinatesToPixelCoordianes(entityData.getPos(), width, height);
         newEntity->addComponent(std::make_shared<rtype::TransformComponent>(
-            mapPercentCoordinatesToPixelCoordianes(entityData.getPos(), width, height),
+            scaledPos,
             sf::Vector2f(entityData.getRot().x, entityData.getRot().y),
             sf::Vector2f(entityData.getScale().x, entityData.getScale().y)
             ));
+        auto networkCompensation = std::make_shared<rtype::TransformNetworkLagCompensation>();
+        networkCompensation->setLastNetworkPos(b12software::maths::Vector3D(scaledPos.x, scaledPos.y, scaledPos.z));
+        newEntity->addComponent(networkCompensation);
         if (entityData.isShouldDisplay()) {
             newEntity->addComponent(std::make_shared<rtype::SpriteComponent>(getAssetIdFromNetworkType(entityData.getType())));
         }
         //todo create health
+        entityData.setWasPosUpdated(false);
         lockedWorld->pushEntity(newEntity);
     }
     for (auto &id : toDestroy) {
@@ -133,8 +149,8 @@ void rtype::ClientGameNetworkEntitySyncSystem::start()
 sf::Vector3f rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPixelCoordianes(
     const b12software::maths::Vector3D &coords, int width, int height)
 {
-    float newX = convertRange(coords.x, 0, 100, 0, width);
-    float newY = convertRange(coords.y, 0, 100, 0, height);
+    float newX = convertRange(coords.x, 0, 1000, 0, width);
+    float newY = convertRange(coords.y, 0, 1000, 0, height);
     float newZ = coords.z;
     return sf::Vector3f(newX, height - newY, newZ);
 }
@@ -142,8 +158,8 @@ sf::Vector3f rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPi
 sf::Vector2f rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPixelCoordianes(
     const b12software::maths::Vector2D &coords, int width, int height)
 {
-    float newX = convertRange(coords.x, 0, 100, 0, width);
-    float newY = convertRange(coords.y, 0, 100, 0, height);
+    float newX = convertRange(coords.x, 0, 1000, 0, width);
+    float newY = convertRange(coords.y, 0, 1000, 0, height);
     return sf::Vector2f(newX, height - newY);
 }
 

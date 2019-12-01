@@ -9,7 +9,7 @@
 BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 
-    addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(100.0f, 50.0f, 0.0f)));
+    addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(1000.0f, 500.0f, 0.0f)));
     addComponent(std::make_shared<ecs::components::RigidbodyComponent>());
     addComponent(std::make_shared<ecs::components::AIComponent>([this] (const std::shared_ptr<IEntity>& entity, std::shared_ptr<ecs::IWorld> world) {
         std::string prefixDebug = "[AI][" + entity->getName() + "][" + std::to_string(entity->getID()) + "]";

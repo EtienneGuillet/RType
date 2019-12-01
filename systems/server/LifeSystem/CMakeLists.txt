@@ -15,5 +15,4 @@ target_include_directories(
 
 add_custom_command(TARGET life_system POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:life_system> ${SERVER_SYSTEMS_FOLDER}
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:life_system> ${CLIENT_SYSTEMS_FOLDER}
 )
