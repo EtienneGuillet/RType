@@ -86,7 +86,10 @@ void systems::NetworkSyncSystem::tick(long deltatime)
                     return;
                 auto lockedRb = std::dynamic_pointer_cast<ecs::components::RigidbodyComponent>(lockedEntity->getComponent(ecs::components::RigidbodyComponent::Version).lock());
                 if (lockedRb) {
-                    lockedRb->setDirection(b12software::maths::Vector2D(infos.isMovingRight() - infos.isMovingLeft(), infos.isMovingUp() - infos.isMovingDown()).normalized());
+                    auto dir = b12software::maths::Vector2D(infos.isMovingRight() - infos.isMovingLeft(), infos.isMovingUp() - infos.isMovingDown());
+                    if (dir.magnitude() != 0)
+                        dir.normalize();
+                    lockedRb->setDirection(dir);
                 }
                 lockedPlayer->setShotPressed(infos.isShooting());
                 infos.setCharge(lockedPlayer->getCharge());

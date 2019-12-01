@@ -15,11 +15,10 @@ PlayerEntity::PlayerEntity(rtype::RTypeEntityType playerId) : Entity("PlayerEnti
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 
     addComponent(std::make_shared<ecs::components::DamageableComponent>());
-    addComponent(std::make_shared<ecs::components::NetworkIdentityComponent>(getID()));
     addComponent(std::make_shared<ecs::components::TransformComponent>());
     addComponent(std::make_shared<ecs::components::WeaponComponent>());
     addComponent(std::make_shared<ecs::components::ColliderComponent>());
-    addComponent(std::make_shared<ecs::components::RigidbodyComponent>(0));
+    addComponent(std::make_shared<ecs::components::RigidbodyComponent>(5));
     addComponent(std::make_shared<ecs::components::PlayerComponent>());
     addComponent(std::make_shared<ecs::components::DisplayableComponent>(playerId));
 }

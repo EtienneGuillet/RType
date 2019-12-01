@@ -129,7 +129,7 @@ namespace rtype {
          * @param infos the infos to sync on the network
          * @param libsFolder The folder containing entities and systems libs
          */
-        static void gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, GameInfos &infos, const std::string libsFolder);
+        static void gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, std::weak_ptr<GameInfos> infos, const std::string libsFolder);
 
     private:
         std::string _name; /*!< The room name */
@@ -141,7 +141,7 @@ namespace rtype {
         std::vector<std::reference_wrapper<Client>> _clients; /*!< The connected clients to this room */
 
         std::atomic_bool _shouldGameBeRunning; /*!< Should the game be running for this room */
-        GameInfos _gameInfos; /*!< This room game infos */
+        std::shared_ptr<GameInfos> _gameInfos; /*!< This room game infos */
         std::map<std::string, int> _clientPlayerMap; /*!< Map linking a client to a player */
         std::atomic_bool _threadRunning; /*!< Is the thread running */
         std::unique_ptr<std::thread> _thread; /*!< The game thread */

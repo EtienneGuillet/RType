@@ -249,7 +249,9 @@ void rtype::RTypeNetworkClient::gameSequence(long deltatime)
 }
 
 void rtype::RTypeNetworkClient::lostConnectionSequence([[maybe_unused]]long deltatime)
-{}
+{
+    _syncTo.setLostConnection(true);
+}
 
 void rtype::RTypeNetworkClient::checkLostConnection()
 {
