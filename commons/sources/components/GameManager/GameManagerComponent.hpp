@@ -70,6 +70,18 @@ namespace rtype {
 
         bool isTryingToConnect() const;
 
+        void startCreateRoom();
+
+        void stopCreateRoom();
+
+        bool isTryingToCreateRoom() const;
+
+        void startLobbyUpdate();
+
+        void stopLobbyUpdate();
+
+        bool isRequestLobbyUpdate();
+
 
 
     private:
@@ -78,6 +90,8 @@ namespace rtype {
         int _displayWidth; /*!< The display width */
         int _displayHeight; /*!< The display height */
         bool _tryingToConnect;
+        bool _tryingCreateRoom;
+        bool _requestUpdateListRoom;
     };
 }
 

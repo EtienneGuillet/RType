@@ -153,7 +153,7 @@ void SfmlSystem::manageMouseEvents([[maybe_unused]]sf::Event event)
                         isHovering(textComponent->getText())) {
                         const auto &func = hoverComponent->getFunctionPointer();
                         if (func) {
-                            func();
+                            func(entity, _world);
                         }
                     }
                 }
@@ -292,6 +292,8 @@ void SfmlSystem::tick([[maybe_unused]]long deltatime)
         }
         this->renderEntities();
         this->tryForConnection();
+        this->checkCreateRoom();
+        this->checkUpdateRooms();
     } catch (SfmlSystemException &e) {
         std::cerr << e.what() << e.where() << std::endl;
     }
@@ -461,31 +463,80 @@ void SfmlSystem::checkCreateRoom()
     lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this, lockedWorld] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         std::shared_ptr<rtype::GameManagerComponent> gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components.front().lock());
 
-        if (gm->getState().getLobbyState().isCreatingLobby()) {
-            lockedWorld->applyToEach({rtype::TextComponent::Version},
-                [this, gm](
-                    [[maybe_unused]]std::weak_ptr<ecs::IEntity> inlineEntity,
-                    std::vector<std::weak_ptr<ecs::IComponent>> inlineComponents
-                ) {
-                    std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(
-                        inlineComponents.front().lock());
+        if (!gm->getState().getLobbyState().isCreatingLobby() && gm->isTryingToCreateRoom()) {
+            lockedWorld->applyToEach({rtype::TextComponent::Version},[this, gm]([[maybe_unused]]std::weak_ptr<ecs::IEntity> inlineEntity,std::vector<std::weak_ptr<ecs::IComponent>> inlineComponents) {
+                std::shared_ptr<rtype::TextComponent> textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(inlineComponents.front().lock());
 
-                    if (textComponent->getString().rfind("Room name : ", 0) ==
-                        0) {
-                        _roomName = textComponent->getString().substr(12);
-                        _roomNameSet = true;
-                    }
-                    if (textComponent->getString().rfind("Room psw : ", 0) ==
-                        0) {
-                        _roomPsw = textComponent->getString().substr(11);
-                        _roomPswSet = true;
-                    }
-                });
+                if (textComponent->getString().rfind("Room name : ", 0) == 0) {
+                    _roomName = textComponent->getString().substr(12);
+                    _roomNameSet = true;
+                }
+                if (textComponent->getString().rfind("Room password : ", 0) == 0) {
+                    _roomPsw = textComponent->getString().substr(16);
+                    _roomPswSet = true;
+                }
+            });
         }
-        if (gm->getState().getLobbyState().isCreatingLobby() && _roomNameSet && _roomPswSet) {
+        if (!gm->getState().getLobbyState().isCreatingLobby() && _roomNameSet && _roomPswSet) {
             gm->getState().getLobbyState().createLobby(_roomName, _roomPsw);
             _roomPswSet = false;
             _roomNameSet = false;
+            gm->stopCreateRoom();
+        }
+    });
+}
+
+void SfmlSystem::checkUpdateRooms()
+{
+    auto lockedWorld = _world.lock();
+
+    if (!lockedWorld)
+        return;
+    lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this, lockedWorld] ([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        std::shared_ptr<rtype::GameManagerComponent> gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components.front().lock());
+
+        if (gm->isRequestLobbyUpdate() && gm->getState().isConnnected()) {
+            _rooms = gm->getState().getLobbyState().getLobbyList();
+            float height = 200;
+            for (auto it = _rooms.begin(); it != _rooms.end(); ++it) {
+                auto entityRoom = std::shared_ptr<ecs::IEntity>(new ecs::Entity("entity_room"));
+                entityRoom->addComponent(std::make_shared<rtype::TransformComponent>());
+                entityRoom->addComponent(std::make_shared<rtype::TextComponent>(1, it->name));
+                entityRoom->addComponent(std::make_shared<rtype::HoverComponent>());
+
+                auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityRoom->getComponent(rtype::TransformComponent::Version).lock());
+                auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityRoom->getComponent(rtype::HoverComponent::Version).lock());
+
+                if (tr) {
+                    tr->setPosition(180, height, 0);
+                }
+                if (hv) {
+                    hv->setFunctionPointer(SfmlSystem::connectToRoom);
+                    hv->setHoverable(true);
+                }
+                lockedWorld->pushEntity(entityRoom);
+                height += 100;
+            }
+            gm->stopLobbyUpdate();
+        }
+    });
+}
+
+void SfmlSystem::connectToRoom([[maybe_unused]]std::weak_ptr<ecs::IEntity> e, [[maybe_unused]]std::weak_ptr<ecs::IWorld> world)
+{
+    auto lockedEntity = e.lock();
+    auto lockedWorld = world.lock();
+
+    if (!lockedEntity || !lockedWorld) {
+        return;
+    }
+    auto tx = std::dynamic_pointer_cast<rtype::TextComponent>(lockedEntity->getComponent(rtype::TextComponent::Version).lock());
+
+    lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [tx]([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+        if (gm) {
+            std::cout << "room name" << tx->getString() << std::endl << std::flush;
+            gm->getState().getLobbyState().joinLobby(tx->getString());
         }
     });
 }
