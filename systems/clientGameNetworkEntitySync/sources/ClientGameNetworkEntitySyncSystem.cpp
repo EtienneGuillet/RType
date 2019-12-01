@@ -13,6 +13,7 @@
 #include <ecs/IEntity/Entity.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/EntityIdComponent.hpp>
+#include <logger/StandardLogger.hpp>
 #include "components/GameManager/GameManagerComponent.hpp"
 #include "components/server/networkIdentity/NetworkIdentityComponent.hpp"
 #include "ClientGameNetworkEntitySyncSystem.hpp"
@@ -45,9 +46,20 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
     auto gameManagerComp = std::dynamic_pointer_cast<rtype::GameManagerComponent>(gameManagerEntity->getComponent({rtype::GameManagerComponent::Version}).lock());
     if (!gameManagerComp || !gameManagerComp->getState().isInGame())
         return;
+    auto width = gameManagerComp->getDisplayWidth();
+    auto height = gameManagerComp->getDisplayHeight();
+    if (width == 0) {
+        width = 1920;
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelWarn, "[ClientGameNetworkEntitySyncSystem] No width set in game manager defaulting to 1920");
+    }
+    if (height == 0) {
+        height = 1080;
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelWarn, "[ClientGameNetworkEntitySyncSystem] No height set in game manager defaulting to 1080");
+    }
     std::vector<int> handeled;
     std::vector<int> toDestroy;
-    lockedWorld->applyToEach({EntityIdComponent::Version}, [&handeled, &toDestroy, &gameManagerComp](std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+    lockedWorld->applyToEach({EntityIdComponent::Version},
+        [&width, &height, &handeled, &toDestroy, &gameManagerComp](std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
         auto lockedEntity = entity.lock();
         auto trComp = std::dynamic_pointer_cast<rtype::TransformComponent>(lockedEntity->getComponent({rtype::TransformComponent::Version}).lock());
         auto netIdComp = std::dynamic_pointer_cast<EntityIdComponent>(components[0].lock());
@@ -55,9 +67,9 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
             return;
         try {
             auto &entityData = gameManagerComp->getState().getEntity(netIdComp->getID());
-            //todo change the values from percents to screen coordinates
+            auto scaledPos = mapPercentCoordinatesToPixelCoordianes(entityData.getPos(), width, height);
             if (entityData.isShouldDisplay()) {
-                trComp->setPosition(entityData.getPos().x, entityData.getPos().y, entityData.getPos().z);
+                trComp->setPosition(scaledPos.x, scaledPos.y, scaledPos.z);
                 trComp->setScale(entityData.getScale().x, entityData.getScale().y);
                 trComp->setRotation(entityData.getRot().x, entityData.getRot().y);
             } else {
@@ -73,9 +85,8 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
             continue;
         auto newEntity = std::make_shared<ecs::Entity>("NetworkedEntity");
         newEntity->addComponent(std::make_shared<rtype::EntityIdComponent>(entityData.getId()));
-        //todo change the values from percents to screen coordinates
         newEntity->addComponent(std::make_shared<rtype::TransformComponent>(
-            sf::Vector3f(entityData.getPos().x, entityData.getPos().y, entityData.getPos().z),
+            mapPercentCoordinatesToPixelCoordianes(entityData.getPos(), width, height),
             sf::Vector2f(entityData.getRot().x, entityData.getRot().y),
             sf::Vector2f(entityData.getScale().x, entityData.getScale().y)
             ));
@@ -94,4 +105,55 @@ int rtype::ClientGameNetworkEntitySyncSystem::getAssetIdFromNetworkType(int type
         return it->second;
     }
     return 0;
+}
+
+void rtype::ClientGameNetworkEntitySyncSystem::start()
+{
+    ASystem::start();
+    b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelWarn));
+}
+
+sf::Vector3f rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPixelCoordianes(
+    const b12software::maths::Vector3D &coords, int width, int height)
+{
+    float newX = convertRange(coords.x, 0, 100, 0, width);
+    float newY = convertRange(coords.y, 0, 100, 0, height);
+    float newZ = coords.z;
+    return sf::Vector3f(newX, newY, newZ);
+}
+
+sf::Vector2f rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPixelCoordianes(
+    const b12software::maths::Vector2D &coords, int width, int height)
+{
+    float newX = convertRange(coords.x, 0, 100, 0, width);
+    float newY = convertRange(coords.y, 0, 100, 0, height);
+    return sf::Vector2f(newX, newY);
+}
+
+b12software::maths::Vector3D
+rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPixelCoordianes(const sf::Vector3f &coords, int width,
+                                                                                 int height)
+{
+    auto vec = mapPercentCoordinatesToPixelCoordianes(b12software::maths::Vector3D(coords.x, coords.y, coords.z), width, height);
+    return b12software::maths::Vector3D(vec.x, vec.y, vec.z);
+}
+
+b12software::maths::Vector2D
+rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPixelCoordianes(const sf::Vector2f &coords, int width,
+                                                                                 int height)
+{
+    auto vec = mapPercentCoordinatesToPixelCoordianes(b12software::maths::Vector2D(coords.x, coords.y), width, height);
+    return b12software::maths::Vector2D(vec.x, vec.y);
+}
+
+float rtype::ClientGameNetworkEntitySyncSystem::convertRange(float value, float oldRangeMin, float oldRangeMax,
+                                                             float newRangeMin, float newRangeMax)
+{
+    float oldRange = (oldRangeMax - oldRangeMin);
+    if (oldRange == 0) {
+        return newRangeMin;
+    } else {
+        float newRange = (newRangeMax - newRangeMin);
+        return (((value - oldRangeMin) * newRange) / oldRange) + newRangeMin;
+    }
 }
