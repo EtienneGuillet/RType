@@ -366,6 +366,10 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     auto playerApi = std::make_shared<PlayerEntityAPI>();
     ecs->learnEntity(playerApi);
 
+
+    auto entity = std::shared_ptr<ecs::IEntity>(new ecs::Entity("Test clean entity"));
+    entity->addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(50, 50, 0)));
+    world->pushEntity(entity);
     for (int j = 0; j < infos.getNbPlayers(); ++j) {
         auto player = std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j));
         auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(player->getComponent(ecs::components::TransformComponent::Version).lock());
