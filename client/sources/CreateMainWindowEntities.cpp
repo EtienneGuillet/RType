@@ -195,12 +195,9 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
         }
         lockedWorld->pushEntity(entityBackground);
     }
-    std::cout << "/* message */" << '\n';
     if (entityMusic) {
         auto music = std::dynamic_pointer_cast<rtype::MusicComponent>(entityMusic->getComponent(rtype::MusicComponent::Version).lock());
-        std::cout << "/* message */" << '\n';
         if (music && !music->isSeted()) {
-            std::cout << "PUTE PUTE" << '\n';
             music->setMusic("../build_dependency/music/super-r-type-full-ost-snes.ogg");
             music->play();
         }
