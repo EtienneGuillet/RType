@@ -26,7 +26,7 @@
 
 #define PATH_TO_ASSETS "./bin/assets/"
 #define PATH_TO_FONTS "./bin/fonts/"
-#define NBR_TEXTURE 45
+#define NBR_TEXTURE 46
 #define NBR_FONT 2
 
 class SfmlSystem : public ecs::ASystem {

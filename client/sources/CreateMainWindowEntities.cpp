@@ -45,21 +45,50 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     lockedWorld->clearAllEntities();
     auto entityButtonCreateRoom = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto entityButtonRefresh = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
-    auto background = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
-    auto entityTextboxUsername = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+    auto background = _ecs->createEntityFromAPI(ecs::Version("Entity_Background", 1, 0, 0, 0));
+    auto spriteBoxRooms = _ecs->createEntityFromAPI(ecs::Version("Entity_LobbyContainer", 1, 0, 0, 0));
+    auto spriteBoxCreate = _ecs->createEntityFromAPI(ecs::Version("Entity_LobbyContainer", 1, 0, 0, 0));
 
-    if (entityTextboxUsername) {
-        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxUsername->getComponent(rtype::TextComponent::Version).lock());
-        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxUsername->getComponent(rtype::TransformComponent::Version).lock());
-        if (transformComponent) {
-            transformComponent->setPosition(850, 570, 0);
-            transformComponent->setScale(2, 2);
+    if (background) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(
+            background->getComponent(
+                rtype::TransformComponent::Version).lock());
+        auto sprite = std::dynamic_pointer_cast<rtype::SpriteComponent>(
+            background->getComponent(rtype::SpriteComponent::Version).lock());
+        if (tr) {
+            tr->setScale(3, 3);
         }
-        if (textComponent) {
-            textComponent->setString("Name:");
+        if (sprite) {
+            sprite->setRepeated(true);
         }
+        lockedWorld->pushEntity(background);
+    } else {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find background");
     }
-    lockedWorld->pushEntity(entityTextboxUsername);
+    if (spriteBoxCreate) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(spriteBoxCreate->getComponent(rtype::TransformComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(100, 150, 0);
+            tr->setScale(1.5, 0.7);
+        }
+        lockedWorld->pushEntity(spriteBoxCreate);
+    }
+    else {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find spriteBoxCreate");
+    }
+
+    if (spriteBoxRooms) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(spriteBoxRooms->getComponent(rtype::TransformComponent::Version).lock());
+
+        if (tr) {
+            tr->setPosition(1120, 150, 0);
+            tr->setScale(1.5, 0.7);
+        }
+        lockedWorld->pushEntity(spriteBoxRooms);
+    }
+    else {
+        b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelError, "could not find Entity_Button");
+    }
 
     if (entityButtonCreateRoom) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonCreateRoom->getComponent(rtype::TransformComponent::Version).lock());
@@ -71,7 +100,6 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
         }
         if (hv) {
             hv->setHoverable(true);
-            hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
         }
         if (rt) {
             rt->setString("CREATE");
@@ -91,7 +119,6 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
         }
         if (hv) {
             hv->setHoverable(true);
-            hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
         }
         if (rt) {
             rt->setString("REFRESH");
@@ -279,6 +306,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
 
 rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world, ecs::IECS &ecs)
 {
+    _isInRooms = false;
     _world = world;
     _ecs = &ecs;
     menuSceneLaunch();
@@ -303,12 +331,13 @@ void rtype::CreateMainWindowEntities::checkForUpdateScene()
     auto lockedWorld = _world.lock();
 
     if (lockedWorld) {
-        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this]([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
 
             if (gm) {
-                if (!gm->getState().isTryingToConnected() && gm->getState().isConnnected()) {
+                if (!gm->getState().isTryingToConnected() && gm->getState().isConnnected() && !_isInRooms) {
                     roomSceneLaunch();
+                    _isInRooms = true;
                 }
             }
         });
