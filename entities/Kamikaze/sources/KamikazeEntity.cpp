@@ -41,12 +41,12 @@ KamikazeEntity::KamikazeEntity() : Entity("KamikazeEntity") {
                     rb->setUps(20);
                 }
             }
-            b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------Scanned " + std::to_string(playerPos.size()) + " players ------");
+            //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------Scanned " + std::to_string(playerPos.size()) + " players ------");
             if (playerPos.empty()) {
                 rb->setUps(0);
             } else {
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
-                b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
+                //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "Direction: " + std::to_string(rb->getDirection().x) + ", " + std::to_string(rb->getDirection().y));
+                //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "---------------");
             }
         }
     }));
@@ -65,7 +65,7 @@ std::vector<b12software::maths::Vector3D> KamikazeEntity::getPlayerPositions(std
                 auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(lockedTransform);
 
                 if (transform) {
-                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[AI][" + playerLocked->getName() + ":" + std::to_string(playerLocked->getID()) + "] Found " + std::to_string(transform->getPosition().x) + ", " + std::to_string(transform->getPosition().y) + ", " + std::to_string(transform->getPosition().z));
+                    //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "[AI][" + playerLocked->getName() + ":" + std::to_string(playerLocked->getID()) + "] Found " + std::to_string(transform->getPosition().x) + ", " + std::to_string(transform->getPosition().y) + ", " + std::to_string(transform->getPosition().z));
                     playerPositions.emplace_back(transform->getPosition());
                 }
             }

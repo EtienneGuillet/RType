@@ -35,7 +35,7 @@ namespace ecs {
             };
 
         public:
-            WeaponComponent(WeaponType type = WEAPON_TYPE_STANDARD_WAVE_CANON, uint32_t rps = 1);
+            WeaponComponent(WeaponType type = WEAPON_TYPE_STANDARD_WAVE_CANON, uint32_t chargeTime = 1000);
             ~WeaponComponent() = default;
             WeaponComponent(const WeaponComponent &other) = default;
             WeaponComponent &operator=(const WeaponComponent &rhs) = default;
@@ -52,19 +52,19 @@ namespace ecs {
              */
             void setType(WeaponType type);
             /*!
-             * @brief Get the rounds per seconds for this weapon
-             * @return rps
+             * @brief Get the weapon charge time in milliseconds seconds for this weapon
+             * @return rpms
              */
-            uint32_t getRps() const;
+            uint32_t getChargeTime() const;
             /*!
-             * @brief Set the rounds per seconds for this weapon
-             * @param rps new rounds per seconds
+             * @brief Set the weapon charge time in milliseconds seconds for this weapon
+             * @param ms new charge time per milliseconds seconds
              */
-            void setRps(uint32_t rps);
+            void setChargeTime(uint32_t ms);
 
         private:
             WeaponType _type; /*!< The type of weapon for this entity */
-            uint32_t _rps; /*!< Rounds per second */
+            uint32_t _chargeTime; /*!< Rounds charge time in millisecond second */
         };
     }
 }

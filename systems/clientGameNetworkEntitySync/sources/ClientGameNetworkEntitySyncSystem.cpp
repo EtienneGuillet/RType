@@ -17,12 +17,16 @@
 #include "components/GameManager/GameManagerComponent.hpp"
 #include "components/server/networkIdentity/NetworkIdentityComponent.hpp"
 #include "ClientGameNetworkEntitySyncSystem.hpp"
+#include "rtype/game/RTypeEntityType.hpp"
 
 const std::map<int, int> rtype::ClientGameNetworkEntitySyncSystem::_networkTypeToSpriteId = {
-    {1, 42}, //player 1
-    {2, 42}, //player 2
-    {3, 42}, //player 3
-    {4, 42}, //player 4 //todo change sprites
+    {ET_PLAYER_1, 47},
+    {ET_PLAYER_2, 48},
+    {ET_PLAYER_3, 49},
+    {ET_PLAYER_4, 50},
+    {ET_SHOOT_TYPE_BASIC_BASE + 30, 51},
+    {ET_SHOOT_TYPE_BASIC_BASE + 60, 52},
+    {ET_SHOOT_TYPE_BASIC_BASE + 90, 53},
 };
 
 const ecs::Version rtype::ClientGameNetworkEntitySyncSystem::Version = ecs::Version("SYSTEM_ClientGameNetworkEntitySyncSystem", 0, 0, 1, 0);
@@ -69,12 +73,16 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
             auto &entityData = gameManagerComp->getState().getEntity(netIdComp->getID());
             auto scaledPos = mapPercentCoordinatesToPixelCoordianes(entityData.getPos(), width, height);
             if (entityData.isShouldDisplay()) {
+                auto spriteComp = std::dynamic_pointer_cast<rtype::SpriteComponent>(lockedEntity->getComponent({rtype::SpriteComponent::Version}).lock());
+                if (!spriteComp)
+                    lockedEntity->addComponent(std::make_shared<rtype::SpriteComponent>(getAssetIdFromNetworkType(entityData.getType())));
                 trComp->setPosition(scaledPos.x, scaledPos.y, scaledPos.z);
                 trComp->setScale(entityData.getScale().x, entityData.getScale().y);
                 trComp->setRotation(entityData.getRot().x, entityData.getRot().y);
             } else {
-                trComp->setScale(0, 0);
+                //trComp->setScale(0, 0);
             }
+            //todo sync health
         } catch (GameStateException &e) {
             toDestroy.push_back(lockedEntity->getID());
         }
@@ -84,13 +92,17 @@ void rtype::ClientGameNetworkEntitySyncSystem::tick(long deltatime)
         if (std::find(handeled.begin(), handeled.end(), entityData.getId()) != handeled.end())
             continue;
         auto newEntity = std::make_shared<ecs::Entity>("NetworkedEntity");
+        std::cout << "New entity " << entityData.getId() << " type:" << entityData.getType() << std::endl;
         newEntity->addComponent(std::make_shared<rtype::EntityIdComponent>(entityData.getId()));
         newEntity->addComponent(std::make_shared<rtype::TransformComponent>(
             mapPercentCoordinatesToPixelCoordianes(entityData.getPos(), width, height),
             sf::Vector2f(entityData.getRot().x, entityData.getRot().y),
             sf::Vector2f(entityData.getScale().x, entityData.getScale().y)
             ));
-        newEntity->addComponent(std::make_shared<rtype::SpriteComponent>(getAssetIdFromNetworkType(entityData.getType())));
+        if (entityData.isShouldDisplay()) {
+            newEntity->addComponent(std::make_shared<rtype::SpriteComponent>(getAssetIdFromNetworkType(entityData.getType())));
+        }
+        //todo create health
         lockedWorld->pushEntity(newEntity);
     }
     for (auto &id : toDestroy) {
@@ -119,7 +131,7 @@ sf::Vector3f rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPi
     float newX = convertRange(coords.x, 0, 100, 0, width);
     float newY = convertRange(coords.y, 0, 100, 0, height);
     float newZ = coords.z;
-    return sf::Vector3f(newX, newY, newZ);
+    return sf::Vector3f(newX, height - newY, newZ);
 }
 
 sf::Vector2f rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPixelCoordianes(
@@ -127,7 +139,7 @@ sf::Vector2f rtype::ClientGameNetworkEntitySyncSystem::mapPercentCoordinatesToPi
 {
     float newX = convertRange(coords.x, 0, 100, 0, width);
     float newY = convertRange(coords.y, 0, 100, 0, height);
-    return sf::Vector2f(newX, newY);
+    return sf::Vector2f(newX, height - newY);
 }
 
 b12software::maths::Vector3D

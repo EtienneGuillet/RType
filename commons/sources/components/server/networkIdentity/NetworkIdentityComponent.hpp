@@ -23,6 +23,7 @@ namespace ecs {
         class NetworkIdentityComponent : public ecs::AComponent {
         public:
             static const ecs::Version Version;
+            static constexpr uint32_t InvalidId = -1;
             const ecs::Version &getVersion() const override;
 
         public:

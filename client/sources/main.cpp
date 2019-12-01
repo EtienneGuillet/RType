@@ -72,8 +72,8 @@ void runMain(const std::string &libsFolder)
     world->pushEntity(gameManager);
 
     //Comment the first line and uncomment the second one to try the game
-    rtype::CreateMainWindowEntities MainWindow(world, *ecs);
-    //fakeDatagramSequence(state, *networkClient);
+    //rtype::CreateMainWindowEntities MainWindow(world, *ecs);
+    fakeDatagramSequence(state, *networkClient);
 
     b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Starting world");
     while (gSignalStatus == 0 && !shouldClose) {
@@ -82,7 +82,7 @@ void runMain(const std::string &libsFolder)
         if (deltaTime >= 10) {
             start = std::chrono::system_clock::now();
             libLoader.checkForChanges();
-            MainWindow.checkForUpdateScene();
+            //MainWindow.checkForUpdateScene();
             world->tick(deltaTime);
             networkClient->update(deltaTime);
         }

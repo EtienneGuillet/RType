@@ -11,10 +11,10 @@
 
 const ecs::Version ecs::components::WeaponComponent::Version = ecs::Version("COMPONENT_WeaponComponent", 0, 0, 1, 0);
 
-ecs::components::WeaponComponent::WeaponComponent(ecs::components::WeaponComponent::WeaponType type, uint32_t rps)
+ecs::components::WeaponComponent::WeaponComponent(ecs::components::WeaponComponent::WeaponType type, uint32_t chargeTime)
     : AComponent()
     , _type(type)
-    , _rps(rps)
+    , _chargeTime(chargeTime)
 {
 
 }
@@ -29,14 +29,14 @@ void ecs::components::WeaponComponent::setType(ecs::components::WeaponComponent:
     _type = type;
 }
 
-uint32_t ecs::components::WeaponComponent::getRps() const
+uint32_t ecs::components::WeaponComponent::getChargeTime() const
 {
-    return _rps;
+    return _chargeTime;
 }
 
-void ecs::components::WeaponComponent::setRps(uint32_t rps)
+void ecs::components::WeaponComponent::setChargeTime(uint32_t ms)
 {
-    _rps = rps;
+    _chargeTime = ms;
 }
 
 const ecs::Version &ecs::components::WeaponComponent::getVersion() const

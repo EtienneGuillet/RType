@@ -261,7 +261,7 @@ void rtype::Room::syncDisplayLiving(rtype::Client &client,
         if (!player.isUsed())
             continue;
         auto id = player.getId();
-        if (display && displayData.type != rtype::ET_UNKNOWN) {
+        if (display && player.getType() != rtype::ET_UNKNOWN) {
             displayData.entityId = id;
             displayData.type = player.getType();
             auto position = player.getPosition();
@@ -284,7 +284,7 @@ void rtype::Room::syncDisplayLiving(rtype::Client &client,
     std::scoped_lock lock(entities);
     for (auto &entity : entities) {
         auto id = entity.getId();
-        if (display && displayData.type != rtype::ET_UNKNOWN) {
+        if (display && entity.getType() != rtype::ET_UNKNOWN) {
             displayData.entityId = id;
             displayData.type = entity.getType();
             auto position = entity.getPosition();

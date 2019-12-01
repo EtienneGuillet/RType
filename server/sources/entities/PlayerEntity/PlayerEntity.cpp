@@ -14,9 +14,9 @@
 PlayerEntity::PlayerEntity(rtype::RTypeEntityType playerId) : Entity("PlayerEntity") {
     b12software::logger::DefaultLogger::SetDefaultLogger(std::make_shared<b12software::logger::StandardLogger>(b12software::logger::LogLevelDebug));
 
-    addComponent(std::make_shared<ecs::components::DamageableComponent>());
+    addComponent(std::make_shared<ecs::components::DamageableComponent>(3, 3, 0, 0b1));
     addComponent(std::make_shared<ecs::components::TransformComponent>());
-    addComponent(std::make_shared<ecs::components::WeaponComponent>());
+    addComponent(std::make_shared<ecs::components::WeaponComponent>(ecs::components::WeaponComponent::WEAPON_TYPE_STANDARD_WAVE_CANON, 500));
     addComponent(std::make_shared<ecs::components::ColliderComponent>());
     addComponent(std::make_shared<ecs::components::RigidbodyComponent>(5));
     addComponent(std::make_shared<ecs::components::PlayerComponent>());

@@ -26,7 +26,7 @@
 
 #define PATH_TO_ASSETS "./bin/assets/"
 #define PATH_TO_FONTS "./bin/fonts/"
-#define NBR_TEXTURE 46
+#define NBR_TEXTURE 53
 #define NBR_FONT 2
 
 class SfmlSystem : public ecs::ASystem {
@@ -84,7 +84,10 @@ class SfmlSystem : public ecs::ASystem {
     static std::map<int, sf::IntRect> getMapRectTexture()
     {
         std::map<int, sf::IntRect> map;
-        map[42] = sf::Rect(66,0,33,17);
+        map[47] = sf::Rect(66,0,33,17);
+        map[48] = sf::Rect(66,0,33,17);
+        map[49] = sf::Rect(66,0,33,17);
+        map[50] = sf::Rect(66,0,33,17);
         return map;
     }
 

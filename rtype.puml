@@ -1120,10 +1120,10 @@ class ecs::components::WeaponComponent {
     + WeaponComponent &operator=(const WeaponComponent &rhs)
     + WeaponType getType() const
     + void setType(WeaponType type)
-    + uint32_t getRps() const
-    + void setRps(uint32_t rps)
+    + uint32_t getChargeTime() const
+    + void setChargeTime(uint32_t rps)
     - WeaponType _type
-    - uint32_t _rps
+    - uint32_t _chargeTime
 }
 
 ecs::AComponent <|-- ecs::components::WeaponComponent

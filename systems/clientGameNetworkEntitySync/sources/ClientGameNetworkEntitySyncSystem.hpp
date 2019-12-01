@@ -38,7 +38,7 @@ namespace rtype {
         static b12software::maths::Vector2D mapPercentCoordinatesToPixelCoordianes(const sf::Vector2f &coords, int width, int height);
 
     private:
-        int getAssetIdFromNetworkType(int type);
+        static int getAssetIdFromNetworkType(int type);
     };
 }
 

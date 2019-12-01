@@ -107,6 +107,9 @@ void ecs::World::applyToEach(const std::vector<Version> &componentTypes, std::fu
 {
     if (_entitiesClearCallBack) {
         for (auto &entity : _afterClear) {
+            if (!entity) {
+                continue;
+            }
             auto components = entity->getComponents(componentTypes);
             if (!components.empty()) {
                 toApply(entity, components);
@@ -115,6 +118,9 @@ void ecs::World::applyToEach(const std::vector<Version> &componentTypes, std::fu
         return;
     }
     for (auto &entity : _entities) {
+        if (!entity) {
+            continue;
+        }
         auto components = entity->getComponents(componentTypes);
         if (!components.empty()) {
             toApply(entity, components);
