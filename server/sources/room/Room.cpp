@@ -17,6 +17,7 @@
 #include <systems/NetworkSyncSystem/NetworkSyncSystemApi.hpp>
 #include <components/Transform/TransformComponent.hpp>
 #include <components/server/networkIdentity/NetworkIdentityComponent.hpp>
+#include <components/server/collider/ColliderComponent.hpp>
 #include "Room.hpp"
 #include "logger/DefaultLogger.hpp"
 
@@ -368,8 +369,13 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
 
 
     auto entity = std::shared_ptr<ecs::IEntity>(new ecs::Entity("Test clean entity"));
-    entity->addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(50, 50, 0)));
+    entity->addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(-1, -1, 0)));
     world->pushEntity(entity);
+    auto entity2 = std::shared_ptr<ecs::IEntity>(new ecs::Entity("Test clean entity2"));
+    entity2->addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(-6, -6, 0)));
+    entity2->addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(10, 10)));
+    world->pushEntity(entity2);
+
     for (int j = 0; j < infos.getNbPlayers(); ++j) {
         auto player = std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j));
         auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(player->getComponent(ecs::components::TransformComponent::Version).lock());
