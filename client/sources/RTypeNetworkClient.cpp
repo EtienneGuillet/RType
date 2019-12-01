@@ -249,7 +249,9 @@ void rtype::RTypeNetworkClient::gameSequence(long deltatime)
 }
 
 void rtype::RTypeNetworkClient::lostConnectionSequence([[maybe_unused]]long deltatime)
-{}
+{
+    _syncTo.setLostConnection(true);
+}
 
 void rtype::RTypeNetworkClient::checkLostConnection()
 {
@@ -437,7 +439,6 @@ void rtype::RTypeNetworkClient::display210DatagramHandler(rtype::network::RTypeD
         return;
     rtype::network::RTypeDatagramDisplay disp;
     dg.extract210DisplayDatagram(disp);
-    std::cout << "Entity " << disp.entityId << " Position is " << disp.position.x << " " << disp.position.x << " " << disp.position.x << std::endl;
     try {
         auto &found = _syncTo.getEntity(disp.entityId);
         found.setShouldDisplay(true);
