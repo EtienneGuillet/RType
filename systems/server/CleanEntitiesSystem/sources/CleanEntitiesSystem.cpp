@@ -35,17 +35,17 @@ void CleanEntitiesSystem::tick(long deltatime) {
                         b12software::maths::Vector2D(pos.x - size.x * 0.5f, pos.y - size.y * 0.5f)
                 };
                 for (auto &point : rect) {
-                    if (!(point.x < 0 || point.y < 0 || point.x > 100 || point.x > 100)) {
+                    if (!(point.x < 0 || point.y < 0 || point.x > 1000 || point.y > 1000)) {
                         rm = false;
                     }
                 }
                 if (rm) {
-                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "[" + lockedEntity->getName() + ":" + std::to_string(lockedEntity->getID()) +"] To clean");
+                    //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "[" + lockedEntity->getName() + ":" + std::to_string(lockedEntity->getID()) +"] To clean");
                     toDelete.push_back(lockedEntity->getID());
                 }
             } else {
-                if (pos.x < 0 || pos.y < 0 || pos.x > 100 || pos.x > 100) {
-                    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "[" + lockedEntity->getName() + ":" + std::to_string(lockedEntity->getID()) +"] To clean");
+                if (pos.x < 0 || pos.y < 0 || pos.x > 1000 || pos.y > 1000) {
+                    //b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, prefixDebug + "[" + lockedEntity->getName() + ":" + std::to_string(lockedEntity->getID()) +"] To clean");
                     toDelete.push_back(lockedEntity->getID());
                 }
             }

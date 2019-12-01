@@ -572,7 +572,7 @@ void rtype::CreateMainWindowEntities::checkForUpdateScene()
     auto lockedWorld = _world.lock();
 
     if (lockedWorld) {
-        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this]([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this, lockedWorld]([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
 
             if (gm) {
@@ -580,13 +580,14 @@ void rtype::CreateMainWindowEntities::checkForUpdateScene()
                     roomSceneLaunch(std::weak_ptr<ecs::IEntity>(), _world);
                     _isInLobbyOfRooms = true;
                 }
-                if (gm->getState().isConnnected() && gm->getState().getLobbyState().isInLobby() && !_cleanCreateLobby) {
-                    lobbySceneLaunch();
-                    _cleanCreateLobby = true;
-                }
                 if (gm->getState().isInGame() && !_cleanStartGame) {
+                    lockedWorld->clearAllEntities();
                     gameSceneLaunch();
                     _cleanStartGame = true;
+                }
+                if (gm->getState().isConnnected() && gm->getState().getLobbyState().isInLobby() && !_cleanCreateLobby && !gm->getState().isInGame()) {
+                    lobbySceneLaunch();
+                    _cleanCreateLobby = true;
                 }
             }
         });

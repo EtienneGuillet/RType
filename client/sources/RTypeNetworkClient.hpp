@@ -59,11 +59,11 @@ namespace rtype {
 
         static constexpr std::chrono::milliseconds processDatagramsMaxTime = std::chrono::milliseconds(10); /*!< Allowed time to process datagrams per update */
         static constexpr long lobbyDatagramRetrySyncRate = 500; /*!< In ms */
-        static constexpr long gameDatagramSyncRate = 100; /*!< In ms */
+        static constexpr long gameDatagramSyncRate = 10; /*!< In ms */
         static constexpr long serverConnectivityPingThreshHold = 2500; /*!< In ms */
         static constexpr long serverConnectionLostThreshHold = 5000; /*!< In ms */
-        static constexpr long entityInvalidateDisplayAfter = 250; /*!< In ms */
-        static constexpr long entityInvalidateEntityAfter = 500; /*!< In ms */
+        static constexpr long entityInvalidateDisplayAfter = 50; /*!< In ms */
+        static constexpr long entityInvalidateEntityAfter = 100; /*!< In ms */
 
     private:
         void resetDatagram(rtype::network::RTypeDatagramType type);

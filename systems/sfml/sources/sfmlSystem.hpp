@@ -100,6 +100,7 @@ class SfmlSystem : public ecs::ASystem {
     static std::map<int, sf::IntRect> getMapRectTexture()
     {
         std::map<int, sf::IntRect> map;
+        map[5] = sf::Rect(0, 0, 34, 34);
         map[8] = sf::Rect(0, 34, 34, 34);
         map[47] = sf::Rect(66, 0, 33, 17);
         map[48] = sf::Rect(66, 0, 33, 17);

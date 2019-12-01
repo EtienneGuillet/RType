@@ -27,7 +27,7 @@ namespace ecs {
             const ecs::Version &getVersion() const override;
 
         public:
-            ColliderComponent(const b12software::maths::Vector2D &size = b12software::maths::Vector2D(1, 1), const b12software::maths::Vector2D &offset = b12software::maths::Vector2D());
+            ColliderComponent(const b12software::maths::Vector2D &size = b12software::maths::Vector2D(50, 50), const b12software::maths::Vector2D &offset = b12software::maths::Vector2D());
             ~ColliderComponent() = default;
             ColliderComponent(const ColliderComponent &other) = default;
             ColliderComponent &operator=(const ColliderComponent &rhs) = default;

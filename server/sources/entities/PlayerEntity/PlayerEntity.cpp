@@ -16,9 +16,9 @@ PlayerEntity::PlayerEntity(rtype::RTypeEntityType playerId) : Entity("PlayerEnti
 
     addComponent(std::make_shared<ecs::components::DamageableComponent>(3, 3, 0, 0b1));
     addComponent(std::make_shared<ecs::components::TransformComponent>());
-    addComponent(std::make_shared<ecs::components::WeaponComponent>(ecs::components::WeaponComponent::WEAPON_TYPE_STANDARD_WAVE_CANON, 500));
+    addComponent(std::make_shared<ecs::components::WeaponComponent>(ecs::components::WeaponComponent::WEAPON_TYPE_STANDARD_WAVE_CANON, 200));
     addComponent(std::make_shared<ecs::components::ColliderComponent>());
-    addComponent(std::make_shared<ecs::components::RigidbodyComponent>(15));
+    addComponent(std::make_shared<ecs::components::RigidbodyComponent>(150));
     addComponent(std::make_shared<ecs::components::PlayerComponent>());
     addComponent(std::make_shared<ecs::components::DisplayableComponent>(playerId));
 }

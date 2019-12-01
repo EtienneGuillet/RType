@@ -134,7 +134,8 @@ namespace rtype {
          * @param hp entity hp
          */
         void setHp(uint32_t hp);
-
+        bool wasPosUpdated() const;
+        void setWasPosUpdated(bool wasUpdated);
     private:
 
         std::uint32_t _id;
@@ -150,6 +151,7 @@ namespace rtype {
         std::chrono::high_resolution_clock::time_point _lastDisplayUpdate;
         std::chrono::high_resolution_clock::time_point _lastUpdate;
         bool _shouldDisplay;
+        bool _wasPosUpdated;
     };
 }
 

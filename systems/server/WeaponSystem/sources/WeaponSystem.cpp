@@ -64,7 +64,7 @@ void systems::WeaponSystem::tick(long deltatime)
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(transformComp));
             auto colliderComp = std::make_shared<ecs::components::ColliderComponent>();
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(colliderComp));
-            auto rigidBodyComp = std::make_shared<ecs::components::RigidbodyComponent>(50, b12software::maths::Vector2D(1, 0));
+            auto rigidBodyComp = std::make_shared<ecs::components::RigidbodyComponent>(500, b12software::maths::Vector2D(1, 0));
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(rigidBodyComp));
             auto damagerComp = std::make_shared<ecs::components::DamagerComponent>(shotLevel, true, 0b10);
             shotEntity->addComponent(std::dynamic_pointer_cast<ecs::IComponent>(damagerComp));

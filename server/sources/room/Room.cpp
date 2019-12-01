@@ -217,7 +217,7 @@ void rtype::Room::setUsernameInputs(const std::string &username, const rtype::ne
 
 void rtype::Room::syncGameOnNetwork(const std::weak_ptr<b12software::network::udp::IUdpSocket>& socket)
 {
-    constexpr std::chrono::milliseconds timeBetweenDisplays(100);
+    constexpr std::chrono::milliseconds timeBetweenDisplays(10);
     constexpr std::chrono::milliseconds timeBetweenLiving(100);
     constexpr std::chrono::milliseconds timeBetweenCharges(100);
     constexpr std::chrono::milliseconds timeBetweenScores(250);
@@ -373,7 +373,7 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     for (int j = 0; j < lockedInfos->getNbPlayers(); ++j) {
         auto player = std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j + 1));
         auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(player->getComponent(ecs::components::TransformComponent::Version).lock());
-        auto spawnPos = ((80 / lockedInfos->getNbPlayers()) * j) + 10;
+        auto spawnPos = ((800 / lockedInfos->getNbPlayers()) * j) + 100;
 
         transform->setPosition(b12software::maths::Vector3D(10, spawnPos, 0));
         world->pushEntity(player);
@@ -396,7 +396,7 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     while (shouldGameBeRunning && threadRunning) {
         end = std::chrono::system_clock::now();
         auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        if (deltaTime >= 10) {
+        if (deltaTime >= 1) {
             libLoader.checkForChanges();
             start = std::chrono::system_clock::now();
             world->tick(deltaTime);
