@@ -21,7 +21,8 @@ BydosSlaveEntity::BydosSlaveEntity() : Entity("BydosSlaveEntity") {
     addComponent(std::make_shared<ecs::components::ColliderComponent>(b12software::maths::Vector2D(5,5)));
     addComponent(std::make_shared<ecs::components::TransformComponent>(b12software::maths::Vector3D(100.0f, 50.0f, 0.0f)));
     addComponent(std::make_shared<ecs::components::RigidbodyComponent>(20, b12software::maths::Vector2D(-1, 0)));
-    addComponent(std::make_shared<ecs::components::DamagerComponent>(1, true, 0b10));
+    addComponent(std::make_shared<ecs::components::DamagerComponent>(1, true, 0b1));
+    addComponent(std::make_shared<ecs::components::DamageableComponent>(1, 1, 0, 0b10));
     addComponent(std::make_shared<ecs::components::WeaponComponent>());
 
     addComponent(std::make_shared<ecs::components::AIComponent>([this] (const std::shared_ptr<IEntity>& entity, std::shared_ptr<ecs::IWorld> world) {

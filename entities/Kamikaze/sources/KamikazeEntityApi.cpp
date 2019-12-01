@@ -12,5 +12,5 @@ std::shared_ptr<ecs::IEntity> KamikazeEntityAPI::createNewEntity() const {
 }
 
 long KamikazeEntityAPI::getSpawnFreq() const {
-    return 1000 * 2.5;
+    return 1000;
 }

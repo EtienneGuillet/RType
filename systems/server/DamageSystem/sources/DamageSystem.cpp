@@ -94,7 +94,7 @@ void systems::DamageSystem::computeDamages() const
 
             for (auto &damagedEntity : damageableEntities) {
                 auto lockedDamagedEntity = damagedEntity.lock();
-                if (!lockedDamagedEntity)
+                if (!lockedDamagedEntity || lockedDamagedEntity->getID() == lockedDamagerEntity->getID())
                     continue;
                 auto damagedTr = std::dynamic_pointer_cast<ecs::components::TransformComponent>(lockedDamagedEntity->getComponent(ecs::components::TransformComponent::Version).lock());
                 auto damagedDmg = std::dynamic_pointer_cast<ecs::components::DamageableComponent>(lockedDamagedEntity->getComponent(ecs::components::DamageableComponent::Version).lock());
