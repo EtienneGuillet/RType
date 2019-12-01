@@ -12,11 +12,171 @@
 std::weak_ptr<ecs::IWorld> rtype::CreateMainWindowEntities::_world;
 ecs::IECS *rtype::CreateMainWindowEntities::_ecs = nullptr;
 
+void rtype::CreateMainWindowEntities::lobbySceneLaunch()
+{
+    auto lockedWorld = _world.lock();
+    if (!lockedWorld || _ecs == nullptr)
+        return;
+    lockedWorld->clearAllEntities();
+    auto entityBackground = _ecs->createEntityFromAPI(ecs::Version("Entity_Background", 1, 0, 0, 0));
+    auto entityButtonRoomName = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    auto entityButtonPlayerNameOne = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    auto entityTextInputPlayerNameOne = _ecs->createEntityFromAPI(ecs::Version("Entity_textInput", 1, 0, 0, 0));
+    auto entityButtonPlayerNameTwo = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    auto entityTextInputPlayerNameTwo = _ecs->createEntityFromAPI(ecs::Version("Entity_textInput", 1, 0, 0, 0));
+    auto entityButtonPlayerNameThree = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    auto entityTextInputPlayerNameThree = _ecs->createEntityFromAPI(ecs::Version("Entity_textInput", 1, 0, 0, 0));
+    auto entityButtonPlayerNameFour = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    auto entityTextInputPlayerNameFour = _ecs->createEntityFromAPI(ecs::Version("Entity_textInput", 1, 0, 0, 0));
+    auto entityButtonQuit = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
+    if (entityBackground) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityBackground->getComponent(rtype::TransformComponent::Version).lock());
+        auto sprite = std::dynamic_pointer_cast<rtype::SpriteComponent>(entityBackground->getComponent(rtype::SpriteComponent::Version).lock());
+        if (tr) {
+            tr->setScale(3, 3);
+        }
+        if (sprite) {
+            sprite->setRepeated(true);
+        }
+        lockedWorld->pushEntity(entityBackground);
+    }
+    if (entityButtonRoomName) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonRoomName->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonRoomName->getComponent(rtype::HoverComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonRoomName->getComponent(rtype::TextComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(800, 100, 0);
+            tr->setScale(2, 2);
+        }
+        if (hv) {
+            hv->setHoverable(false);
+        }
+        if (rt) {
+            rt->setString("Roomname");
+        }
+        lockedWorld->pushEntity(entityButtonRoomName);
+    }
+    if (entityButtonQuit) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonQuit->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonQuit->getComponent(rtype::HoverComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonQuit->getComponent(rtype::TextComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(900, 900, 0);
+            tr->setScale(2, 2);
+        }
+        if (hv) {
+            hv->setFunctionPointer(rtype::CreateMainWindowEntities::roomSceneLaunch);
+            hv->setHoverable(true);
+        }
+        if (rt) {
+            rt->setString("Quit");
+        }
+        lockedWorld->pushEntity(entityButtonQuit);
+    }
+    if (entityButtonPlayerNameOne) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlayerNameOne->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonPlayerNameOne->getComponent(rtype::HoverComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonPlayerNameOne->getComponent(rtype::TextComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(400, 250, 0);
+            tr->setScale(2, 2);
+        }
+        if (hv) {
+            hv->setHoverable(false);
+        }
+        if (rt) {
+            rt->setString("Player1:        ");
+        }
+        lockedWorld->pushEntity(entityButtonPlayerNameOne);
+    }
+    if (entityTextInputPlayerNameOne) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputPlayerNameOne->getComponent(rtype::TransformComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(800, 250, 0);
+            tr->setScale(1, 1);
+        }
+        lockedWorld->pushEntity(entityTextInputPlayerNameOne);
+    }
+    if (entityButtonPlayerNameTwo) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlayerNameTwo->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonPlayerNameTwo->getComponent(rtype::HoverComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonPlayerNameTwo->getComponent(rtype::TextComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(400, 400, 0);
+            tr->setScale(2, 2);
+        }
+        if (hv) {
+            hv->setHoverable(false);
+        }
+        if (rt) {
+            rt->setString("Player2:        ");
+        }
+        lockedWorld->pushEntity(entityButtonPlayerNameTwo);
+    }
+    if (entityTextInputPlayerNameTwo) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputPlayerNameTwo->getComponent(rtype::TransformComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(800, 400, 0);
+            tr->setScale(1, 1);
+        }
+        lockedWorld->pushEntity(entityTextInputPlayerNameTwo);
+    }
+    if (entityButtonPlayerNameThree) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlayerNameThree->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonPlayerNameThree->getComponent(rtype::HoverComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonPlayerNameThree->getComponent(rtype::TextComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(400, 550, 0);
+            tr->setScale(2, 2);
+        }
+        if (hv) {
+            hv->setHoverable(false);
+        }
+        if (rt) {
+            rt->setString("Player3:        ");
+        }
+        lockedWorld->pushEntity(entityButtonPlayerNameThree);
+    }
+    if (entityTextInputPlayerNameThree) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputPlayerNameThree->getComponent(rtype::TransformComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(800, 550, 0);
+            tr->setScale(1, 1);
+        }
+        lockedWorld->pushEntity(entityTextInputPlayerNameThree);
+    }
+    if (entityButtonPlayerNameFour) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityButtonPlayerNameFour->getComponent(rtype::TransformComponent::Version).lock());
+        auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonPlayerNameFour->getComponent(rtype::HoverComponent::Version).lock());
+        auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonPlayerNameFour->getComponent(rtype::TextComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(400, 700, 0);
+            tr->setScale(2, 2);
+        }
+        if (hv) {
+            hv->setHoverable(false);
+        }
+        if (rt) {
+            rt->setString("Player4:        ");
+        }
+        lockedWorld->pushEntity(entityButtonPlayerNameFour);
+    }
+    if (entityTextInputPlayerNameFour) {
+        auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextInputPlayerNameFour->getComponent(rtype::TransformComponent::Version).lock());
+        if (tr) {
+            tr->setPosition(800, 700, 0);
+            tr->setScale(1, 1);
+        }
+        lockedWorld->pushEntity(entityTextInputPlayerNameFour);
+    }
+}
+
 void rtype::CreateMainWindowEntities::gameSceneLaunch()
 {
     auto lockedWorld = _world.lock();
     if (!lockedWorld || _ecs == nullptr)
         return;
+    lockedWorld->clearAllEntities();
     auto entityBackground = _ecs->createEntityFromAPI(ecs::Version("Entity_Background", 1, 0, 0, 0));
 
     if (entityBackground) {
@@ -24,7 +184,7 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
         auto sprite = std::dynamic_pointer_cast<rtype::SpriteComponent>(entityBackground->getComponent(rtype::SpriteComponent::Version).lock());
         auto scroll = std::dynamic_pointer_cast<rtype::ScrollComponent>(entityBackground->getComponent(rtype::ScrollComponent::Version).lock());
         if (tr) {
-            tr->setScale(3, 3);
+            tr->setScale(2, 2);
         }
         if (sprite) {
             sprite->setRepeated(true);
@@ -36,7 +196,7 @@ void rtype::CreateMainWindowEntities::gameSceneLaunch()
     }
 }
 
-void rtype::CreateMainWindowEntities::roomSceneLaunch()
+void rtype::CreateMainWindowEntities::roomSceneLaunch([[maybe_unused]]std::weak_ptr<ecs::IEntity> e, [[maybe_unused]]std::weak_ptr<ecs::IWorld> world)
 {
     auto lockedWorld = _world.lock();
     if (!lockedWorld) {
@@ -50,12 +210,21 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
     auto spriteBoxCreate = _ecs->createEntityFromAPI(ecs::Version("Entity_LobbyContainer", 1, 0, 0, 0));
     auto entityTextboxRoomName = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
     auto entityTextboxRoomPwd = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
+    auto entityTextboxRoomCapacity = _ecs->createEntityFromAPI(ecs::Version("Entity_Textbox", 0, 1, 0, 0));
 
+    lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, []([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
+        if (gm) {
+            if (!gm->getState().isConnnected())
+                return;
+            gm->startLobbyUpdate();
+        }
+    });
     if (background) {
         auto tr = std::dynamic_pointer_cast<rtype::TransformComponent>(background->getComponent(rtype::TransformComponent::Version).lock());
         auto sprite = std::dynamic_pointer_cast<rtype::SpriteComponent>(background->getComponent(rtype::SpriteComponent::Version).lock());
         if (tr) {
-            tr->setScale(3, 3);
+            tr->setScale(2, 2);
         }
         if (sprite) {
             sprite->setRepeated(true);
@@ -81,7 +250,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
 
         if (tr) {
             tr->setPosition(1120, 150, 0);
-            tr->setScale(1.5, 0.3);
+            tr->setScale(1.5, 0.7);
         }
         lockedWorld->pushEntity(spriteBoxRooms);
     }
@@ -94,7 +263,7 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
         auto hv = std::dynamic_pointer_cast<rtype::HoverComponent>(entityButtonCreateRoom->getComponent(rtype::HoverComponent::Version).lock());
         auto rt = std::dynamic_pointer_cast<rtype::TextComponent>(entityButtonCreateRoom->getComponent(rtype::TextComponent::Version).lock());
         if (tr) {
-            tr->setPosition(1350, 600, 0);
+            tr->setPosition(1350, 900, 0);
             tr->setScale(2, 2);
         }
         if (hv) {
@@ -167,9 +336,28 @@ void rtype::CreateMainWindowEntities::roomSceneLaunch()
         }
         lockedWorld->pushEntity(entityTextboxRoomPwd);
     }
+    if (entityTextboxRoomCapacity) {
+        auto textComponent = std::dynamic_pointer_cast<rtype::TextComponent>(entityTextboxRoomCapacity->getComponent(rtype::TextComponent::Version).lock());
+        auto transformComponent = std::dynamic_pointer_cast<rtype::TransformComponent>(entityTextboxRoomCapacity->getComponent(rtype::TransformComponent::Version).lock());
+        auto hover = std::dynamic_pointer_cast<rtype::HoverComponent>(entityTextboxRoomCapacity->getComponent(rtype::HoverComponent::Version).lock());
+        auto updateText = std::dynamic_pointer_cast<rtype::UpdateTextComponent>(entityTextboxRoomCapacity->getComponent(rtype::UpdateTextComponent::Version).lock());
+
+        if (hover && updateText) {
+            hover->setHoverable(true);
+            updateText->setUpdatable(false);
+        }
+        if (transformComponent) {
+            transformComponent->setPosition(1140, 500, 0);
+            transformComponent->setScale(1.2, 1.2);
+        }
+        if (textComponent) {
+            textComponent->setString("Room capacity : ");
+        }
+        lockedWorld->pushEntity(entityTextboxRoomCapacity);
+    }
 }
 
-void rtype::CreateMainWindowEntities::closeByQuitButton()
+void rtype::CreateMainWindowEntities::closeByQuitButton([[maybe_unused]]std::weak_ptr<ecs::IEntity> e, [[maybe_unused]]std::weak_ptr<ecs::IWorld> world)
 {
     auto lockedWorld = _world.lock();
 
@@ -188,7 +376,7 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
     auto lockedWorld = _world.lock();
     if (!lockedWorld || _ecs == nullptr)
         return;
-
+    lockedWorld->clearAllEntities();
     auto entityTitle = _ecs->createEntityFromAPI(ecs::Version("Entity_TitleSprite", 0, 1, 0, 0));
     auto entityButtonPlay = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
     auto entityButtonQuit = _ecs->createEntityFromAPI(ecs::Version("Entity_Button", 1, 0, 0, 0));
@@ -346,12 +534,14 @@ void rtype::CreateMainWindowEntities::menuSceneLaunch()
 rtype::CreateMainWindowEntities::CreateMainWindowEntities(std::shared_ptr<ecs::IWorld> &world, ecs::IECS &ecs)
 {
     _isInLobbyOfRooms = false;
+    _cleanCreateLobby = false;
+    _cleanStartGame = false;
     _world = world;
     _ecs = &ecs;
     menuSceneLaunch();
 }
 
-void rtype::CreateMainWindowEntities::tryToConnect()
+void rtype::CreateMainWindowEntities::tryToConnect([[maybe_unused]]std::weak_ptr<ecs::IEntity> e, [[maybe_unused]]std::weak_ptr<ecs::IWorld> world)
 {
     auto lockedWorld = _world.lock();
 
@@ -370,20 +560,29 @@ void rtype::CreateMainWindowEntities::checkForUpdateScene()
     auto lockedWorld = _world.lock();
 
     if (lockedWorld) {
-        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this]([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
+        lockedWorld->applyToEach({rtype::GameManagerComponent::Version}, [this, lockedWorld]([[maybe_unused]]std::weak_ptr<ecs::IEntity> entity, std::vector<std::weak_ptr<ecs::IComponent>> components) {
             auto gm = std::dynamic_pointer_cast<rtype::GameManagerComponent>(components[0].lock());
 
             if (gm) {
                 if (!gm->getState().isTryingToConnected() && gm->getState().isConnnected() && !_isInLobbyOfRooms) {
-                    roomSceneLaunch();
+                    roomSceneLaunch(std::weak_ptr<ecs::IEntity>(), _world);
                     _isInLobbyOfRooms = true;
+                }
+                if (gm->getState().isInGame() && !_cleanStartGame) {
+                    lockedWorld->clearAllEntities();
+                    gameSceneLaunch();
+                    _cleanStartGame = true;
+                }
+                if (gm->getState().isConnnected() && gm->getState().getLobbyState().isInLobby() && !_cleanCreateLobby && !gm->getState().isInGame()) {
+                    lobbySceneLaunch();
+                    _cleanCreateLobby = true;
                 }
             }
         });
     }
 }
 
-void rtype::CreateMainWindowEntities::createRoom()
+void rtype::CreateMainWindowEntities::createRoom([[maybe_unused]]std::weak_ptr<ecs::IEntity> e, [[maybe_unused]]std::weak_ptr<ecs::IWorld> world)
 {
     auto lockedWorld = _world.lock();
 
@@ -397,12 +596,12 @@ void rtype::CreateMainWindowEntities::createRoom()
             if (!gm->getState().isConnnected())
                 return;
             if (!gm->getState().getLobbyState().isCreatingLobby())
-                gm->getState().getLobbyState().createLobby("", "");
+                gm->startCreateRoom();
         }
     });
 }
 
-void rtype::CreateMainWindowEntities::refreshRooms()
+void rtype::CreateMainWindowEntities::refreshRooms([[maybe_unused]]std::weak_ptr<ecs::IEntity> e, [[maybe_unused]]std::weak_ptr<ecs::IWorld> world)
 {
     auto lockedWorld = _world.lock();
 
@@ -415,10 +614,10 @@ void rtype::CreateMainWindowEntities::refreshRooms()
         if (gm) {
             if (!gm->getState().isConnnected())
                 return;
-            if (!gm->getState().getLobbyState().isUpdatingLobby())
+            if (!gm->getState().getLobbyState().isUpdatingLobby()) {
                 gm->getState().getLobbyState().requestLobbyListUpdate();
+                gm->startLobbyUpdate();
+            }
         }
     });
 }
-
-

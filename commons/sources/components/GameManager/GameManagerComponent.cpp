@@ -17,6 +17,8 @@ rtype::GameManagerComponent::GameManagerComponent(rtype::NetworkState &state, bo
     , _displayWidth(0)
     , _displayHeight(0)
     , _tryingToConnect(false)
+    , _tryingCreateRoom(false)
+    , _requestUpdateListRoom(false)
 {
 
 }
@@ -66,5 +68,39 @@ bool rtype::GameManagerComponent::isTryingToConnect() const
 {
     return _tryingToConnect;
 }
+
+void rtype::GameManagerComponent::startCreateRoom()
+{
+    _tryingCreateRoom = true;
+}
+
+void rtype::GameManagerComponent::stopCreateRoom()
+{
+    _tryingCreateRoom = false;
+}
+
+bool rtype::GameManagerComponent::isTryingToCreateRoom() const
+{
+    return _tryingCreateRoom;
+}
+
+void rtype::GameManagerComponent::startLobbyUpdate()
+{
+    _requestUpdateListRoom = true;
+}
+
+void rtype::GameManagerComponent::stopLobbyUpdate()
+{
+    _requestUpdateListRoom = false;
+}
+
+bool rtype::GameManagerComponent::isRequestLobbyUpdate()
+{
+    return _requestUpdateListRoom;
+}
+
+
+
+
 
 
