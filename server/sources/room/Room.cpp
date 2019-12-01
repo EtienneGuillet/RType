@@ -355,6 +355,7 @@ void rtype::Room::endGame()
 
 void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, std::atomic_bool &threadRunning, std::weak_ptr<GameInfos> infos, const std::string libsFolder)
 {
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Enter game thread");
     threadRunning = true;
     std::shared_ptr<ecs::IECS> ecs = std::make_shared<ecs::ECS>();
     auto world = ecs->createWorld();
@@ -369,7 +370,7 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     ecs->learnEntity(playerApi);
 
     for (int j = 0; j < lockedInfos->getNbPlayers(); ++j) {
-        auto player = std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j));
+        auto player = std::make_shared<PlayerEntity>(static_cast<rtype::RTypeEntityType>(j + 1));
         auto transform = std::dynamic_pointer_cast<ecs::components::TransformComponent>(player->getComponent(ecs::components::TransformComponent::Version).lock());
         auto spawnPos = ((80 / lockedInfos->getNbPlayers()) * j) + 10;
 
@@ -389,7 +390,7 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
     system->setGameInfosPtr(infos);
     world->addSystem(system);
 
-    std::cout << "Starting game !" << std::endl;
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Starting game");
 
     while (shouldGameBeRunning && threadRunning) {
         end = std::chrono::system_clock::now();
@@ -413,18 +414,17 @@ void rtype::Room::gameThreadFunc(const std::atomic_bool &shouldGameBeRunning, st
                 }
             }
             if (used == 0 || alive == 0) {
-                std::cout << "used " << used << " alive " << alive << std::endl;
                 break;
             }
         }
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
 
-    std::cout << "Ending game !" << std::endl;
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Ending game");
     world = std::shared_ptr<ecs::IWorld>();
     ecs = std::unique_ptr<ecs::IECS>();
     threadRunning = false;
-    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Exit thread");
+    b12software::logger::DefaultLogger::Log(b12software::logger::LogLevelDebug, "Exit game thread");
 }
 
 bool rtype::Room::shouldGameRun() const
